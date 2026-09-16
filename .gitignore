@@ -6,6 +6,8 @@
 .Trashes
 ehthumbs.db
 Thumbs.db
+* 2.*
+* 2
 
 # Environment and Secrets (Strictly enforced by AGENTS.md)
 .env
