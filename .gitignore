@@ -36,8 +36,10 @@ dist/
 downloads/
 eggs/
 .eggs/
-lib/
-lib64/
+backend/lib/
+backend/lib64/
+!client/lib/
+!client/lib/**
 parts/
 sdist/
 var/
