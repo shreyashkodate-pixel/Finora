@@ -1,0 +1,29 @@
+# Git
+.git/
+.gitignore
+
+# Environment and Secrets
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.coverage
+htmlcov/
+.venv/
+venv/
+
+# Flutter / Client
+client/
+
+# Documentation
+docs/
+
+# System
+.DS_Store
+Thumbs.db
