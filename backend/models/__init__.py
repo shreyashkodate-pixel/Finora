@@ -30,6 +30,7 @@ from models.ai import (
 )
 from models.audit import AuditLog
 from models.knowledge import KnowledgeArticle, Approval
+from models.auth import RefreshToken
 
 __all__ = [
     # Enums
@@ -65,4 +66,5 @@ __all__ = [
     "AuditLog",
     "KnowledgeArticle",
     "Approval",
+    "RefreshToken",
 ]

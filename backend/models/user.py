@@ -26,7 +26,7 @@ class Team(Base):
     description = Column(Text, nullable=True)
     lead_id = Column(
         UUID(as_uuid=True),
-        ForeignKey("users.id", ondelete="SET NULL"),
+        ForeignKey("users.id", ondelete="SET NULL", use_alter=True, name="fk_teams_lead_id"),
         nullable=True,
     )
     created_at = Column(
