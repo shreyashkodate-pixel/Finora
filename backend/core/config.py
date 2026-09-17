@@ -36,6 +36,9 @@ class Settings(BaseSettings):
     SUPABASE_URL: str = Field(default="")
     SUPABASE_KEY: str = Field(default="")
     SUPABASE_STORAGE_BUCKET: str = Field(default="attachments")
+    STORAGE_LOCAL_DIR: str = Field(default="uploads")
+    MAX_FILE_SIZE_BYTES: int = Field(default=10 * 1024 * 1024)  # 10MB per SRS §7.5
+    MAX_CASE_ATTACHMENTS_SIZE_BYTES: int = Field(default=50 * 1024 * 1024)  # 50MB per SRS §7.5
 
     # Email - Local (Gmail SMTP)
     GMAIL_SMTP_ADDRESS: str = Field(default="")
@@ -81,6 +84,10 @@ class Settings(BaseSettings):
                 missing_vars.append("GOOGLE_OAUTH_CLIENT_ID")
             if not self.GOOGLE_OAUTH_CLIENT_SECRET:
                 missing_vars.append("GOOGLE_OAUTH_CLIENT_SECRET")
+            if not self.SUPABASE_URL:
+                missing_vars.append("SUPABASE_URL")
+            if not self.SUPABASE_KEY:
+                missing_vars.append("SUPABASE_KEY")
 
             if missing_vars:
                 raise RuntimeError(
