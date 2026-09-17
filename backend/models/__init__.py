@@ -49,6 +49,7 @@ from models.problem_change import (
     MajorIncidentTimeline,
 )
 from models.autofix import AutoFixAction
+from models.semantic_search import SemanticEmbedding, NLQueryLog
 
 __all__ = [
     # Enums
@@ -102,5 +103,7 @@ __all__ = [
     "MajorIncident",
     "MajorIncidentTimeline",
     "AutoFixAction",
+    "SemanticEmbedding",
+    "NLQueryLog",
 ]
 

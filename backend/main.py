@@ -21,6 +21,7 @@ from api.major_incidents.routes import router as major_incidents_router
 from api.autofix.routes import router as autofix_router
 from api.reports.routes import router as reports_router
 from api.ws.routes import router as ws_router
+from api.search.routes import router as search_router
 from scheduler import scheduler_manager
 
 
@@ -118,6 +119,7 @@ app.include_router(major_incidents_router, prefix="/api/v1")
 app.include_router(autofix_router, prefix="/api/v1")
 app.include_router(reports_router, prefix="/api/v1")
 app.include_router(ws_router, prefix="/api/v1")
+app.include_router(search_router, prefix="/api/v1")
 
 
 @app.get("/")
