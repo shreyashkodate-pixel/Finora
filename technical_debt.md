@@ -1,8 +1,8 @@
 # AI IT Helpdesk — Technical Debt & Future Roadmap
 
 **Document Purpose**: Tracks architectural technical debt, known operational limits, and future roadmap milestones for the **AI IT Helpdesk**.  
-**Current Status**: Branches 1–8 Completed and Verified (64/64 Passing Tests).  
-**Target Next Milestone**: Branch 9 — Knowledge Base & Approval Workflows (`feature/knowledge-base-and-approvals`).  
+**Current Status**: Branches 1–9 Completed and Verified (75/75 Passing Tests).  
+**Target Next Milestone**: Branch 10 — Multiplatform Flutter Client Authentication & Navigation (`feature/flutter-auth-navigation`).  
 **Last Updated**: September 17, 2026
 
 ---
@@ -83,20 +83,22 @@
     ├── Managerial escalation promotion after 2 hours unacknowledged
     └── Render free-tier spin-down mitigation with keepalive health pinger
 
-[ ] Branch 9: Knowledge Base & Approval Workflows
-    ├── Markdown Knowledge Article management and pg_trgm search
-    └── Multi-tier approval requests for high-risk changes
+[x] Branch 9: Knowledge Base & Approval Workflows
+    ├── Markdown Knowledge Article authoring, RBAC, and full-text search
+    ├── Contextual knowledge suggestions from case tokens (SRS §5.14)
+    ├── Multi-tier approval requests for high-risk changes & Service Requests
+    └── Deterministic state gating (AWAITING_APPROVAL -> ASSIGNED) with version increment
 
 [ ] Branches 10–12: Multiplatform Flutter Client
-    ├── Clean Architecture (Presentation, Domain, Data)
-    ├── Screen reader compatibility via Semantics widgets
-    └── Responsive adaptive layout (Mobile, Tablet/Desktop, Web)
+    ├── Branch 10: Client Authentication, Persistent Session & GoRouter
+    ├── Branch 11: Real-time Case Stream, Intake Forms & Offline Cache
+    └── Branch 12: AI Copilot Dashboard, Approvals & WCAG 2.1 AA A11y
 ```
 
 ---
 
-## 3. Next Milestone (Branch 9) Implementation Priorities
+## 3. Next Milestone (Branch 10) Implementation Priorities
 
-1. **Knowledge Base Engine (`services/knowledge_service.py`)**: Implement Markdown knowledge article authoring with `draft`, `published`, and `archived` states per SRS §5.14.
-2. **Search Optimization**: Leverage existing PostgreSQL `pg_trgm` GIN indexes and full-text search vectors for fast offline-capable knowledge retrieval.
-3. **Approval Workflows (`services/approval_service.py`)**: Implement multi-tier approval requests for changes (`CaseType.CHANGE`), enforcing decision-maker authorization, status locking, and audit trail logging.
+1. **Flutter Client Architecture & Setup**: Ensure multiplatform flutter environment compiles (Android, Web, Desktop), configuring state management and HTTP client with `Idempotency-Key` and `Authorization` headers.
+2. **Authentication Flow & Storage**: Implement dual-path sign-in (email/password and Google OAuth PKCE), token pair storage (secure storage), and automatic refresh token rotation on `401 Unauthorized`.
+3. **Declarative Navigation & Role Guards**: Configure `GoRouter` with role-aware redirects ensuring Requesters, Operators, Team Leads, and Managers land on appropriate dashboard entrypoints.

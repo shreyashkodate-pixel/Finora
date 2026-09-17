@@ -3,7 +3,7 @@
 **Document Purpose**: Official development progress, completed milestones, architectural decisions, and verification records for the **AI IT Helpdesk** (FastAPI + PostgreSQL + Gemini AI + Flutter Multiplatform).  
 **Current Release Target**: Phase 1 Foundation & Core Workflows per PRD & SRS v3.3.  
 **Last Updated**: September 17, 2026  
-**Status**: Branches 1, 2, 3, 4, 5, 6, 7, and 8 Completed, 100% Passing Tests (64/64).
+**Status**: Branches 1–9 Completed, 100% Passing Tests (75/75).
 
 ---
 
@@ -57,7 +57,7 @@ The AI IT Helpdesk is a production-grade enterprise service desk platform featur
 [x] Branch 6: In-App & Email Notifications (Gmail SMTP / Brevo HTTP)
 [x] Branch 7: Gemini AI Integration (Triage, Summary, Risk, Drafts)
 [x] Branch 8: Periodic SLA & Risk Sweep Engine (APScheduler)
-[ ] Branch 9: Knowledge Base & Approval Workflows
+[x] Branch 9: Knowledge Base & Approval Workflows
 [ ] Branch 10: Flutter Client Authentication & Navigation
 [ ] Branch 11: Flutter Client Case Management & Message Stream
 [ ] Branch 12: Flutter Client AI Assistance & Operations Dashboard
@@ -205,6 +205,27 @@ The AI IT Helpdesk is a production-grade enterprise service desk platform featur
   * `PATCH /api/v1/escalations/{id}/resolve`: Resolve escalation.
   * `POST /api/v1/sweep/trigger`: On-demand manual sweep trigger (Staff only).
 
+### Branch 9 — Knowledge Base & Multi-Tier Approvals
+* **Knowledge Base Engine (`services/knowledge_service.py`)**:
+  * **Authoring & Lifecycle**: Markdown knowledge article authoring with `draft`, `published`, and `archived` states per SRS §5.14. Requesters restricted to published articles only; staff view and author all states.
+  * **Search & Suggestions**: Full-text and keyword search matching across article titles and Markdown bodies. Contextual token extraction against case title/description providing automatic knowledge suggestions (`GET /api/v1/knowledge/suggestions/case/{case_id}`) per SRS §5.14.
+  * **Audit Logging**: Full audit trail recording article creation, updates, and archival.
+* **Approval Workflows (`services/approval_service.py`)**:
+  * **Multi-Tier Authorization**: Business approvals for changes and elevated Service Requests per SRS §4 & §6.1. Only staff can request approvals for cases in `ASSIGNED` state; designated approvers must hold `Team Lead`, `Manager`, or `Administrator` roles.
+  * **Deterministic State Machine**: Requesting approval transitions case from `ASSIGNED` to `AWAITING_APPROVAL`, incrementing version integer (`version += 1`). Deciding approval (`approved` / `rejected`) transitions case back to `ASSIGNED` status with recorded justification.
+  * **Conflict Defense & Logging**: Prevents duplicate active approval requests on the same case (`409 Conflict`). Injects case timeline messages and alerts case stakeholders.
+* **REST Endpoints**:
+  * `POST /api/v1/knowledge`: Author article (Staff only).
+  * `GET /api/v1/knowledge`: List and search articles with pagination.
+  * `GET /api/v1/knowledge/{id}`: View article details with state-based RBAC.
+  * `PUT /api/v1/knowledge/{id}`: Update article content (Author or Manager).
+  * `POST /api/v1/knowledge/{id}/archive`: Archive article.
+  * `GET /api/v1/knowledge/suggestions/case/{case_id}`: Contextual article recommendations for case.
+  * `POST /api/v1/cases/{case_id}/approvals`: Request approval on case in `ASSIGNED` status.
+  * `GET /api/v1/cases/{case_id}/approvals`: List approval history for a case.
+  * `GET /api/v1/approvals/pending`: List pending approvals awaiting decision (Staff only).
+  * `POST /api/v1/approvals/{approval_id}/decision`: Submit approval decision (`approved` / `rejected`).
+
 ---
 
 ## 4. Test Suite & Build Verification
@@ -216,17 +237,18 @@ The test suite runs with `pytest` and `pytest-asyncio` using an in-memory SQLite
 platform darwin -- Python 3.14.4, pytest-9.1.1, pluggy-1.6.0 -- backend/.venv/bin/python3.14
 rootdir: backend, configfile: pytest.ini
 plugins: asyncio-1.4.0, anyio-4.15.1
-collected 64 items
+collected 75 items
 
-tests/unit/test_ai.py ..........                                         [ 15%]
-tests/unit/test_attachments.py .........                                 [ 29%]
-tests/unit/test_auth.py ...........                                      [ 46%]
-tests/unit/test_cases.py ............                                    [ 65%]
-tests/unit/test_health.py ..                                             [ 68%]
-tests/unit/test_models.py .......                                        [ 79%]
-tests/unit/test_notifications.py ......                                  [ 89%]
+tests/unit/test_ai.py ..........                                         [ 13%]
+tests/unit/test_attachments.py .........                                 [ 25%]
+tests/unit/test_auth.py ...........                                      [ 40%]
+tests/unit/test_cases.py ............                                    [ 56%]
+tests/unit/test_health.py ..                                             [ 58%]
+tests/unit/test_knowledge_approvals.py ...........                       [ 73%]
+tests/unit/test_models.py .......                                        [ 82%]
+tests/unit/test_notifications.py ......                                  [ 90%]
 tests/unit/test_sweep.py .......                                         [100%]
 
-======================== 64 passed, 2 warnings in 4.79s =========================
+======================== 75 passed, 2 warnings in 6.17s =========================
 ```
 
