@@ -1,8 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ai_it_helpdesk_client/features/ai/models/ai_models.dart';
-import 'package:ai_it_helpdesk_client/features/auth/models/user_model.dart';
-import 'package:ai_it_helpdesk_client/features/cases/models/case_model.dart';
-import 'package:ai_it_helpdesk_client/features/knowledge/models/knowledge_model.dart';
+import 'package:ai_helpdesk_client/features/ai/models/ai_models.dart';
+import 'package:ai_helpdesk_client/features/auth/models/user_model.dart';
+import 'package:ai_helpdesk_client/features/cases/models/case_model.dart';
+import 'package:ai_helpdesk_client/features/knowledge/models/knowledge_model.dart';
 
 void main() {
   group('UserModel Serialization', () {
@@ -127,29 +127,31 @@ void main() {
         'case_id': 'case-111',
         'suggested_priority': 'P1',
         'suggested_category': 'Network Infrastructure',
-        'confidence': 0.94,
+        'confidence_score': 0.94,
+        'confidence_level': 'high',
         'reasoning': 'Affects entire department VPN subnet.',
         'created_at': DateTime.now().toUtc().toIso8601String(),
       };
 
       final triage = AITriageModel.fromJson(json);
       expect(triage.suggestedPriority, 'P1');
-      expect(triage.confidence, 0.94);
+      expect(triage.confidenceScore, 0.94);
       expect(triage.reasoning, contains('VPN subnet'));
     });
 
     test('parses SLA Risk model', () {
       final json = {
+        'case_id': 'case-111',
         'risk_score': 0.82,
         'risk_level': 'HIGH',
         'reasoning': 'Only 18 minutes remaining before P1 resolution breach.',
-        'factors': ['High ticket load on operator', 'Hardware component replacement required'],
+        'signals': ['High ticket load on operator', 'Hardware component replacement required'],
       };
 
       final risk = RiskAssessmentModel.fromJson(json);
-      expect(risk.riskLevel, 'HIGH');
+      expect(risk.riskLevel, 'high');
       expect(risk.riskScore, 0.82);
-      expect(risk.factors.length, 2);
+      expect(risk.signals.length, 2);
     });
 
     test('parses Approval model', () {

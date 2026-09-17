@@ -56,7 +56,7 @@ class _CaseDetailScreenState extends State<CaseDetailScreen> with SingleTickerPr
     aiProv.fetchTriage(widget.caseId);
     aiProv.fetchSummary(widget.caseId);
     aiProv.fetchRisk(widget.caseId);
-    apprProv.fetchCaseApprovals(widget.caseId);
+    apprProv.fetchApprovalsForCase(widget.caseId);
   }
 
   void _showStatusDialog(BuildContext context, CaseModel currentCase) {
@@ -334,19 +334,13 @@ class _CaseDetailScreenState extends State<CaseDetailScreen> with SingleTickerPr
         // Tab 1: Discussion & Message Stream
         Column(
           children: [
-            LivingSummaryCard(caseId: c.id),
+            LivingSummaryCard(
+              caseId: c.id,
+              summary: context.watch<AIProvider>().summary,
+              isStaff: context.watch<AuthProvider>().currentUser?.isStaff ?? false,
+            ),
             Expanded(
-              child: MessageStreamWidget(
-                caseId: c.id,
-                messages: context.watch<CaseProvider>().messages,
-                onSendMessage: (body, visibility) {
-                  return context.read<CaseProvider>().addMessage(
-                        caseId: c.id,
-                        body: body,
-                        visibility: visibility,
-                      );
-                },
-              ),
+              child: MessageStreamWidget(caseId: c.id),
             ),
           ],
         ),
@@ -357,9 +351,13 @@ class _CaseDetailScreenState extends State<CaseDetailScreen> with SingleTickerPr
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              SLARiskCard(caseId: c.id),
+              SLARiskCard(risk: context.watch<AIProvider>().risk),
               const SizedBox(height: 16),
-              AITriageCard(caseId: c.id),
+              AITriageCard(
+                currentCase: c,
+                triage: context.watch<AIProvider>().triage,
+                isStaff: context.watch<AuthProvider>().currentUser?.isStaff ?? false,
+              ),
               const SizedBox(height: 20),
               Card(
                 child: Padding(
@@ -416,25 +414,16 @@ class _CaseDetailScreenState extends State<CaseDetailScreen> with SingleTickerPr
               const SizedBox(height: 16),
 
               // Attachments
-              Text(
-                'Evidence Attachments (${context.watch<CaseProvider>().attachments.length})',
-                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 12),
-              AttachmentListWidget(
-                attachments: context.watch<CaseProvider>().attachments,
-                onDownload: (att) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Downloading ${att.fileName}...')),
-                  );
-                },
-              ),
+              AttachmentListWidget(caseId: c.id),
             ],
           ),
         ),
 
-        // Tab 4: Approvals
-        ApprovalPanelWidget(currentCase: c),
+        // Tab 4: Approvals & Governance
+        SingleChildScrollView(
+          padding: const EdgeInsets.all(16),
+          child: ApprovalPanelWidget(currentCase: c),
+        ),
       ],
     );
   }
@@ -455,7 +444,7 @@ class _CaseDetailScreenState extends State<CaseDetailScreen> with SingleTickerPr
               _buildMetaRow('Description', c.description!),
             _buildMetaRow('Type', c.type.toUpperCase()),
             _buildMetaRow('Site / Campus', c.site ?? 'Not Specified'),
-            _buildMetaRow('Reporter ID', c.reporterId),
+            _buildMetaRow('Reporter ID', c.requesterId),
             _buildMetaRow('Assigned Owner', c.ownerId ?? 'Unassigned'),
             _buildMetaRow('Created At', dateFormat.format(c.createdAt.toLocal())),
             if (c.resolvedAt != null)
@@ -503,8 +492,8 @@ class _CaseDetailScreenState extends State<CaseDetailScreen> with SingleTickerPr
             const SizedBox(height: 16),
             _buildMetaRow('Target Response By', dateFormat.format(sla.targetResponseAt.toLocal())),
             _buildMetaRow('Target Resolve By', dateFormat.format(sla.targetResolveAt.toLocal())),
-            if (sla.firstResponseAt != null)
-              _buildMetaRow('First Responded At', dateFormat.format(sla.firstResponseAt!.toLocal())),
+            if (sla.respondedAt != null)
+              _buildMetaRow('First Responded At', dateFormat.format(sla.respondedAt!.toLocal())),
             _buildMetaRow(
               'Response SLA Status',
               sla.responseBreached ? 'BREACHED' : 'Compliant',

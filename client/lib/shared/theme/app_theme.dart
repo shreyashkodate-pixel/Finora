@@ -14,7 +14,7 @@ class AppTheme {
         error: AppColors.priorityP1,
       ),
       scaffoldBackgroundColor: AppColors.backgroundLight,
-      cardTheme: CardTheme(
+      cardTheme: CardThemeData(
         color: AppColors.surfaceLight,
         elevation: 0,
         shape: RoundedRectangleBorder(
@@ -76,7 +76,7 @@ class AppTheme {
         error: AppColors.priorityP1,
       ),
       scaffoldBackgroundColor: AppColors.backgroundDark,
-      cardTheme: CardTheme(
+      cardTheme: CardThemeData(
         color: AppColors.surfaceDark,
         elevation: 0,
         shape: RoundedRectangleBorder(

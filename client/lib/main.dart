@@ -10,7 +10,6 @@ void main() async {
   final storage = SessionStorage();
   final apiClient = ApiClient(
     baseUrl: AppConfig.apiBaseUrl,
-    storage: storage,
   );
 
   runApp(AIHelpdeskApp(

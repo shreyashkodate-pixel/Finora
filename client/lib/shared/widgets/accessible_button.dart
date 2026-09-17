@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 /// 48x48 min touch target, and high-visibility focus ring.
 class AccessibleButton extends StatelessWidget {
   final VoidCallback? onPressed;
-  final Widget child;
+  final Widget? child;
+  final String? label;
   final String semanticLabel;
   final String? semanticHint;
   final bool isLoading;
@@ -14,13 +15,14 @@ class AccessibleButton extends StatelessWidget {
   const AccessibleButton({
     super.key,
     required this.onPressed,
-    required this.child,
-    required this.semanticLabel,
+    this.child,
+    this.label,
+    String? semanticLabel,
     this.semanticHint,
     this.isLoading = false,
     this.isSecondary = false,
     this.icon,
-  });
+  }) : semanticLabel = semanticLabel ?? label ?? '';
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +48,10 @@ class AccessibleButton extends StatelessWidget {
           Icon(icon, size: 18),
           const SizedBox(width: 8),
         ],
-        child,
+        if (child != null)
+          child!
+        else if (label != null)
+          Text(label!),
       ],
     );
 

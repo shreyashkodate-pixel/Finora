@@ -1,7 +1,7 @@
-/// Represents an authenticated user in the AI IT Helpdesk per SRS §4 & §6.
 class UserModel {
   final String id;
   final String email;
+  final String? fullName;
   final String role; // requester, operator, team_lead, manager, administrator
   final String? teamId;
   final String? site;
@@ -11,6 +11,7 @@ class UserModel {
   const UserModel({
     required this.id,
     required this.email,
+    this.fullName,
     required this.role,
     this.teamId,
     this.site,
@@ -18,20 +19,25 @@ class UserModel {
     this.emailVerified = true,
   });
 
+  String get displayName => fullName ?? email.split('@').first;
+
   bool get isRequester => role == 'requester';
   bool get isOperator => role == 'operator';
-  bool get isTeamLead => role == 'team_lead';
+  bool get isTeamLead => role == 'team_lead' || role == 'lead';
   bool get isManager => role == 'manager';
-  bool get isAdmin => role == 'administrator';
+  bool get isAdmin => role == 'administrator' || role == 'admin';
 
-  bool get isStaff => role != 'requester';
+  bool get isStaff => !isRequester;
   bool get canApprove => isTeamLead || isManager || isAdmin;
   bool get isManagerOrAdmin => isManager || isAdmin;
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
+    final emailStr = json['email'] as String? ?? '';
+    final nameStr = json['full_name'] as String? ?? json['fullName'] as String?;
     return UserModel(
       id: json['id'] as String,
-      email: json['email'] as String,
+      email: emailStr,
+      fullName: nameStr,
       role: (json['role'] as String?)?.toLowerCase() ?? 'requester',
       teamId: json['team_id'] as String?,
       site: json['site'] as String?,
@@ -44,6 +50,7 @@ class UserModel {
     return {
       'id': id,
       'email': email,
+      'full_name': fullName,
       'role': role,
       'team_id': teamId,
       'site': site,

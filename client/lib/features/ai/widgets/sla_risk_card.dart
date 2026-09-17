@@ -42,7 +42,7 @@ class SLARiskCard extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    Icon(Icons.shield_alert_outlined, size: 18, color: color),
+                    Icon(Icons.warning_amber_rounded, size: 18, color: color),
                     const SizedBox(width: 8),
                     const Text(
                       'SLA & Escalation Risk Assessment',

@@ -9,8 +9,9 @@ class Settings(BaseSettings):
     ENVIRONMENT: str = Field(default="local", description="local | staging | production")
     DEBUG: bool = Field(default=True)
     HOST: str = Field(default="0.0.0.0")
-    PORT: int = Field(default=8000)
-    ALLOWED_ORIGINS: str = Field(default="http://localhost:3000,http://localhost:8000,http://127.0.0.1:8000")
+    ALLOWED_ORIGINS: str = Field(
+        default="http://localhost:3000,http://127.0.0.1:3000,http://localhost:8000,http://127.0.0.1:8000,http://localhost:5000,http://127.0.0.1:5000"
+    )
 
     # Database
     DATABASE_URL: str = Field(

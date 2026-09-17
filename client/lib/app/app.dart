@@ -28,7 +28,7 @@ class AIHelpdeskApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider<AuthProvider>(
-          create: (_) => AuthProvider(apiClient: apiClient, storage: storage)..initSession(),
+          create: (_) => AuthProvider(apiClient: apiClient, storage: storage)..initialize(),
         ),
         ChangeNotifierProvider<CaseProvider>(
           create: (_) => CaseProvider(apiClient: apiClient),
@@ -64,35 +64,30 @@ class AuthGate extends StatelessWidget {
   Widget build(BuildContext context) {
     final auth = context.watch<AuthProvider>();
 
-    switch (auth.status) {
-      case AuthStatus.authenticated:
-        return const DashboardShell();
-      case AuthStatus.unauthenticated:
-        return const LoginScreen();
-      case AuthStatus.initial:
-      case AuthStatus.authenticating:
-        return const Scaffold(
-          body: Center(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(Icons.support_agent, size: 64, color: AppColors.primaryBlue),
-                SizedBox(height: 16),
-                Text(
-                  'AI IT Helpdesk',
-                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: AppColors.primaryBlue),
-                ),
-                SizedBox(height: 8),
-                Text(
-                  'Verifying session credentials...',
-                  style: TextStyle(color: AppColors.textSecondaryLight, fontSize: 13),
-                ),
-                SizedBox(height: 24),
-                CircularProgressIndicator(),
-              ],
-            ),
+    if (!auth.isInitialized || (auth.isLoading && !auth.isAuthenticated)) {
+      return const Scaffold(
+        body: Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(Icons.support_agent, size: 64, color: AppColors.primaryBlue),
+              SizedBox(height: 16),
+              Text(
+                'AI IT Helpdesk',
+                style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: AppColors.primaryBlue),
+              ),
+              SizedBox(height: 8),
+              CircularProgressIndicator(),
+            ],
           ),
-        );
+        ),
+      );
     }
+
+    if (auth.isAuthenticated) {
+      return const DashboardShell();
+    }
+
+    return const LoginScreen();
   }
 }

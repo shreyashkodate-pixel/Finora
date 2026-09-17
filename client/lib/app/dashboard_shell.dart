@@ -44,7 +44,7 @@ class _DashboardShellState extends State<DashboardShell> {
                       backgroundColor: AppColors.primaryBlue,
                       radius: 24,
                       child: Text(
-                        (user?.fullName.isNotEmpty == true ? user!.fullName[0] : 'U').toUpperCase(),
+                        (user?.displayName.isNotEmpty == true ? user!.displayName[0] : 'U').toUpperCase(),
                         style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18),
                       ),
                     ),
@@ -209,7 +209,7 @@ class _DashboardShellState extends State<DashboardShell> {
             radius: 14,
             backgroundColor: AppColors.primaryBlue.withValues(alpha: 0.15),
             child: Text(
-              (user?.fullName.isNotEmpty == true ? user!.fullName[0] : 'U').toUpperCase(),
+              (user?.displayName.isNotEmpty == true ? user!.displayName[0] : 'U').toUpperCase(),
               style: const TextStyle(color: AppColors.primaryBlue, fontWeight: FontWeight.bold, fontSize: 12),
             ),
           ),

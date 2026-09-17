@@ -15,7 +15,7 @@ class SlaTimerWidget extends StatefulWidget {
     required this.targetTime,
     required this.isBreached,
     this.completedAt,
-    required this.label,
+    this.label = 'Resolution',
   });
 
   @override

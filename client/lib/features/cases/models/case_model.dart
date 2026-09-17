@@ -49,7 +49,7 @@ class CaseModel {
       type: (json['type'] as String?)?.toLowerCase() ?? 'incident',
       status: (json['status'] as String?)?.toLowerCase() ?? 'new',
       priority: (json['priority'] as String?)?.toLowerCase() ?? 'p3',
-      requesterId: json['requester_id'] as String,
+      requesterId: (json['requester_id'] ?? json['reporter_id']) as String? ?? '',
       ownerId: json['owner_id'] as String?,
       teamId: json['team_id'] as String?,
       site: json['site'] as String?,
@@ -104,11 +104,12 @@ class SLAModel {
   });
 
   factory SLAModel.fromJson(Map<String, dynamic> json) {
+    final respRaw = json['responded_at'] ?? json['first_response_at'];
     return SLAModel(
       id: json['id'] as String?,
       targetResponseAt: DateTime.parse(json['target_response_at'] as String),
       targetResolveAt: DateTime.parse(json['target_resolve_at'] as String),
-      respondedAt: json['responded_at'] != null ? DateTime.parse(json['responded_at'] as String) : null,
+      respondedAt: respRaw != null ? DateTime.parse(respRaw as String) : null,
       resolvedAt: json['resolved_at'] != null ? DateTime.parse(json['resolved_at'] as String) : null,
       responseBreached: json['response_breached'] as bool? ?? false,
       resolutionBreached: json['resolution_breached'] as bool? ?? false,

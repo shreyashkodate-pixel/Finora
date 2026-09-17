@@ -3,7 +3,6 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import '../../../shared/theme/colors.dart';
 import '../../../shared/widgets/accessible_button.dart';
-import '../models/case_model.dart';
 import '../providers/case_provider.dart';
 
 /// Displays evidence attachments and upload actions per SRS §7.5.

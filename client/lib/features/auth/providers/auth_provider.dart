@@ -62,9 +62,10 @@ class AuthProvider extends ChangeNotifier {
         body: {'email': email, 'password': password},
       );
 
-      final accessToken = res['access_token'] as String;
-      final refreshToken = res['refresh_token'] as String;
-      final userJson = res['user'] as Map<String, dynamic>;
+      final tokens = (res['tokens'] is Map<String, dynamic>) ? (res['tokens'] as Map<String, dynamic>) : res;
+      final accessToken = (tokens['access_token'] ?? res['access_token']) as String;
+      final refreshToken = (tokens['refresh_token'] ?? res['refresh_token']) as String;
+      final userJson = (res['user'] is Map<String, dynamic>) ? (res['user'] as Map<String, dynamic>) : res;
 
       await storage.setAccessToken(accessToken);
       await storage.setRefreshToken(refreshToken);
@@ -81,7 +82,7 @@ class AuthProvider extends ChangeNotifier {
       notifyListeners();
       return false;
     } catch (e) {
-      _errorMessage = 'An unexpected connection error occurred.';
+      _errorMessage = 'An unexpected connection error occurred: $e';
       _isLoading = false;
       notifyListeners();
       return false;
@@ -110,9 +111,10 @@ class AuthProvider extends ChangeNotifier {
         },
       );
 
-      final accessToken = res['access_token'] as String;
-      final refreshToken = res['refresh_token'] as String;
-      final userJson = res['user'] as Map<String, dynamic>;
+      final tokens = (res['tokens'] is Map<String, dynamic>) ? (res['tokens'] as Map<String, dynamic>) : res;
+      final accessToken = (tokens['access_token'] ?? res['access_token']) as String;
+      final refreshToken = (tokens['refresh_token'] ?? res['refresh_token']) as String;
+      final userJson = (res['user'] is Map<String, dynamic>) ? (res['user'] as Map<String, dynamic>) : res;
 
       await storage.setAccessToken(accessToken);
       await storage.setRefreshToken(refreshToken);
@@ -129,7 +131,7 @@ class AuthProvider extends ChangeNotifier {
       notifyListeners();
       return false;
     } catch (e) {
-      _errorMessage = 'Registration failed. Please check your details.';
+      _errorMessage = 'Registration failed: $e';
       _isLoading = false;
       notifyListeners();
       return false;
@@ -156,9 +158,10 @@ class AuthProvider extends ChangeNotifier {
         },
       );
 
-      final accessToken = res['access_token'] as String;
-      final refreshToken = res['refresh_token'] as String;
-      final userJson = res['user'] as Map<String, dynamic>;
+      final tokens = (res['tokens'] is Map<String, dynamic>) ? (res['tokens'] as Map<String, dynamic>) : res;
+      final accessToken = (tokens['access_token'] ?? res['access_token']) as String;
+      final refreshToken = (tokens['refresh_token'] ?? res['refresh_token']) as String;
+      final userJson = (res['user'] is Map<String, dynamic>) ? (res['user'] as Map<String, dynamic>) : res;
 
       await storage.setAccessToken(accessToken);
       await storage.setRefreshToken(refreshToken);
@@ -171,6 +174,11 @@ class AuthProvider extends ChangeNotifier {
       return true;
     } on ApiException catch (e) {
       _errorMessage = e.message;
+      _isLoading = false;
+      notifyListeners();
+      return false;
+    } catch (e) {
+      _errorMessage = 'Google sign-in failed: $e';
       _isLoading = false;
       notifyListeners();
       return false;
