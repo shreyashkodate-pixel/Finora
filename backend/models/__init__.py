@@ -47,6 +47,7 @@ from models.problem_change import (
     MajorIncident,
     MajorIncidentTimeline,
 )
+from models.autofix import AutoFixAction
 
 __all__ = [
     # Enums
@@ -97,5 +98,6 @@ __all__ = [
     "ChangeRequest",
     "MajorIncident",
     "MajorIncidentTimeline",
+    "AutoFixAction",
 ]
 

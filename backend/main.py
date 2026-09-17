@@ -18,6 +18,7 @@ from api.approvals.routes import router as approvals_router
 from api.problems.routes import router as problems_router
 from api.changes.routes import router as changes_router
 from api.major_incidents.routes import router as major_incidents_router
+from api.autofix.routes import router as autofix_router
 from scheduler import scheduler_manager
 
 
@@ -112,6 +113,7 @@ app.include_router(approvals_router, prefix="/api/v1")
 app.include_router(problems_router, prefix="/api/v1")
 app.include_router(changes_router, prefix="/api/v1")
 app.include_router(major_incidents_router, prefix="/api/v1")
+app.include_router(autofix_router, prefix="/api/v1")
 
 
 @app.get("/")
