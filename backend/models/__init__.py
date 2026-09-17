@@ -24,8 +24,9 @@ from models.enums import (
     AutoFixActionType,
 )
 from models.user import User, Team
-from models.case import Case, CaseRelationship
+from models.case import Case, CaseRelationship, CaseSequence
 from models.message import Message
+
 from models.attachment import Attachment
 from models.sla import SLA
 from models.ai import (
@@ -79,7 +80,9 @@ __all__ = [
     "Team",
     "Case",
     "CaseRelationship",
+    "CaseSequence",
     "Message",
+
     "Attachment",
     "SLA",
     "AITriageResult",

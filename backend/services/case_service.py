@@ -6,7 +6,7 @@ from sqlalchemy import select, func, desc, or_
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
-from models.case import Case, CaseRelationship
+from models.case import Case, CaseRelationship, CaseSequence
 from models.sla import SLA
 from models.message import Message
 from models.audit import AuditLog
@@ -82,31 +82,61 @@ class CaseService:
     async def _generate_reference_number(self, case_type: CaseType) -> str:
         """
         Generate sequential reference number: <TYPE>-<YEAR>-<sequential>
-        e.g. INC-2026-000001 per SRS §4.2.
+        e.g. INC-2026-000001 per SRS §4.2 using pessimistic row locking.
         """
         prefix = TYPE_PREFIXES.get(case_type, "INC")
         year = datetime.now(timezone.utc).year
-        pattern = f"{prefix}-{year}-%"
 
-        stmt = (
-            select(Case.reference_number)
-            .where(Case.reference_number.like(pattern))
-            .order_by(desc(Case.reference_number))
-            .limit(1)
-        )
-        result = await self.db.execute(stmt)
-        latest_ref = result.scalar_one_or_none()
+        # 1. Fetch sequence row with row-level lock (with_for_update)
+        try:
+            seq_stmt = (
+                select(CaseSequence)
+                .where(CaseSequence.year == year, CaseSequence.case_type == prefix)
+                .with_for_update()
+            )
+            seq_res = await self.db.execute(seq_stmt)
+            seq = seq_res.scalar_one_or_none()
+        except Exception:
+            # Fallback for dialects that don't support row-level locks
+            seq_stmt = (
+                select(CaseSequence)
+                .where(CaseSequence.year == year, CaseSequence.case_type == prefix)
+            )
+            seq_res = await self.db.execute(seq_stmt)
+            seq = seq_res.scalar_one_or_none()
 
-        if latest_ref:
-            try:
-                seq_part = latest_ref.split("-")[-1]
-                next_seq = int(seq_part) + 1
-            except (ValueError, IndexError):
-                next_seq = 1
+        if not seq:
+            # Determine existing highest sequence number
+            pattern = f"{prefix}-{year}-%"
+            max_stmt = (
+                select(Case.reference_number)
+                .where(Case.reference_number.like(pattern))
+                .order_by(desc(Case.reference_number))
+                .limit(1)
+            )
+            max_res = await self.db.execute(max_stmt)
+            latest_ref = max_res.scalar_one_or_none()
+            initial_val = 0
+            if latest_ref:
+                try:
+                    initial_val = int(latest_ref.split("-")[-1])
+                except (ValueError, IndexError):
+                    initial_val = 0
+
+            next_val = initial_val + 1
+            seq = CaseSequence(
+                year=year,
+                case_type=prefix,
+                last_value=next_val,
+            )
+            self.db.add(seq)
         else:
-            next_seq = 1
+            seq.last_value += 1
+            next_val = seq.last_value
 
-        return f"{prefix}-{year}-{next_seq:06d}"
+        await self.db.flush()
+        return f"{prefix}-{year}-{next_val:06d}"
+
 
     def _calculate_sla(self, priority: CasePriority, created_at: datetime) -> Tuple[datetime, datetime]:
         """Compute 24/7 elapsed wall-clock UTC SLA targets per SRS §4.3."""

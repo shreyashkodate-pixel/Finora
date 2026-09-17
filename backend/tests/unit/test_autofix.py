@@ -56,10 +56,11 @@ async def test_autofix_propose_and_whitelist_validation(async_client: AsyncClien
         f"/api/v1/autofix/propose/{case.id}",
         json={
             "action_type": "service_restart",
-            "parameters": {"service_name": "redis"},
+            "parameters": {"service_name": "nginx"},
         },
         headers={"Authorization": f"Bearer {op_token}"},
     )
+
     assert resp.status_code == 201
     data = resp.json()
     assert data["status"] == "pending"

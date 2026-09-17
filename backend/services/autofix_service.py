@@ -16,8 +16,9 @@ from models.user import User
 from schemas.autofix import AutoFixProposeRequest, AutoFixExecuteRequest
 
 # Whitelisted action policies
-ALLOWED_SERVICES = {"nginx", "postgresql", "redis", "finora-worker", "docker"}
+ALLOWED_SERVICES = {"nginx", "postgresql", "apache", "finora-worker", "docker"}
 MAX_EXECUTION_TIMEOUT_SECONDS = 30
+
 
 
 class AutoFixService:
@@ -133,7 +134,8 @@ class AutoFixService:
                     user = action.parameters.get("username")
                     action.execution_output = f"LDAP Directory account '{user}' unlocked successfully. Failed attempt counter reset to 0."
                 elif action.action_type == AutoFixActionType.CACHE_CLEAR:
-                    action.execution_output = "Redis key namespace invalidated successfully. 128 MB cache reclaimed."
+                    action.execution_output = "Application cache namespace invalidated successfully. 128 MB cache reclaimed."
+
 
                 action.status = AutoFixStatus.SUCCESS
 

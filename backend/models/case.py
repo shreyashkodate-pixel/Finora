@@ -132,3 +132,23 @@ class CaseRelationship(Base):
     # Relationships
     case = relationship("Case", foreign_keys=[case_id])
     related_case = relationship("Case", foreign_keys=[related_case_id])
+
+
+class CaseSequence(Base):
+    """
+    Sequence counter for deterministic, non-colliding reference numbers per year and case type.
+    Uses pessimistic row-level locking (SELECT ... FOR UPDATE) to prevent race conditions.
+    """
+    __tablename__ = "case_sequences"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    year = Column(Integer, nullable=False, index=True)
+    case_type = Column(String(32), nullable=False, index=True)
+    last_value = Column(Integer, default=0, nullable=False)
+    updated_at = Column(
+        DateTime(timezone=True),
+        server_default=func.now(),
+        onupdate=func.now(),
+        nullable=False,
+    )
+
