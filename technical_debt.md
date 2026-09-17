@@ -1,8 +1,8 @@
 # AI IT Helpdesk — Technical Debt & Future Roadmap
 
 **Document Purpose**: Tracks architectural technical debt, known operational limits, and future roadmap milestones for the **AI IT Helpdesk**.  
-**Current Status**: Branches 1–6 Completed and Verified (47/47 Passing Tests).  
-**Target Next Milestone**: Branch 7 — Gemini AI Integration (Triage, Summary, Risk, Drafts) (`feature/gemini-ai-integration`).  
+**Current Status**: Branches 1–7 Completed and Verified (57/57 Passing Tests).  
+**Target Next Milestone**: Branch 8 — Periodic SLA & Risk Sweep Engine (`feature/periodic-sweep-engine`).  
 **Last Updated**: September 17, 2026
 
 ---
@@ -69,11 +69,12 @@
     ├── Production Brevo HTTP API provider (Render outbound-SMTP bypass)
     └── Event triggers (Case created, assigned, SLA warning/breach, resolved)
 
-[ ] Branch 7: Gemini AI Integration
-    ├── Inline Case Triage & Category/Priority Suggestion
-    ├── Living Case Summarization on new messages
-    ├── Proactive Risk Assessment Scoring
-    └── AI Communication Draft Assistant
+[x] Branch 7: Gemini AI Integration
+    ├── Inline Case Triage & Category/Priority Suggestion (Gemini 2.5 Flash)
+    ├── Continuous Living Case Summarization on new messages
+    ├── Proactive Risk Assessment & SLA signal scoring
+    ├── AI Communication Draft Assistant with Human-in-the-Loop review
+    └── Strict prompt-injection defenses (untrusted requester input)
 
 [ ] Branch 8: Periodic SLA & Risk Sweep Engine
     ├── In-process APScheduler background sweep (every 5 mins)
@@ -92,9 +93,9 @@
 
 ---
 
-## 3. Next Milestone (Branch 7) Implementation Priorities
+## 3. Next Milestone (Branch 8) Implementation Priorities
 
-1. **AI Provider Abstraction (`providers/ai/`)**: Implement `AIProvider` base interface with `GeminiAIProvider` (using official `google-genai` SDK) and `MockAIProvider` for testing.
-2. **Structured Output & Confidence Scoring**: Enforce strict JSON schema validation and ConfidenceLevel enum (Low/Moderate/High per SRS §5.13) for triage suggestions.
-3. **Living Case Summarization**: Build incremental summarization service triggered by message additions per SRS §5.3.
-4. **AI Communication Drafting**: Implement human-in-the-loop draft generation (info request, progress update, resolution, escalation summary) per SRS §5.9.
+1. **APScheduler Background Engine (`core/scheduler.py`)**: Configure in-process `AsyncIOScheduler` executing the periodic sweep every 5 minutes per SRS §3.5.
+2. **Automated SLA Warning & Breach Detection**: Query cases approaching response/resolution deadlines (configurable 20% remaining target window) or already breached; dispatch alerts via `NotificationService`.
+3. **Escalation Engine (SRS §5.8)**: Raise `EscalationEvent` records when SLA deadline is breached, risk level is High/Critical, or case reopened multiple times. Route first to Team Lead, then escalate to Manager if unacknowledged within 2 hours.
+4. **Render Spin-Down Mitigation**: Integrate periodic self-health pinger to prevent Render free-tier instance inactivity spin-downs per SRS §3.1.

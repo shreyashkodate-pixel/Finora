@@ -3,7 +3,7 @@
 **Document Purpose**: Official development progress, completed milestones, architectural decisions, and verification records for the **AI IT Helpdesk** (FastAPI + PostgreSQL + Gemini AI + Flutter Multiplatform).  
 **Current Release Target**: Phase 1 Foundation & Core Workflows per PRD & SRS v3.3.  
 **Last Updated**: September 17, 2026  
-**Status**: Branches 1, 2, 3, 4, 5, and 6 Completed, 100% Passing Tests (47/47).
+**Status**: Branches 1, 2, 3, 4, 5, 6, and 7 Completed, 100% Passing Tests (57/57).
 
 ---
 
@@ -19,6 +19,7 @@ The AI IT Helpdesk is a production-grade enterprise service desk platform featur
 * **Deterministic Concurrency & Auditability**: Optimistic locking (`version` integer) on mutating case operations (`409 STALE_VERSION` on collision); immutable append-only `AuditLog` records.
 * **24/7 Elapsed SLA Engine**: Wall-clock UTC elapsed time math without complex holiday/business-hour dependencies (P1: 15m/4h, P2: 1h/8h, P3: 4h/72h, P4: 24h/120h).
 * **Secure Evidence Storage**: Magic-bytes validation (jpg, png, webp, gif, pdf, docx, txt, log), 10MB file / 50MB case limits, server-generated UUID paths, and presigned access URLs.
+* **Human-in-the-Loop AI Assistant**: Advisory-only triage categorization, continuous living summarization, escalation risk detection, and communication drafting powered by `gemini-2.5-flash` with prompt-injection defenses.
 
 ---
 
@@ -41,6 +42,8 @@ The AI IT Helpdesk is a production-grade enterprise service desk platform featur
 | `3733318` | `feature/file-upload-api` | `feat(attachments)`: implement file upload api, magic-bytes validation, and storage providers |
 | `3553af0` | `dev` | `feat`: merge branch 'feature/file-upload-api' into dev |
 | `77158d0` | `feature/notifications-api` | `feat(notifications)`: implement in-app alerts, email providers, and lifecycle hooks |
+| `7fc0b9b` | `feature/notifications-api` | `docs`: update progress.md and technical_debt.md for branch 6 completion |
+| `dec759e` | `feature/gemini-ai-integration` | `feat(ai)`: integrate Gemini 2.5 Flash for triage, living summaries, risk, and drafts |
 
 ```
 [x] Branch 1: Project Scaffolding & Shared Infrastructure
@@ -49,7 +52,7 @@ The AI IT Helpdesk is a production-grade enterprise service desk platform featur
 [x] Branch 4: Case Lifecycle, State Machine, SLA & Audit API
 [x] Branch 5: Evidence & File Uploads via Supabase Storage
 [x] Branch 6: In-App & Email Notifications (Gmail SMTP / Brevo HTTP)
-[ ] Branch 7: Gemini AI Integration (Triage, Summary, Risk, Drafts)
+[x] Branch 7: Gemini AI Integration (Triage, Summary, Risk, Drafts)
 [ ] Branch 8: Periodic SLA & Risk Sweep Engine (APScheduler)
 [ ] Branch 9: Knowledge Base & Approval Workflows
 [ ] Branch 10: Flutter Client Authentication & Navigation
@@ -165,6 +168,34 @@ The AI IT Helpdesk is a production-grade enterprise service desk platform featur
   * `PATCH /api/v1/notifications/{id}/read`: Mark individual alert as read.
   * `POST /api/v1/notifications/mark-all-read`: Bulk mark all alerts read for current user.
 
+### Branch 7 — Gemini AI Integration (Triage, Summary, Risk, Drafts)
+* **AI Provider Abstraction (`providers/ai/`)**:
+  * `AIProvider` abstract base class defining `triage_case`, `summarize_case`, `assess_risk`, and `draft_communication`.
+  * `GeminiAIProvider`: Integration using official `google-genai` SDK and stable `gemini-2.5-flash` model with system prompt injection defenses per SRS §5.15 and structured JSON output.
+  * `MockAIProvider`: Deterministic heuristic provider for offline execution and fast, zero-network unit testing.
+  * Dynamic provider factory `get_ai_provider()` with configurable `GEMINI_MODEL` and timeout guards.
+* **Confidence Scoring & Prompt-Injection Safeguards (SRS §5.13, §5.15)**:
+  * Map raw numeric confidence float to user-facing `ConfidenceLevel` enum: Low (`0.00–0.49`), Moderate (`0.50–0.79`), High (`0.80–1.00`).
+  * Explicit system directives treating requester inputs as untrusted data, ignoring embedded instructions.
+* **Service Layer (`services/ai_service.py`)**:
+  * `triage_case`: Automatic categorization, priority recommendation, missing info detection, candidate duplicate lookup via trigram search, and smart team routing.
+  * `apply_triage_recommendations`: Human-in-the-loop explicit confirmation updating case priority, recalculating SLA targets, and logging `AuditLog`.
+  * `summarize_case`: Synchronous-on-write living case summary recomputed inline on new messages.
+  * `assess_case_risk`: Periodic/on-demand signal calculation (inactivity hours, hours to SLA deadline, follow-ups).
+  * `generate_draft`: Communication assistant generating Info Requests, Progress Updates, Resolutions, and Escalation Summaries.
+  * `send_draft`: Human-in-the-loop sending that marks draft `SENT` and persists a `Message` visibly tagged with `ai_generated = True`.
+* **REST Endpoints (`api/ai/routes.py`)**:
+  * `GET /api/v1/cases/{id}/triage`: Inspect triage recommendations.
+  * `POST /api/v1/cases/{id}/triage`: Re-evaluate triage on demand.
+  * `POST /api/v1/cases/{id}/triage/apply`: Operator explicitly accepts recommendations.
+  * `GET /api/v1/cases/{id}/summary`: Retrieve continuous living summary.
+  * `POST /api/v1/cases/{id}/summary/refresh`: Force living summary update.
+  * `POST /api/v1/cases/{id}/risk`: Evaluate SLA breach risk signals.
+  * `POST /api/v1/cases/{id}/drafts`: Generate communication draft.
+  * `GET /api/v1/cases/{id}/drafts`: List drafts.
+  * `POST /api/v1/cases/{id}/drafts/{draft_id}/send`: Review and send draft as AI-labeled message.
+  * `DELETE /api/v1/cases/{id}/drafts/{draft_id}`: Discard draft.
+
 ---
 
 ## 4. Test Suite & Build Verification
@@ -175,20 +206,16 @@ The test suite runs with `pytest` and `pytest-asyncio` using an in-memory SQLite
 ============================= test session starts ==============================
 platform darwin -- Python 3.14.4, pytest-9.1.1, pluggy-1.6.0 -- backend/.venv/bin/python3.14
 rootdir: backend, configfile: pytest.ini
-collected 47 items
+collected 57 items
 
-tests/unit/test_attachments.py .........                                 [ 19%]
-tests/unit/test_auth.py ...........                                      [ 42%]
-tests/unit/test_cases.py ............                                    [ 68%]
-tests/unit/test_health.py ..                                             [ 72%]
-tests/unit/test_models.py .......                                        [ 87%]
-tests/unit/test_notifications.py::test_case_created_dispatches_notification_and_email PASSED [ 89%]
-tests/unit/test_notifications.py::test_case_assigned_dispatches_notification PASSED [ 91%]
-tests/unit/test_notifications.py::test_message_visibility_and_notification_masking PASSED [ 93%]
-tests/unit/test_notifications.py::test_case_resolution_and_reopen_notifications PASSED [ 95%]
-tests/unit/test_notifications.py::test_in_app_notification_management_endpoints PASSED [ 97%]
-tests/unit/test_notifications.py::test_email_delivery_failure_resilience PASSED [100%]
+tests/unit/test_ai.py ..........                                         [ 17%]
+tests/unit/test_attachments.py .........                                 [ 33%]
+tests/unit/test_auth.py ...........                                      [ 52%]
+tests/unit/test_cases.py ............                                    [ 73%]
+tests/unit/test_health.py ..                                             [ 77%]
+tests/unit/test_models.py .......                                        [ 89%]
+tests/unit/test_notifications.py ......                                  [100%]
 
-======================== 47 passed, 1 warning in 3.74s =========================
+======================== 57 passed, 2 warnings in 4.42s =========================
 ```
 
