@@ -12,13 +12,21 @@ from api.cases.routes import router as cases_router
 from api.attachments.routes import router as attachments_router
 from api.notifications.routes import router as notifications_router
 from api.ai.routes import router as ai_router
+from api.escalations.routes import router as escalations_router
+from scheduler import scheduler_manager
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     # Validate startup configuration per SRS §3.3
     settings.validate_startup()
-    yield
+    # Start background Sweep scheduler per SRS §3.5
+    scheduler_manager.start()
+    try:
+        yield
+    finally:
+        # Graceful scheduler shutdown
+        scheduler_manager.shutdown()
 
 
 app = FastAPI(
@@ -93,6 +101,7 @@ app.include_router(cases_router, prefix="/api/v1")
 app.include_router(attachments_router, prefix="/api/v1")
 app.include_router(notifications_router, prefix="/api/v1")
 app.include_router(ai_router, prefix="/api/v1")
+app.include_router(escalations_router, prefix="/api/v1")
 
 
 @app.get("/")

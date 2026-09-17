@@ -9,6 +9,7 @@ from models.case import Case
 from models.user import User
 from models.message import Message
 from models.notification import Notification
+from models.ai import EscalationEvent
 from models.enums import NotificationEventType, MessageVisibility
 from providers.notifications.base import NotificationProvider
 from providers.notifications import get_notification_provider
@@ -202,6 +203,78 @@ class NotificationService:
             title=title,
             message=body,
             event_type=NotificationEventType.CASE_REOPENED,
+            reference_number=case.reference_number,
+        )
+
+    async def notify_sla_warning(
+        self,
+        case: Case,
+        target_user: User,
+        deadline_type: str,
+        time_remaining_str: str,
+    ) -> Optional[Notification]:
+        """Dispatch SLA warning alert when within 20% of target window per SRS §5.10."""
+        title = f"SLA Warning: {case.reference_number}"
+        body = (
+            f"Case {case.reference_number} ('{case.title}') is approaching its {deadline_type} deadline.\n\n"
+            f"Estimated time remaining: {time_remaining_str}.\n"
+            f"Please prioritize this ticket to avoid an SLA breach."
+        )
+        return await self._create_and_send(
+            user_id=target_user.id,
+            to_email=target_user.email,
+            case_id=case.id,
+            title=title,
+            message=body,
+            event_type=NotificationEventType.SLA_WARNING,
+            reference_number=case.reference_number,
+        )
+
+    async def notify_sla_breach(
+        self,
+        case: Case,
+        target_user: User,
+        breach_type: str,
+    ) -> Optional[Notification]:
+        """Dispatch SLA breach notification when a deadline is missed per SRS §4.3 & §5.10."""
+        title = f"SLA BREACH: {case.reference_number}"
+        body = (
+            f"ATTENTION: Case {case.reference_number} ('{case.title}') has breached its {breach_type} SLA target.\n\n"
+            f"Current status: {case.status.value}\n"
+            f"Priority: {case.priority.value.upper()}\n\n"
+            f"Immediate intervention is required."
+        )
+        return await self._create_and_send(
+            user_id=target_user.id,
+            to_email=target_user.email,
+            case_id=case.id,
+            title=title,
+            message=body,
+            event_type=NotificationEventType.SLA_BREACH,
+            reference_number=case.reference_number,
+        )
+
+    async def notify_escalation_raised(
+        self,
+        case: Case,
+        escalation: EscalationEvent,
+        target_user: User,
+    ) -> Optional[Notification]:
+        """Dispatch notification when an escalation is raised per SRS §5.8 & §5.10."""
+        title = f"Escalation Raised: {case.reference_number}"
+        body = (
+            f"Case {case.reference_number} ('{case.title}') has been escalated to {escalation.escalated_to_role or 'Staff'}.\n\n"
+            f"Trigger Reason: {escalation.trigger_reason.value}\n"
+            f"Escalated By: {escalation.escalated_by}\n\n"
+            f"Please review and acknowledge this escalation on the dashboard."
+        )
+        return await self._create_and_send(
+            user_id=target_user.id,
+            to_email=target_user.email,
+            case_id=case.id,
+            title=title,
+            message=body,
+            event_type=NotificationEventType.ESCALATION_RAISED,
             reference_number=case.reference_number,
         )
 

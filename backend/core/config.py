@@ -51,7 +51,11 @@ class Settings(BaseSettings):
     EMAIL_SENDER_NAME: str = Field(default="AI IT Helpdesk")
 
     # Scheduler (The Sweep)
+    ENABLE_SCHEDULER: bool = Field(default=True)
     SWEEP_INTERVAL_MINUTES: int = Field(default=5)
+    ESCALATION_UNACKNOWLEDGED_HOURS: int = Field(default=2)
+    ENABLE_KEEPALIVE_PING: bool = Field(default=False)
+    KEEPALIVE_PING_INTERVAL_MINUTES: int = Field(default=10)
 
     # Client Configuration
     API_BASE_URL: str = Field(default="http://localhost:8000/api/v1")
