@@ -180,6 +180,14 @@ class CaseService:
         await notif_service.notify_case_created(case, current_user)
 
         await self.db.commit()
+
+        # Non-blocking automatic AI Triage per SRS §5.2
+        try:
+            from services import ai_service
+            await ai_service.triage_case(self.db, case.id)
+        except Exception as e:
+            logger.warning(f"Inline AI triage failed or deferred for case {case.id}: {e}")
+
         return await self._reload_case(case.id)
 
     async def get_case_by_id(
@@ -596,6 +604,14 @@ class CaseService:
 
         await self.db.commit()
         await self.db.refresh(message)
+
+        # Synchronous-on-write living case summary update per SRS §5.3
+        try:
+            from services import ai_service
+            await ai_service.summarize_case(self.db, case_id=case.id, new_message_id=message.id)
+        except Exception as e:
+            logger.warning(f"Inline living summary update failed for case {case.id}: {e}")
+
         return message
 
     async def list_messages(

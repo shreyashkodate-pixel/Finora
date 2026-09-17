@@ -11,6 +11,7 @@ from api.auth.routes import router as auth_router
 from api.cases.routes import router as cases_router
 from api.attachments.routes import router as attachments_router
 from api.notifications.routes import router as notifications_router
+from api.ai.routes import router as ai_router
 
 
 @asynccontextmanager
@@ -91,6 +92,7 @@ app.include_router(auth_router, prefix="/api/v1")
 app.include_router(cases_router, prefix="/api/v1")
 app.include_router(attachments_router, prefix="/api/v1")
 app.include_router(notifications_router, prefix="/api/v1")
+app.include_router(ai_router, prefix="/api/v1")
 
 
 @app.get("/")

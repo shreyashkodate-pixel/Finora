@@ -30,7 +30,8 @@ class Settings(BaseSettings):
 
     # AI Provider (Gemini)
     GEMINI_API_KEY: str = Field(default="")
-    GEMINI_MODEL: str = Field(default="gemini-1.5-flash")
+    GEMINI_MODEL: str = Field(default="gemini-2.5-flash")
+    GEMINI_TIMEOUT_SECONDS: int = Field(default=15)
 
     # Cloud Storage (Supabase Storage)
     SUPABASE_URL: str = Field(default="")
