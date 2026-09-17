@@ -61,6 +61,12 @@ class Case(Base):
         nullable=True,
         index=True,
     )
+    organization_id = Column(
+        UUID(as_uuid=True),
+        ForeignKey("organizations.id", ondelete="CASCADE"),
+        nullable=True,
+        index=True,
+    )
     site = Column(String(100), nullable=True)
     service_id = Column(String(100), nullable=True)
 

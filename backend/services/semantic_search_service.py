@@ -209,7 +209,7 @@ class SemanticSearchService:
             user_id=current_user.id,
             query_text=query,
             answer_text=answer,
-            citations=[c.dict() for c in citations],
+            citations=[c.model_dump() for c in citations],
             confidence_score=confidence,
         )
         db.add(log_entry)

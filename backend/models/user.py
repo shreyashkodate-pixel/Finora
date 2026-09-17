@@ -29,6 +29,12 @@ class Team(Base):
         ForeignKey("users.id", ondelete="SET NULL", use_alter=True, name="fk_teams_lead_id"),
         nullable=True,
     )
+    organization_id = Column(
+        UUID(as_uuid=True),
+        ForeignKey("organizations.id", ondelete="CASCADE"),
+        nullable=True,
+        index=True,
+    )
     created_at = Column(
         DateTime(timezone=True),
         server_default=func.now(),
@@ -65,6 +71,12 @@ class User(Base):
     team_id = Column(
         UUID(as_uuid=True),
         ForeignKey("teams.id", ondelete="SET NULL"),
+        nullable=True,
+        index=True,
+    )
+    organization_id = Column(
+        UUID(as_uuid=True),
+        ForeignKey("organizations.id", ondelete="CASCADE"),
         nullable=True,
         index=True,
     )
