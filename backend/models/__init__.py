@@ -16,6 +16,12 @@ from models.enums import (
     ApprovalDecision,
     KnowledgeState,
     NotificationEventType,
+    ProblemStatus,
+    ChangeType,
+    ChangeStatus,
+    MajorIncidentStatus,
+    AutoFixStatus,
+    AutoFixActionType,
 )
 from models.user import User, Team
 from models.case import Case, CaseRelationship
@@ -33,6 +39,14 @@ from models.audit import AuditLog
 from models.knowledge import KnowledgeArticle, Approval
 from models.auth import RefreshToken
 from models.notification import Notification
+from models.problem_change import (
+    Problem,
+    ProblemCaseLink,
+    KnownError,
+    ChangeRequest,
+    MajorIncident,
+    MajorIncidentTimeline,
+)
 
 __all__ = [
     # Enums
@@ -53,6 +67,12 @@ __all__ = [
     "ApprovalDecision",
     "KnowledgeState",
     "NotificationEventType",
+    "ProblemStatus",
+    "ChangeType",
+    "ChangeStatus",
+    "MajorIncidentStatus",
+    "AutoFixStatus",
+    "AutoFixActionType",
     # Core Models
     "User",
     "Team",
@@ -71,4 +91,11 @@ __all__ = [
     "Approval",
     "RefreshToken",
     "Notification",
+    "Problem",
+    "ProblemCaseLink",
+    "KnownError",
+    "ChangeRequest",
+    "MajorIncident",
+    "MajorIncidentTimeline",
 ]
+

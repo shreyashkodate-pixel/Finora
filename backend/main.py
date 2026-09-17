@@ -15,6 +15,9 @@ from api.ai.routes import router as ai_router
 from api.escalations.routes import router as escalations_router
 from api.knowledge.routes import router as knowledge_router
 from api.approvals.routes import router as approvals_router
+from api.problems.routes import router as problems_router
+from api.changes.routes import router as changes_router
+from api.major_incidents.routes import router as major_incidents_router
 from scheduler import scheduler_manager
 
 
@@ -106,6 +109,9 @@ app.include_router(ai_router, prefix="/api/v1")
 app.include_router(escalations_router, prefix="/api/v1")
 app.include_router(knowledge_router, prefix="/api/v1")
 app.include_router(approvals_router, prefix="/api/v1")
+app.include_router(problems_router, prefix="/api/v1")
+app.include_router(changes_router, prefix="/api/v1")
+app.include_router(major_incidents_router, prefix="/api/v1")
 
 
 @app.get("/")

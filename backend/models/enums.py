@@ -118,4 +118,55 @@ class NotificationEventType(str, Enum):
     SLA_WARNING = "sla_warning"
     SLA_BREACH = "sla_breach"
     ESCALATION_RAISED = "escalation_raised"
+    MAJOR_INCIDENT_DECLARED = "major_incident_declared"
+    CHANGE_APPROVAL_REQUIRED = "change_approval_required"
+
+
+class ProblemStatus(str, Enum):
+    OPEN = "open"
+    INVESTIGATING = "investigating"
+    KNOWN_ERROR = "known_error"
+    RESOLVED = "resolved"
+    CLOSED = "closed"
+
+
+class ChangeType(str, Enum):
+    STANDARD = "standard"
+    NORMAL = "normal"
+    EMERGENCY = "emergency"
+
+
+class ChangeStatus(str, Enum):
+    DRAFT = "draft"
+    PENDING_CAB = "pending_cab"
+    APPROVED = "approved"
+    REJECTED = "rejected"
+    SCHEDULED = "scheduled"
+    IMPLEMENTING = "implementing"
+    COMPLETED = "completed"
+    FAILED = "failed"
+    ROLLBACK = "rollback"
+
+
+class MajorIncidentStatus(str, Enum):
+    DECLARED = "declared"
+    ACTIVE = "active"
+    MITIGATED = "mitigated"
+    RESOLVED = "resolved"
+    POST_MORTEM = "post_mortem"
+
+
+class AutoFixStatus(str, Enum):
+    PENDING = "pending"
+    RUNNING = "running"
+    SUCCESS = "success"
+    FAILED = "failed"
+    ROLLED_BACK = "rolled_back"
+
+
+class AutoFixActionType(str, Enum):
+    SERVICE_RESTART = "service_restart"
+    DNS_FLUSH = "dns_flush"
+    ACCOUNT_UNLOCK = "account_unlock"
+    CACHE_CLEAR = "cache_clear"
 
