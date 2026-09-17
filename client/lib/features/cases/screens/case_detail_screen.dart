@@ -11,7 +11,9 @@ import '../../ai/widgets/living_summary_card.dart';
 import '../../ai/widgets/sla_risk_card.dart';
 import '../../approvals/providers/approval_provider.dart';
 import '../../approvals/widgets/approval_panel_widget.dart';
+import '../../autofix/widgets/autofix_panel_widget.dart';
 import '../../auth/providers/auth_provider.dart';
+
 import '../models/case_model.dart';
 import '../providers/case_provider.dart';
 import '../widgets/attachment_list_widget.dart';
@@ -395,9 +397,13 @@ class _CaseDetailScreenState extends State<CaseDetailScreen> with SingleTickerPr
                   ),
                 ),
               ),
+              const SizedBox(height: 16),
+              if (context.watch<AuthProvider>().currentUser?.isStaff ?? false)
+                AutoFixPanelWidget(caseId: c.id),
             ],
           ),
         ),
+
 
         // Tab 3: Case Info & Evidence Attachments
         SingleChildScrollView(

@@ -2,10 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../features/ai/providers/ai_provider.dart';
 import '../features/approvals/providers/approval_provider.dart';
+import '../features/autofix/providers/autofix_provider.dart';
 import '../features/auth/providers/auth_provider.dart';
 import '../features/auth/screens/login_screen.dart';
 import '../features/cases/providers/case_provider.dart';
+import '../features/changes/providers/change_provider.dart';
 import '../features/knowledge/providers/knowledge_provider.dart';
+import '../features/major_incidents/providers/major_incident_provider.dart';
+import '../features/problems/providers/problem_provider.dart';
 import '../shared/api_client.dart';
 import '../shared/storage.dart';
 import '../shared/theme/app_theme.dart';
@@ -42,7 +46,20 @@ class AIHelpdeskApp extends StatelessWidget {
         ChangeNotifierProvider<KnowledgeProvider>(
           create: (_) => KnowledgeProvider(apiClient: apiClient),
         ),
+        ChangeNotifierProvider<ProblemProvider>(
+          create: (_) => ProblemProvider(apiClient: apiClient),
+        ),
+        ChangeNotifierProvider<ChangeProvider>(
+          create: (_) => ChangeProvider(apiClient: apiClient),
+        ),
+        ChangeNotifierProvider<MajorIncidentProvider>(
+          create: (_) => MajorIncidentProvider(apiClient: apiClient),
+        ),
+        ChangeNotifierProvider<AutoFixProvider>(
+          create: (_) => AutoFixProvider(apiClient: apiClient),
+        ),
       ],
+
       child: MaterialApp(
         title: 'AI IT Helpdesk',
         debugShowCheckedModeBanner: false,

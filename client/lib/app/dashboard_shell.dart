@@ -3,10 +3,13 @@ import 'package:provider/provider.dart';
 import '../features/approvals/screens/pending_approvals_screen.dart';
 import '../features/auth/providers/auth_provider.dart';
 import '../features/cases/screens/case_list_screen.dart';
+import '../features/changes/screens/change_management_screen.dart';
 import '../features/dashboard/screens/manager_insights_screen.dart';
 import '../features/dashboard/screens/operator_workspace_screen.dart';
 import '../features/dashboard/screens/requester_home_screen.dart';
 import '../features/knowledge/screens/knowledge_browser_screen.dart';
+import '../features/major_incidents/screens/major_incident_screen.dart';
+import '../features/problems/screens/problem_workspace_screen.dart';
 import '../shared/theme/colors.dart';
 import '../shared/widgets/responsive_scaffold.dart';
 
@@ -108,7 +111,7 @@ class _DashboardShellState extends State<DashboardShell> {
     final List<Widget> screens;
     final String title;
 
-    if (role == 'manager' || role == 'admin' || role == 'lead') {
+    if (role == 'manager' || role == 'admin' || role == 'administrator' || role == 'lead' || role == 'team_lead') {
       title = 'AI IT Helpdesk - Leadership Console';
       destinations = const [
         NavigationDestinationItem(
@@ -132,6 +135,21 @@ class _DashboardShellState extends State<DashboardShell> {
           label: 'Approvals',
         ),
         NavigationDestinationItem(
+          icon: Icons.fact_check_outlined,
+          selectedIcon: Icons.fact_check,
+          label: 'Problems',
+        ),
+        NavigationDestinationItem(
+          icon: Icons.published_with_changes_outlined,
+          selectedIcon: Icons.published_with_changes,
+          label: 'Changes',
+        ),
+        NavigationDestinationItem(
+          icon: Icons.warning_amber_outlined,
+          selectedIcon: Icons.warning,
+          label: 'Major Outages',
+        ),
+        NavigationDestinationItem(
           icon: Icons.menu_book_outlined,
           selectedIcon: Icons.menu_book,
           label: 'Knowledge',
@@ -142,9 +160,12 @@ class _DashboardShellState extends State<DashboardShell> {
         OperatorWorkspaceScreen(),
         CaseListScreen(),
         PendingApprovalsScreen(),
+        ProblemWorkspaceScreen(),
+        ChangeManagementScreen(),
+        MajorIncidentScreen(),
         KnowledgeBrowserScreen(),
       ];
-    } else if (role == 'level1' || role == 'level2') {
+    } else if (role == 'operator' || role == 'level1' || role == 'level2') {
       title = 'AI IT Helpdesk - Operator Console';
       destinations = const [
         NavigationDestinationItem(
@@ -158,6 +179,21 @@ class _DashboardShellState extends State<DashboardShell> {
           label: 'Tickets',
         ),
         NavigationDestinationItem(
+          icon: Icons.fact_check_outlined,
+          selectedIcon: Icons.fact_check,
+          label: 'Problems',
+        ),
+        NavigationDestinationItem(
+          icon: Icons.published_with_changes_outlined,
+          selectedIcon: Icons.published_with_changes,
+          label: 'Changes',
+        ),
+        NavigationDestinationItem(
+          icon: Icons.warning_amber_outlined,
+          selectedIcon: Icons.warning,
+          label: 'Major Outages',
+        ),
+        NavigationDestinationItem(
           icon: Icons.menu_book_outlined,
           selectedIcon: Icons.menu_book,
           label: 'Knowledge',
@@ -166,8 +202,12 @@ class _DashboardShellState extends State<DashboardShell> {
       screens = const [
         OperatorWorkspaceScreen(),
         CaseListScreen(),
+        ProblemWorkspaceScreen(),
+        ChangeManagementScreen(),
+        MajorIncidentScreen(),
         KnowledgeBrowserScreen(),
       ];
+
     } else {
       // Default: Requester Portal
       title = 'AI IT Helpdesk - Self-Service Portal';
