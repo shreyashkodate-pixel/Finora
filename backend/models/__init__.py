@@ -45,6 +45,7 @@ from models.audit import AuditLog
 from models.knowledge import KnowledgeArticle, Approval
 from models.auth import RefreshToken
 from models.notification import Notification
+from models.device_token import DeviceToken
 from models.problem_change import (
     Problem,
     ProblemCaseLink,
@@ -109,6 +110,7 @@ __all__ = [
     "Approval",
     "RefreshToken",
     "Notification",
+    "DeviceToken",
     "Problem",
     "ProblemCaseLink",
     "KnownError",

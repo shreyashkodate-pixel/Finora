@@ -25,6 +25,7 @@ from api.search.routes import router as search_router
 from api.alerts.routes import router as alerts_router
 from api.analytics.routes import router as analytics_router
 from api.organizations.routes import router as organizations_router
+from api.notifications.push_routes import router as push_router
 from scheduler import scheduler_manager
 
 
@@ -126,6 +127,7 @@ app.include_router(search_router, prefix="/api/v1")
 app.include_router(alerts_router, prefix="/api/v1")
 app.include_router(analytics_router, prefix="/api/v1")
 app.include_router(organizations_router, prefix="/api/v1")
+app.include_router(push_router, prefix="/api/v1")
 
 
 @app.get("/")
