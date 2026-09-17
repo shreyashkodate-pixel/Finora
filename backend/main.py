@@ -13,6 +13,8 @@ from api.attachments.routes import router as attachments_router
 from api.notifications.routes import router as notifications_router
 from api.ai.routes import router as ai_router
 from api.escalations.routes import router as escalations_router
+from api.knowledge.routes import router as knowledge_router
+from api.approvals.routes import router as approvals_router
 from scheduler import scheduler_manager
 
 
@@ -102,6 +104,8 @@ app.include_router(attachments_router, prefix="/api/v1")
 app.include_router(notifications_router, prefix="/api/v1")
 app.include_router(ai_router, prefix="/api/v1")
 app.include_router(escalations_router, prefix="/api/v1")
+app.include_router(knowledge_router, prefix="/api/v1")
+app.include_router(approvals_router, prefix="/api/v1")
 
 
 @app.get("/")
