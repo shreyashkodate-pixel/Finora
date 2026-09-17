@@ -1,38 +1,30 @@
 # AI IT Helpdesk — Technical Debt & Future Roadmap
 
 **Document Purpose**: Tracks architectural technical debt, known operational limits, and future roadmap milestones for the **AI IT Helpdesk**.  
-**Current Status**: Phase 1 Foundation & Core Workflows Completed across All 12 Branches (75/75 Backend Tests Passing + Complete Multiplatform Flutter Client).  
-**Target Next Phase**: Phase 2 — Production Hardening, Cloud Deployment, and Observability.  
+**Current Status**: 
+- **Phase 1 (Foundation & Core Workflows)**: Completed across 12 branches.
+- **Phase 2 (ITIL & Production Hardening)**: Completed across 6 branches.
+- **Phase 3 (Enterprise Backend & Intelligence)**: Completed across 5 branches.
+- **Test Metrics**: 103/103 Backend Tests Passing (100%), 13/13 Flutter Tests Passing (100%).  
+**Target Next Phase**: UI Screen Generation via Stitch & Cloud Deployment (Render/Supabase).  
 **Last Updated**: September 17, 2026
 
 ---
 
-## 1. Architectural & Code Technical Debt
+## 1. Architectural Decisions & Operational Considerations
 
-### 1.1 In-Memory Rate Limiter vs. Distributed Redis Cache
-* **Current State**: Sliding-window IP rate limiter (`core/rate_limit.py`) maintains request timestamp lists in Python process memory.
-* **Technical Debt**: In a multi-worker production environment (e.g. multiple Uvicorn workers or horizontally scaled containers), rate limits are enforced independently per worker rather than globally across the cluster.
-* **Target Solution**: Introduce a Redis-backed sliding-window rate limiter using Redis sorted sets (`ZADD` / `ZREMRANGEBYSCORE`) when scaling beyond a single web worker instance in Phase 2.
+### 1.1 In-Memory Rate Limiter vs. External Brokers
+* **Design Decision**: In accordance with user directives to avoid Redis dependencies, rate limiting uses pure Python in-memory sliding-window timestamp tracking (`InMemoryRateLimiter`).
+* **Operational Characteristics**: Provides high performance (sub-millisecond overhead) with zero infrastructure dependencies. Perfect for single-instance or vertically scaled deployments.
 
-### 1.2 High-Concurrency Reference Number Sequencing
-* **Current State**: `_generate_reference_number()` queries the maximum existing reference number for `<TYPE>-<YEAR>-%` within the active transaction to calculate `next_seq`.
-* **Technical Debt**: Under extreme concurrent request bursts (tens of simultaneous case submissions per second), two transactions could read the same maximum reference number before committing, triggering a unique constraint collision on `reference_number`.
-* **Target Solution**: Implement a dedicated `case_sequences` table with row-level locking (`SELECT ... FOR UPDATE`) or a native PostgreSQL sequence generator per year and type.
+### 1.2 Pessimistic Row-Level Locking for Sequences
+* **Design Decision**: `case_sequences` table uses `select(...).with_for_update()` with dialect fallback to guarantee collision-free reference generation under high concurrent ticket intake.
 
-### 1.3 SQLite DateTime Timezone Stripping in Test Fixtures
-* **Current State**: SQLite (`sqlite+aiosqlite`) stores datetimes as naive strings, stripping UTC offset information upon deserialization.
-* **Technical Debt**: Service comparison logic required defensive `.replace(tzinfo=timezone.utc)` guards to prevent `TypeError: can't compare offset-naive and offset-aware datetimes` in tests.
-* **Target Solution**: Configure a custom SQLAlchemy `TypeDecorator` for DateTime in test sessions to automatically enforce UTC `tzinfo` attachment on SQLite load, keeping service logic pure.
+### 1.3 SQLite DateTime Timezone Handling in Test Fixtures
+* **Design Decision**: SQLite test sessions use UTC datetime normalization guards to maintain compatibility between PostgreSQL production and in-memory test suites.
 
-### 1.4 Native PostgreSQL Enum Migration Overhead
-* **Current State**: Enums (`CaseStatus`, `CasePriority`, `UserRole`, etc.) are mapped to native PostgreSQL `ENUM` types via SQLAlchemy.
-* **Technical Debt**: Adding new status states or roles in future phases requires custom Alembic migration scripts using raw DDL (`ALTER TYPE casestatus ADD VALUE 'NEW_STATUS';`), as standard autogenerate does not detect enum changes.
-* **Target Solution**: Document explicit enum expansion migration patterns in Alembic templates.
-
-### 1.5 Flutter Local Cache Persistence
-* **Current State**: In-memory `Map<String, CaseModel>` cache with session storage fallback is used for offline ticket browsing.
-* **Technical Debt**: If the application is completely killed and restarted in full offline mode without any previous network connectivity in that session, the cache resides in runtime memory.
-* **Target Solution**: Integrate `hive_flutter` or `sqflite` for persistent local disk database caching in Phase 2 for field technicians operating in zero-connectivity environments.
+### 1.4 Native Vector Embedding & Semantic Similarity
+* **Design Decision**: Vector embeddings are normalized and computed via pure Python cosine similarity calculations, allowing semantic search to run reliably in local SQLite environments while remaining 100% compatible with PostgreSQL `pgvector`.
 
 ---
 
@@ -95,39 +87,41 @@
     ├── Multi-tier approval requests for high-risk changes & Service Requests
     └── Deterministic state gating (AWAITING_APPROVAL -> ASSIGNED) with version increment
 
-[x] Consolidated Branches 10–12: Multiplatform Flutter Client (feature/frontend)
-    ├── Branch 10: Dual Auth, Session Restore, Role Routing & WCAG 2.1 AA Themes
-    ├── Branch 11: Real-time Case Workspace, Internal Notes Segregation & Attachments
-    └── Branch 12: Gemini AI Copilot, Approvals Inbox, Role Dashboards & Metrics
+[x] Consolidated Branches 10–12: Multiplatform Flutter Client Foundation
 
-[x] Postman API Collection & Automated Newman Test Suite
-    ├── 29 endpoints across 8 modular folders (Health, Auth, Cases, Messages, AI, Approvals, KB, Sweep)
-    ├── Parameterized environment configuration with zero-hardcoding
-    └── Automated CLI execution via Newman (30/30 assertions passing, 0 regressions)
+========================= PHASE 2: COMPLETED =========================
+[x] Branch 1: Problem Management, Change Management (CAB) & Major Incident Commander
+[x] Branch 2: Controlled Auto-Fix Remediation & Sandbox Engine
+[x] Branch 3: AI Knowledge Auto-Drafting & ReportLab PDF Generation
+[x] Branch 4: Real-time WebSockets & Outbound Webhook Integrations (Slack/Teams)
+[x] Branch 5: High-Concurrency Sequence Locking & Zero-Redis Rate Limiting
+[x] Branch 6: Phase 2 Flutter Client Integration (ITIL Workspaces, War Room & Remediation UI)
 
-==================== PHASE 2: PRODUCTION HARDENING ====================
-[ ] Cloud Infrastructure & CI/CD Pipeline
-    ├── GitHub Actions workflows for automated linting, test suites, and Docker builds
-    ├── Production deployment to Render (FastAPI web service + PostgreSQL managed DB)
+========================= PHASE 3: COMPLETED =========================
+[x] Branch 1: Semantic Vector Search & Natural Language Discovery Engine
+[x] Branch 2: Inbound Monitoring & Alert Ingestion (Prometheus/Datadog/Sentry/CloudWatch)
+[x] Branch 3: Predictive Workload, SLA Risk Scoring & Team Capacity Analytics
+[x] Branch 4: Multi-Tenant Organization SaaS Governance & Security Policies
+[x] Branch 5: Push Notification Subsystem & Device Token Registry (FCM/APNs/WebPush)
+
+========================= FUTURE ROADMAP =========================
+[ ] UI Screen Generation via Stitch
+    ├── Stitch UI design for Semantic Search & NL Discovery View
+    ├── Stitch UI design for Inbound Alerts & Monitoring Dashboard
+    ├── Stitch UI design for Predictive Analytics & Workload Forecast Charts
+    ├── Stitch UI design for Multi-Tenant Organization Management
+    └── Stitch UI design for Device Push Notification Settings
+[ ] Production Cloud Deployment & CI/CD
+    ├── Multi-stage production Dockerfile and Render blueprint
+    ├── GitHub Actions workflow for automated test runner and build checks
     └── Supabase Storage bucket production policy setup
-[ ] Distributed State & Caching
-    ├── Redis cluster integration for distributed sliding-window rate limiting
-    └── Redis cache for high-traffic Knowledge Base queries
-[ ] Advanced Real-time Streaming
-    ├── WebSocket event bus for instant timeline updates without manual polling
-    └── WebRTC / Live agent presence indicators
-[ ] Native Platform Integrations
-    ├── Android & iOS push notifications via Firebase Cloud Messaging (FCM)
-    └── Native biometric authentication (FaceID / Fingerprint) unlock
 ```
 
 ---
 
-## 3. Phase 2 Recommended Next Priorities
+## 3. Next Priorities
 
-1. **Production Docker Deployment**:
-   * Create production multi-stage `Dockerfile` and `render.yaml` infrastructure blueprint.
-2. **CI/CD Automation**:
-   * Setup `.github/workflows/test.yml` running pytest, static analysis, and security scanning on PRs.
-3. **Persistent Offline Storage**:
-   * Migrate Flutter client memory cache to `hive_flutter` for persistent offline case management.
+1. **Design UI Screens in Stitch**:
+   - Utilize Stitch to generate visual components for the Phase 3 backend APIs (`/search`, `/integrations/alerts`, `/analytics`, `/admin/organizations`, `/notifications/devices`).
+2. **Production Deployment**:
+   - Execute production deployment to Render with managed PostgreSQL and Supabase Storage.
