@@ -23,6 +23,7 @@ from api.reports.routes import router as reports_router
 from api.ws.routes import router as ws_router
 from api.search.routes import router as search_router
 from api.alerts.routes import router as alerts_router
+from api.analytics.routes import router as analytics_router
 from scheduler import scheduler_manager
 
 
@@ -122,6 +123,7 @@ app.include_router(reports_router, prefix="/api/v1")
 app.include_router(ws_router, prefix="/api/v1")
 app.include_router(search_router, prefix="/api/v1")
 app.include_router(alerts_router, prefix="/api/v1")
+app.include_router(analytics_router, prefix="/api/v1")
 
 
 @app.get("/")
