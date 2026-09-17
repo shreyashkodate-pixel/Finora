@@ -3,7 +3,7 @@
 **Document Purpose**: Official development progress, completed milestones, architectural decisions, and verification records for the **AI IT Helpdesk** (FastAPI + PostgreSQL + Gemini AI + Flutter Multiplatform).  
 **Current Release Target**: Phase 1 Foundation & Core Workflows per PRD & SRS v3.3.  
 **Last Updated**: September 17, 2026  
-**Status**: Branches 1, 2, 3, 4, and 5 Completed, 100% Passing Tests (41/41).
+**Status**: Branches 1, 2, 3, 4, 5, and 6 Completed, 100% Passing Tests (47/47).
 
 ---
 
@@ -39,6 +39,8 @@ The AI IT Helpdesk is a production-grade enterprise service desk platform featur
 | `fbaecd3` | `dev` | `feat`: merge branch 'feature/case-lifecycle-api' into dev |
 | `033231b` | `dev` | `docs`: add progress.md and technical_debt.md tracking project status and roadmap |
 | `3733318` | `feature/file-upload-api` | `feat(attachments)`: implement file upload api, magic-bytes validation, and storage providers |
+| `3553af0` | `dev` | `feat`: merge branch 'feature/file-upload-api' into dev |
+| `77158d0` | `feature/notifications-api` | `feat(notifications)`: implement in-app alerts, email providers, and lifecycle hooks |
 
 ```
 [x] Branch 1: Project Scaffolding & Shared Infrastructure
@@ -46,7 +48,7 @@ The AI IT Helpdesk is a production-grade enterprise service desk platform featur
 [x] Branch 3: Dual-Path Authentication, Google OAuth, & RBAC Engine
 [x] Branch 4: Case Lifecycle, State Machine, SLA & Audit API
 [x] Branch 5: Evidence & File Uploads via Supabase Storage
-[ ] Branch 6: In-App & Email Notifications (Gmail SMTP / Brevo HTTP)
+[x] Branch 6: In-App & Email Notifications (Gmail SMTP / Brevo HTTP)
 [ ] Branch 7: Gemini AI Integration (Triage, Summary, Risk, Drafts)
 [ ] Branch 8: Periodic SLA & Risk Sweep Engine (APScheduler)
 [ ] Branch 9: Knowledge Base & Approval Workflows
@@ -144,6 +146,25 @@ The AI IT Helpdesk is a production-grade enterprise service desk platform featur
   * `GET /attachments/{attachment_id}/download`: Presigned download link generator with configurable TTL.
   * `DELETE /attachments/{attachment_id}`: Deletes file from storage and database.
 
+### Branch 6 — In-App & Email Notifications
+* **Notification Provider Abstraction (`providers/notifications/`)**:
+  * `NotificationProvider` abstract base class.
+  * `GmailSmtpNotificationProvider`: Local development email engine connecting to `smtp.gmail.com:587` with STARTTLS via asynchronous thread offloading.
+  * `BrevoNotificationProvider`: Staging and production transactional email engine utilizing Brevo's HTTPS REST API (`/v3/smtp/email`) over port 443, bypassing Render's outbound SMTP block.
+  * `MockNotificationProvider`: In-memory capture queue for test assertions and zero-network test suite execution.
+  * Dynamic provider factory `get_notification_provider()`.
+* **Database Model & Migration (`models/notification.py`, `0003_add_notifications.py`)**:
+  * `Notification` entity tracking `user_id`, `case_id`, `title`, `message`, `event_type`, `is_read`, and timestamps.
+  * `NotificationEventType` enum (`case_created`, `case_assigned`, `new_message`, `case_resolved`, `case_reopened`, `sla_warning`, `sla_breach`, `escalation_raised`).
+* **Service Layer & Lifecycle Event Hooks (`services/notification_service.py`, `services/case_service.py`)**:
+  * Event dispatchers for Case Created (intake confirmation with reference number), Case Assigned, New Message (with requester visibility gating), Case Resolved (with 7-day reopen details), and Case Reopened.
+  * Non-blocking execution guarantee per SRS §7.7/§7.14: Email dispatch failures are logged and caught safely without rolling back database transactions.
+* **REST Endpoints (`api/notifications/routes.py`)**:
+  * `GET /api/v1/notifications`: Paginated in-app alerts with optional `unread_only` filter.
+  * `GET /api/v1/notifications/unread-count`: Fast badge count lookup.
+  * `PATCH /api/v1/notifications/{id}/read`: Mark individual alert as read.
+  * `POST /api/v1/notifications/mark-all-read`: Bulk mark all alerts read for current user.
+
 ---
 
 ## 4. Test Suite & Build Verification
@@ -154,49 +175,20 @@ The test suite runs with `pytest` and `pytest-asyncio` using an in-memory SQLite
 ============================= test session starts ==============================
 platform darwin -- Python 3.14.4, pytest-9.1.1, pluggy-1.6.0 -- backend/.venv/bin/python3.14
 rootdir: backend, configfile: pytest.ini
-collected 41 items
+collected 47 items
 
-tests/unit/test_attachments.py::test_upload_valid_png_attachment PASSED     [  2%]
-tests/unit/test_attachments.py::test_upload_valid_pdf_and_docx PASSED      [  4%]
-tests/unit/test_attachments.py::test_reject_disallowed_extension PASSED    [  7%]
-tests/unit/test_attachments.py::test_reject_spoofed_extension PASSED       [  9%]
-tests/unit/test_attachments.py::test_reject_file_exceeding_10mb PASSED     [ 12%]
-tests/unit/test_attachments.py::test_case_quota_and_50mb_limit PASSED      [ 14%]
-tests/unit/test_attachments.py::test_requester_isolation_and_staff_access PASSED [ 17%]
-tests/unit/test_attachments.py::test_download_and_delete_attachment PASSED [ 19%]
-tests/unit/test_attachments.py::test_idempotent_attachment_upload PASSED   [ 21%]
-tests/unit/test_auth.py::test_password_registration_success PASSED          [ 24%]
-tests/unit/test_auth.py::test_password_registration_short_password_rejected PASSED [ 26%]
-tests/unit/test_auth.py::test_duplicate_registration_returns_409 PASSED     [ 29%]
-tests/unit/test_auth.py::test_password_login_success PASSED                 [ 31%]
-tests/unit/test_auth.py::test_password_login_wrong_password PASSED          [ 34%]
-tests/unit/test_auth.py::test_refresh_token_rotation PASSED                 [ 36%]
-tests/unit/test_auth.py::test_google_oauth_signup_and_account_collision PASSED [ 39%]
-tests/unit/test_auth.py::test_verify_email_flow PASSED                      [ 41%]
-tests/unit/test_auth.py::test_get_current_user_profile PASSED               [ 43%]
-tests/unit/test_auth.py::test_require_roles_enforcement PASSED              [ 46%]
-tests/unit/test_auth.py::test_unverified_email_blocked_in_production PASSED [ 48%]
-tests/unit/test_cases.py::test_create_case_and_reference_number PASSED      [ 51%]
-tests/unit/test_cases.py::test_sequential_reference_numbers PASSED          [ 53%]
-tests/unit/test_cases.py::test_list_cases_requester_isolation PASSED        [ 56%]
-tests/unit/test_cases.py::test_get_case_access_control PASSED               [ 58%]
-tests/unit/test_cases.py::test_optimistic_locking_collision PASSED          [ 60%]
-tests/unit/test_cases.py::test_case_state_transitions PASSED                [ 63%]
-tests/unit/test_cases.py::test_invalid_state_transition_rejected PASSED     [ 65%]
-tests/unit/test_cases.py::test_reopen_window_expired PASSED                 [ 68%]
-tests/unit/test_cases.py::test_message_visibility_filtering PASSED          [ 70%]
-tests/unit/test_cases.py::test_case_soft_delete PASSED                      [ 73%]
-tests/unit/test_cases.py::test_case_relationships PASSED                    [ 75%]
-tests/unit/test_cases.py::test_audit_logs_recorded PASSED                   [ 78%]
-tests/unit/test_health.py::test_health_check_returns_ok PASSED              [ 80%]
-tests/unit/test_health.py::test_root_endpoint PASSED                        [ 82%]
-tests/unit/test_models.py::test_user_model_defaults_and_oauth PASSED        [ 85%]
-tests/unit/test_models.py::test_case_model_defaults_and_optimistic_locking PASSED [ 87%]
-tests/unit/test_models.py::test_sla_model_24_7_fields PASSED                [ 90%]
-tests/unit/test_models.py::test_ai_triage_result_confidence_level PASSED    [ 92%]
-tests/unit/test_models.py::test_case_risk_assessment_signals PASSED         [ 95%]
-tests/unit/test_models.py::test_audit_log_system_actor_nullable PASSED      [ 97%]
-tests/unit/test_message_visibility_control PASSED                           [100%]
+tests/unit/test_attachments.py .........                                 [ 19%]
+tests/unit/test_auth.py ...........                                      [ 42%]
+tests/unit/test_cases.py ............                                    [ 68%]
+tests/unit/test_health.py ..                                             [ 72%]
+tests/unit/test_models.py .......                                        [ 87%]
+tests/unit/test_notifications.py::test_case_created_dispatches_notification_and_email PASSED [ 89%]
+tests/unit/test_notifications.py::test_case_assigned_dispatches_notification PASSED [ 91%]
+tests/unit/test_notifications.py::test_message_visibility_and_notification_masking PASSED [ 93%]
+tests/unit/test_notifications.py::test_case_resolution_and_reopen_notifications PASSED [ 95%]
+tests/unit/test_notifications.py::test_in_app_notification_management_endpoints PASSED [ 97%]
+tests/unit/test_notifications.py::test_email_delivery_failure_resilience PASSED [100%]
 
-======================== 41 passed, 1 warning in 2.78s =========================
+======================== 47 passed, 1 warning in 3.74s =========================
 ```
+

@@ -1,8 +1,8 @@
 # AI IT Helpdesk — Technical Debt & Future Roadmap
 
 **Document Purpose**: Tracks architectural technical debt, known operational limits, and future roadmap milestones for the **AI IT Helpdesk**.  
-**Current Status**: Branches 1–5 Completed and Verified (41/41 Passing Tests).  
-**Target Next Milestone**: Branch 6 — In-App & Email Notifications via Gmail SMTP / Brevo HTTP (`feature/notifications-api`).  
+**Current Status**: Branches 1–6 Completed and Verified (47/47 Passing Tests).  
+**Target Next Milestone**: Branch 7 — Gemini AI Integration (Triage, Summary, Risk, Drafts) (`feature/gemini-ai-integration`).  
 **Last Updated**: September 17, 2026
 
 ---
@@ -64,7 +64,7 @@
     ├── Server-generated UUID storage filenames
     └── Supabase Storage bucket integration with presigned URLs
 
-[ ] Branch 6: Notification Subsystem
+[x] Branch 6: Notification Subsystem
     ├── Local dev Gmail SMTP provider
     ├── Production Brevo HTTP API provider (Render outbound-SMTP bypass)
     └── Event triggers (Case created, assigned, SLA warning/breach, resolved)
@@ -92,8 +92,9 @@
 
 ---
 
-## 3. Next Milestone (Branch 6) Implementation Priorities
+## 3. Next Milestone (Branch 7) Implementation Priorities
 
-1. **Notification Provider Abstraction**: Implement `NotificationProvider` base interface with `GmailSmtpNotificationProvider` (local dev) and `BrevoNotificationProvider` (staging/production HTTP API over port 443).
-2. **Event Dispatch Integration**: Hook notifications into case lifecycle events (case created, assigned, SLA warning/breach, resolved) per SRS §3.9 & §5.10.
-3. **Resilient Non-Blocking Delivery**: Ensure email send failures are logged and retried without rolling back the underlying database transactions per SRS §7.7/§7.14.
+1. **AI Provider Abstraction (`providers/ai/`)**: Implement `AIProvider` base interface with `GeminiAIProvider` (using official `google-genai` SDK) and `MockAIProvider` for testing.
+2. **Structured Output & Confidence Scoring**: Enforce strict JSON schema validation and ConfidenceLevel enum (Low/Moderate/High per SRS §5.13) for triage suggestions.
+3. **Living Case Summarization**: Build incremental summarization service triggered by message additions per SRS §5.3.
+4. **AI Communication Drafting**: Implement human-in-the-loop draft generation (info request, progress update, resolution, escalation summary) per SRS §5.9.
