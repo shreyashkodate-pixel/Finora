@@ -170,3 +170,20 @@ class AutoFixActionType(str, Enum):
     ACCOUNT_UNLOCK = "account_unlock"
     CACHE_CLEAR = "cache_clear"
 
+
+class AlertProvider(str, Enum):
+    PROMETHEUS = "prometheus"
+    DATADOG = "datadog"
+    CLOUDWATCH = "cloudwatch"
+    SENTRY = "sentry"
+    GENERIC = "generic"
+
+
+class AlertStatus(str, Enum):
+    RECEIVED = "received"
+    INCIDENT_CREATED = "incident_created"
+    CORRELATED = "correlated"
+    SUPPRESSED = "suppressed"
+    ACKNOWLEDGED = "acknowledged"
+    RESOLVED = "resolved"
+

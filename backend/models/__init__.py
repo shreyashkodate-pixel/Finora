@@ -22,10 +22,13 @@ from models.enums import (
     MajorIncidentStatus,
     AutoFixStatus,
     AutoFixActionType,
+    AlertProvider,
+    AlertStatus,
 )
 from models.user import User, Team
 from models.case import Case, CaseRelationship, CaseSequence
 from models.message import Message
+from models.alert import InboundAlert, AlertRule
 
 from models.attachment import Attachment
 from models.sla import SLA
@@ -76,12 +79,16 @@ __all__ = [
     "MajorIncidentStatus",
     "AutoFixStatus",
     "AutoFixActionType",
+    "AlertProvider",
+    "AlertStatus",
     # Core Models
     "User",
     "Team",
     "Case",
     "CaseRelationship",
     "CaseSequence",
+    "InboundAlert",
+    "AlertRule",
     "Message",
 
     "Attachment",
