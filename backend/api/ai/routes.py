@@ -59,6 +59,7 @@ async def _verify_case_access(
 # --- 1. Case Triage (SRS §5.2) ---
 
 @router.get("/triage", response_model=AITriageResponse)
+@router.get("/ai/triage", response_model=AITriageResponse)
 async def get_case_triage(
     case_id: uuid.UUID,
     current_user: User = Depends(require_roles(STAFF_ROLES)),
@@ -95,6 +96,7 @@ async def run_case_triage(
 
 
 @router.post("/triage/apply", response_model=CaseOut)
+@router.post("/ai/triage/apply", response_model=CaseOut)
 async def apply_case_triage(
     case_id: uuid.UUID,
     payload: ApplyTriageRequest,
@@ -119,6 +121,7 @@ async def apply_case_triage(
 # --- 2. Living Case Summarization (SRS §5.3) ---
 
 @router.get("/summary", response_model=CaseSummaryResponse)
+@router.get("/ai/summary", response_model=CaseSummaryResponse)
 async def get_case_summary(
     case_id: uuid.UUID,
     current_user: User = Depends(get_current_active_user),
@@ -138,6 +141,7 @@ async def get_case_summary(
 
 
 @router.post("/summary/refresh", response_model=CaseSummaryResponse)
+@router.post("/ai/summary/refresh", response_model=CaseSummaryResponse)
 async def refresh_case_summary(
     case_id: uuid.UUID,
     current_user: User = Depends(require_roles(STAFF_ROLES)),
@@ -157,6 +161,9 @@ async def refresh_case_summary(
 # --- 3. Risk Assessment (SRS §5.7) ---
 
 @router.post("/risk", response_model=CaseRiskAssessmentResponse)
+@router.get("/risk", response_model=CaseRiskAssessmentResponse)
+@router.post("/ai/risk", response_model=CaseRiskAssessmentResponse)
+@router.get("/ai/risk", response_model=CaseRiskAssessmentResponse)
 async def compute_case_risk(
     case_id: uuid.UUID,
     current_user: User = Depends(require_roles(STAFF_ROLES)),
@@ -176,6 +183,9 @@ async def compute_case_risk(
 # --- 4. Communication Draft Assistant (SRS §5.9) ---
 
 @router.post("/drafts", response_model=CommunicationDraftResponse, status_code=status.HTTP_201_CREATED)
+@router.post("/draft", response_model=CommunicationDraftResponse, status_code=status.HTTP_201_CREATED)
+@router.post("/ai/draft", response_model=CommunicationDraftResponse, status_code=status.HTTP_201_CREATED)
+@router.post("/ai/drafts", response_model=CommunicationDraftResponse, status_code=status.HTTP_201_CREATED)
 async def generate_communication_draft(
     case_id: uuid.UUID,
     payload: GenerateDraftRequest,

@@ -59,7 +59,7 @@ SLA_DELTAS: Dict[CasePriority, Dict[str, timedelta]] = {
 # State machine allowed transitions per SRS §6.1
 ALLOWED_TRANSITIONS: Dict[CaseStatus, List[CaseStatus]] = {
     CaseStatus.DRAFT: [CaseStatus.NEW, CaseStatus.CANCELLED],
-    CaseStatus.NEW: [CaseStatus.IN_ASSESSMENT, CaseStatus.CANCELLED],
+    CaseStatus.NEW: [CaseStatus.IN_ASSESSMENT, CaseStatus.ASSIGNED, CaseStatus.CANCELLED],
     CaseStatus.IN_ASSESSMENT: [CaseStatus.ASSIGNED, CaseStatus.CANCELLED],
     CaseStatus.ASSIGNED: [
         CaseStatus.AWAITING_REQUESTER,

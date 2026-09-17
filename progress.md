@@ -49,7 +49,7 @@ The AI IT Helpdesk is a production-grade enterprise service desk platform featur
 | `191ce39` | `feature/gemini-ai-integration` | `docs`: update progress.md and technical_debt.md for branch 7 completion |
 | `e22bb90` | `feature/periodic-sweep-engine` | `feat(sweep)`: implement APScheduler sweep engine, SLA breach detection, and escalations |
 | `e63a95e` | `feature/knowledge-base-and-approvals` | `feat(knowledge-approvals)`: implement knowledge base and multi-tier approval workflows |
-| Pending | `feature/frontend` | `feat(frontend)`: implement multiplatform flutter client for auth, cases, ai, and approvals |
+| `64665ae` | `feature/frontend` | `feat(frontend)`: implement multiplatform flutter client for auth, cases, ai, and approvals |
 
 ```
 [x] Branch 1: Project Scaffolding & Shared Infrastructure
@@ -230,3 +230,40 @@ backend/tests/unit/test_sweep.py .......                                 [100%]
   * `RiskAssessmentModel`: Risk score, severity levels, and aggravating factors.
   * `ApprovalModel`: Business authorization requests and decision tracking.
   * `KnowledgeArticleModel`: Article state and lifecycle.
+
+### Automated Postman API Test Suite & Newman CLI Verification (30/30 Passing)
+* **Postman Collection & Environment Artifacts**:
+  * `postman/AI_IT_Helpdesk.postman_collection.json`: v2.1.0 schema containing 29 end-to-end API endpoints organized across 8 modular test folders.
+  * `postman/AI_IT_Helpdesk.postman_environment.json`: Zero-hardcoding parameterized environment configuration with dynamic variables for tokens, case IDs, versions, and approval identifiers.
+* **Modular Coverage**:
+  * `01 - Health Check`: Health status probe & DB response latency (2/2 passing).
+  * `02 - Authentication & RBAC`: Registration, Requester/Operator/Lead logins, Profile `/me`, and single-use refresh token rotation (6/6 passing).
+  * `03 - Case Lifecycle & SLA`: P1 incident creation with sequential reference number, SLA window calculation, priority filtering, and versioned status transition (4/4 passing).
+  * `04 - Message Stream & Confidentiality`: Public requester messaging, staff internal notes, requester-side visibility masking, and operator full timeline access (4/4 passing).
+  * `05 - Gemini AI Copilot`: AI triage suggestions, human-in-the-loop application, living summaries, proactive SLA risk signals, and context-aware draft generation (5/5 passing).
+  * `06 - Multi-Tier Approvals`: Business authorization requests, pending approvals inbox, and lead approval decision (3/3 passing).
+  * `07 - Knowledge Base & SOPs`: Knowledge article authoring, keyword search (`?search=VPN`), and contextual case suggestions (3/3 passing).
+  * `08 - The Sweep & Escalations`: Manual operator escalation, escalations feed, and on-demand sweep trigger (3/3 passing).
+* **Execution Summary**:
+```text
+┌─────────────────────────┬──────────────────┬──────────────────┐
+│                         │         executed │           failed │
+├─────────────────────────┼──────────────────┼──────────────────┤
+│              iterations │                1 │                0 │
+├─────────────────────────┼──────────────────┼──────────────────┤
+│                requests │               29 │                0 │
+├─────────────────────────┼──────────────────┼──────────────────┤
+│            test-scripts │               29 │                0 │
+├─────────────────────────┼──────────────────┼──────────────────┤
+│      prerequest-scripts │                0 │                0 │
+├─────────────────────────┼──────────────────┼──────────────────┤
+│              assertions │               30 │                0 │
+├─────────────────────────┴──────────────────┴──────────────────┤
+│ total run duration: 868ms                                     │
+├───────────────────────────────────────────────────────────────┤
+│ total data received: 18.21kB (approx)                         │
+├───────────────────────────────────────────────────────────────┤
+│ average response time: 16ms [min: 5ms, max: 77ms, s.d.: 13ms] │
+└───────────────────────────────────────────────────────────────┘
+```
+

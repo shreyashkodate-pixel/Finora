@@ -1,0 +1,964 @@
+{
+  "info": {
+    "_postman_id": "ai-it-helpdesk-collection-v1",
+    "name": "AI IT Helpdesk API Suite",
+    "description": "Comprehensive Postman Test Collection for the AI IT Helpdesk (FastAPI, PostgreSQL, Gemini AI, The Sweep, Multi-Tier Approvals, and Role-Based Access Control).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "01 - Health Check",
+      "item": [
+        {
+          "name": "System Health Probe",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/health",
+              "host": ["{{base_url}}"],
+              "path": ["health"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Database connection is healthy', function () {",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.status).to.eql('ok');",
+                  "    pm.expect(json.db).to.eql('ok');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "02 - Authentication & RBAC",
+      "item": [
+        {
+          "name": "Register Requester User",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"requester_pm@enterprise.com\",\n  \"password\": \"SecurePassword123!\",\n  \"site\": \"Campus North\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/register",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "register"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('User registration status 201 or 409', function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([201, 409]);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Login as Requester",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"requester_pm@enterprise.com\",\n  \"password\": \"SecurePassword123!\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/login",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "login"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Login returns 200 and tokens', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    var json = pm.response.json();",
+                  "    var tokens = json.tokens || json;",
+                  "    pm.expect(tokens.access_token).to.be.a('string');",
+                  "    pm.expect(tokens.refresh_token).to.be.a('string');",
+                  "    pm.environment.set('requester_token', tokens.access_token);",
+                  "    pm.environment.set('requester_refresh_token', tokens.refresh_token);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Login as Operator",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"operator_pm@enterprise.com\",\n  \"password\": \"SecurePassword123!\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/login",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "login"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Operator login returns 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    var json = pm.response.json();",
+                  "    var tokens = json.tokens || json;",
+                  "    pm.expect(tokens.access_token).to.be.a('string');",
+                  "    pm.environment.set('operator_token', tokens.access_token);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Login as Lead",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"lead_pm@enterprise.com\",\n  \"password\": \"SecurePassword123!\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/login",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "login"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Lead login returns 200 and records user ID', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    var json = pm.response.json();",
+                  "    var tokens = json.tokens || json;",
+                  "    pm.expect(tokens.access_token).to.be.a('string');",
+                  "    pm.environment.set('lead_token', tokens.access_token);",
+                  "    pm.environment.set('lead_user_id', json.user ? json.user.id : json.id);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Current User Profile",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{requester_token}}" }],
+            "url": {
+              "raw": "{{base_url}}/auth/me",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "me"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Profile returns authenticated user details', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.email).to.eql('requester_pm@enterprise.com');",
+                  "    pm.expect(json.role).to.eql('requester');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Rotate Single-Use Refresh Token",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refresh_token\": \"{{requester_refresh_token}}\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/refresh",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "refresh"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Token rotation returns 200 and new credentials', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.access_token).to.be.a('string');",
+                  "    pm.expect(json.refresh_token).to.be.a('string');",
+                  "    pm.environment.set('requester_token', json.access_token);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "03 - Case Lifecycle & SLA",
+      "item": [
+        {
+          "name": "Create P1 Incident",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{requester_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"VPN Gateway Core Router Outage\",\n  \"description\": \"Global workforce cannot connect via Cisco AnyConnect; high packet loss across all tunnel interfaces.\",\n  \"type\": \"incident\",\n  \"priority\": \"p1\",\n  \"site\": \"Campus North\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/cases",
+              "host": ["{{base_url}}"],
+              "path": ["cases"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Case created with sequential reference number and SLA', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.id).to.be.a('string');",
+                  "    pm.expect(json.reference_number).to.match(/^INC-\\d{4}-\\d{6}$/);",
+                  "    pm.expect(json.status).to.eql('new');",
+                  "    pm.expect(json.version).to.eql(1);",
+                  "    pm.environment.set('case_id', json.id);",
+                  "    pm.environment.set('case_version', json.version);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "List Cases Filtered by Priority",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{operator_token}}" }],
+            "url": {
+              "raw": "{{base_url}}/cases?priority=p1",
+              "host": ["{{base_url}}"],
+              "path": ["cases"],
+              "query": [{ "key": "priority", "value": "p1" }]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Returns P1 cases list', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.items).to.be.an('array');",
+                  "    pm.expect(json.items.length).to.be.at.least(1);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Full Case Details with SLA",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{requester_token}}" }],
+            "url": {
+              "raw": "{{base_url}}/cases/{{case_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["cases", "{{case_id}}"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Returns case details with 24/7 SLA window', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.id).to.eql(pm.environment.get('case_id'));",
+                  "    pm.expect(json.sla).to.be.an('object');",
+                  "    pm.expect(json.sla.target_response_at).to.be.a('string');",
+                  "    pm.expect(json.sla.target_resolve_at).to.be.a('string');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Transition Case Status (Optimistic Locking)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{operator_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"new_status\": \"assigned\",\n  \"version\": {{case_version}}\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/cases/{{case_id}}/status",
+              "host": ["{{base_url}}"],
+              "path": ["cases", "{{case_id}}", "status"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status transitioned to assigned and version incremented', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.status).to.eql('assigned');",
+                  "    pm.expect(json.version).to.eql(pm.environment.get('case_version') + 1);",
+                  "    pm.environment.set('case_version', json.version);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "04 - Message Stream & Confidentiality",
+      "item": [
+        {
+          "name": "Post Public Message as Requester",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{requester_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"body\": \"Can you confirm if engineering teams are actively investigating?\",\n  \"visibility\": \"requester_visible\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/cases/{{case_id}}/messages",
+              "host": ["{{base_url}}"],
+              "path": ["cases", "{{case_id}}", "messages"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Public message posted successfully', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.visibility).to.eql('requester_visible');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Post Internal Note as Operator",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{operator_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"body\": \"INTERNAL ONLY: Border router bgp peer dropped session. Initiating hardware loopback test.\",\n  \"visibility\": \"internal_only\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/cases/{{case_id}}/messages",
+              "host": ["{{base_url}}"],
+              "path": ["cases", "{{case_id}}", "messages"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Internal note posted successfully', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.visibility).to.eql('internal_only');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Verify Message Masking for Requester",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{requester_token}}" }],
+            "url": {
+              "raw": "{{base_url}}/cases/{{case_id}}/messages",
+              "host": ["{{base_url}}"],
+              "path": ["cases", "{{case_id}}", "messages"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Internal notes are completely masked from requester view', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    var messages = pm.response.json();",
+                  "    pm.expect(messages).to.be.an('array');",
+                  "    messages.forEach(function (m) {",
+                  "        pm.expect(m.visibility).to.eql('requester_visible');",
+                  "    });",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Verify Internal Notes Visible to Operator",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{operator_token}}" }],
+            "url": {
+              "raw": "{{base_url}}/cases/{{case_id}}/messages",
+              "host": ["{{base_url}}"],
+              "path": ["cases", "{{case_id}}", "messages"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Operator can view both internal and public messages', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    var messages = pm.response.json();",
+                  "    var hasInternal = messages.some(function(m) { return m.visibility === 'internal_only'; });",
+                  "    pm.expect(hasInternal).to.be.true;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "05 - Gemini AI Copilot",
+      "item": [
+        {
+          "name": "Get AI Triage Recommendations",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{operator_token}}" }],
+            "url": {
+              "raw": "{{base_url}}/cases/{{case_id}}/ai/triage",
+              "host": ["{{base_url}}"],
+              "path": ["cases", "{{case_id}}", "ai", "triage"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Returns AI triage assessment', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.suggested_priority).to.be.a('string');",
+                  "    pm.expect(json.confidence_level).to.be.a('string');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Apply Triage (Human-in-the-Loop)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{operator_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"accept_category\": true,\n  \"accept_priority\": true,\n  \"accept_team\": false\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/cases/{{case_id}}/ai/triage/apply",
+              "host": ["{{base_url}}"],
+              "path": ["cases", "{{case_id}}", "ai", "triage", "apply"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Triage applied successfully', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    var json = pm.response.json();",
+                  "    var caseObj = json.case || json;",
+                  "    pm.expect(caseObj.priority).to.be.a('string');",
+                  "    pm.environment.set('case_version', caseObj.version);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Living Case Summary",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{operator_token}}" }],
+            "url": {
+              "raw": "{{base_url}}/cases/{{case_id}}/ai/summary",
+              "host": ["{{base_url}}"],
+              "path": ["cases", "{{case_id}}", "ai", "summary"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Returns living case summary', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.summary_text).to.be.a('string');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Proactive SLA Risk Assessment",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{operator_token}}" }],
+            "url": {
+              "raw": "{{base_url}}/cases/{{case_id}}/ai/risk",
+              "host": ["{{base_url}}"],
+              "path": ["cases", "{{case_id}}", "ai", "risk"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Returns risk assessment signals', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.risk_level).to.be.a('string');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Generate Context-Aware AI Draft",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{operator_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"draft_type\": \"progress_update\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/cases/{{case_id}}/ai/draft",
+              "host": ["{{base_url}}"],
+              "path": ["cases", "{{case_id}}", "ai", "draft"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('AI draft generated successfully', function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.body || json.content).to.be.a('string');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "06 - Multi-Tier Approvals",
+      "item": [
+        {
+          "name": "Request Business Approval",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{operator_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"approver_id\": \"{{lead_user_id}}\",\n  \"reason\": \"Requires emergency maintenance authorization for hardware reset\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/cases/{{case_id}}/approvals",
+              "host": ["{{base_url}}"],
+              "path": ["cases", "{{case_id}}", "approvals"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Approval request created and case transitions to awaiting_approval', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.id).to.be.a('string');",
+                  "    pm.expect(json.decision).to.eql('pending');",
+                  "    pm.environment.set('approval_id', json.id);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "List Pending Approvals as Lead",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{lead_token}}" }],
+            "url": {
+              "raw": "{{base_url}}/approvals/pending",
+              "host": ["{{base_url}}"],
+              "path": ["approvals", "pending"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Returns pending approvals list', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.items).to.be.an('array');",
+                  "    var found = json.items.some(function(a) { return a.id === pm.environment.get('approval_id'); });",
+                  "    pm.expect(found).to.be.true;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Decide Approval (Approved)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{lead_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"decision\": \"approved\",\n  \"reason\": \"Approved for 30-minute maintenance window\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/approvals/{{approval_id}}/decision",
+              "host": ["{{base_url}}"],
+              "path": ["approvals", "{{approval_id}}", "decision"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Approval decision approved and case returned to assigned status', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.decision).to.eql('approved');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "07 - Knowledge Base & SOPs",
+      "item": [
+        {
+          "name": "Author Knowledge Article",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{operator_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"VPN Concentrator Diagnostic SOP\",\n  \"body\": \"### Diagnostic Steps\\n1. Ping tunnel gateway\\n2. Check IKEv2 lifetime negotiation\\n3. Restart local daemon if packet loss > 15%.\",\n  \"state\": \"published\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/knowledge",
+              "host": ["{{base_url}}"],
+              "path": ["knowledge"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Knowledge article created with 201', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.id).to.be.a('string');",
+                  "    pm.expect(json.state).to.eql('published');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Search Knowledge Base by Keyword",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{requester_token}}" }],
+            "url": {
+              "raw": "{{base_url}}/knowledge?search=VPN",
+              "host": ["{{base_url}}"],
+              "path": ["knowledge"],
+              "query": [{ "key": "search", "value": "VPN" }]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Search matches published article', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.items).to.be.an('array');",
+                  "    pm.expect(json.items.length).to.be.at.least(1);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Suggest Articles for Case",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{operator_token}}" }],
+            "url": {
+              "raw": "{{base_url}}/knowledge/suggestions/case/{{case_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["knowledge", "suggestions", "case", "{{case_id}}"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Returns contextual suggestions', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    var items = pm.response.json();",
+                  "    pm.expect(items).to.be.an('array');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "08 - The Sweep & Escalations",
+      "item": [
+        {
+          "name": "Manual Case Escalation",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{operator_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reason\": \"Requires Tier 3 network engineering specialist escalation\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/cases/{{case_id}}/escalate",
+              "host": ["{{base_url}}"],
+              "path": ["cases", "{{case_id}}", "escalate"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Escalation created with 201', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.id).to.be.a('string');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "List Case Escalations",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{operator_token}}" }],
+            "url": {
+              "raw": "{{base_url}}/cases/{{case_id}}/escalations",
+              "host": ["{{base_url}}"],
+              "path": ["cases", "{{case_id}}", "escalations"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Returns escalations list', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    var items = pm.response.json();",
+                  "    pm.expect(items).to.be.an('array');",
+                  "    pm.expect(items.length).to.be.at.least(1);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Trigger Manual Sweep Run",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{lead_token}}" }],
+            "url": {
+              "raw": "{{base_url}}/sweep/trigger",
+              "host": ["{{base_url}}"],
+              "path": ["sweep", "trigger"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Sweep execution completed successfully', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json.cases_evaluated).to.be.a('number');",
+                  "    pm.expect(json.timestamp).to.be.a('string');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

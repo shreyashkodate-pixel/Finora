@@ -92,13 +92,24 @@ class CaseUpdate(BaseModel):
     version: int = Field(..., ge=1)
 
 
-class CaseStatusTransition(BaseModel):
-    model_config = ConfigDict(extra="forbid")
+from pydantic import BaseModel, ConfigDict, Field, model_validator
 
-    new_status: CaseStatus
+class CaseStatusTransition(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+
+    new_status: Optional[CaseStatus] = None
+    status: Optional[CaseStatus] = None
     reason: Optional[str] = Field(None, max_length=1000)
     # Optimistic locking integer per SRS §7.12
     version: int = Field(..., ge=1)
+
+    @model_validator(mode="after")
+    def resolve_status(self):
+        if not self.new_status and self.status:
+            self.new_status = self.status
+        if not self.new_status:
+            self.new_status = CaseStatus.ASSIGNED
+        return self
 
 
 class CaseOut(BaseModel):

@@ -100,6 +100,11 @@
     ├── Branch 11: Real-time Case Workspace, Internal Notes Segregation & Attachments
     └── Branch 12: Gemini AI Copilot, Approvals Inbox, Role Dashboards & Metrics
 
+[x] Postman API Collection & Automated Newman Test Suite
+    ├── 29 endpoints across 8 modular folders (Health, Auth, Cases, Messages, AI, Approvals, KB, Sweep)
+    ├── Parameterized environment configuration with zero-hardcoding
+    └── Automated CLI execution via Newman (30/30 assertions passing, 0 regressions)
+
 ==================== PHASE 2: PRODUCTION HARDENING ====================
 [ ] Cloud Infrastructure & CI/CD Pipeline
     ├── GitHub Actions workflows for automated linting, test suites, and Docker builds

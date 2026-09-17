@@ -89,6 +89,7 @@ async def update_case(
 
 
 @router.post("/{case_id}/transition", response_model=CaseOut)
+@router.patch("/{case_id}/status", response_model=CaseOut)
 async def transition_case_status(
     case_id: uuid.UUID,
     payload: CaseStatusTransition,
@@ -96,6 +97,19 @@ async def transition_case_status(
     db: AsyncSession = Depends(get_db_session),
 ):
     """Transition case status through formal lifecycle state machine per SRS §6.1."""
+    service = CaseService(db)
+    return await service.transition_status(case_id, current_user, payload)
+
+
+@router.post("/{case_id}/reopen", response_model=CaseOut)
+async def reopen_case(
+    case_id: uuid.UUID,
+    payload: CaseStatusTransition,
+    current_user: User = Depends(get_current_active_user),
+    db: AsyncSession = Depends(get_db_session),
+):
+    """Reopen a resolved or closed case within 7 days per SRS §6.1."""
+    payload.new_status = CaseStatus.ASSIGNED
     service = CaseService(db)
     return await service.transition_status(case_id, current_user, payload)
 

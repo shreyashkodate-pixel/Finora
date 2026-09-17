@@ -74,7 +74,8 @@ class AuthService:
             email_verified=is_verified,
         )
         db.add(user)
-        await db.flush()
+        await db.commit()
+        await db.refresh(user)
 
         verification_token = create_email_verification_token(str(user.id), user.email)
         return user, verification_token
