@@ -88,3 +88,12 @@ class AIProvider(ABC):
     ) -> AIDraftData:
         """Generate draft communication for operator review."""
         pass
+
+    @abstractmethod
+    async def draft_knowledge_article(
+        self,
+        case_context: Dict[str, Any],
+    ) -> Dict[str, str]:
+        """Generate Markdown knowledge article draft from resolved case context."""
+        pass
+

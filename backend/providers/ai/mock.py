@@ -212,3 +212,36 @@ class MockAIProvider(AIProvider):
             subject=subject,
             body=body,
         )
+
+    async def draft_knowledge_article(
+        self,
+        case_context: Dict[str, Any],
+    ) -> Dict[str, str]:
+        logger.info("Mock AI Knowledge Article Drafting running")
+        title = case_context.get("title", "IT Troubleshooting Guide")
+        description = case_context.get("description", "Issue report.")
+        root_cause = case_context.get("root_cause", "Configuration anomaly or transient system fault.")
+        resolution_notes = case_context.get("resolution_notes", "Applied standard remediation and restored service.")
+
+        article_title = f"How to Resolve: {title}"
+        article_body = (
+            f"# {article_title}\n\n"
+            f"## Overview\n"
+            f"This guide provides standard operating procedures for resolving issues related to **{title}**.\n\n"
+            f"## Symptoms\n"
+            f"- {description}\n\n"
+            f"## Root Cause\n"
+            f"{root_cause}\n\n"
+            f"## Step-by-Step Resolution\n"
+            f"1. **Verification**: Confirm network and service state.\n"
+            f"2. **Remediation**: {resolution_notes}\n"
+            f"3. **Validation**: Test user workflow and verify service metrics return to healthy baseline.\n\n"
+            f"## Prevention & Workarounds\n"
+            f"Ensure regular maintenance and monitor logging endpoints for early warning indicators."
+        )
+
+        return {
+            "title": article_title,
+            "body": article_body,
+        }
+

@@ -318,3 +318,49 @@ class GeminiAIProvider(AIProvider):
         except Exception as exc:
             logger.error(f"Gemini draft generation failed: {exc}")
             raise AIProviderUnavailableError(f"Gemini draft generation failed: {exc}") from exc
+
+    async def draft_knowledge_article(
+        self,
+        case_context: Dict[str, Any],
+    ) -> Dict[str, str]:
+        """
+        Draft Knowledge Base Markdown article from resolved case per Phase 2.
+        """
+        prompt = (
+            "You are an expert ITIL Technical Writer. Convert the following resolved IT support incident into a structured Markdown knowledge base article.\n\n"
+            f"Case Title: {case_context.get('title')}\n"
+            f"Description: {case_context.get('description')}\n"
+            f"Root Cause: {case_context.get('root_cause', 'Underlying technical fault')}\n"
+            f"Resolution Notes: {case_context.get('resolution_notes', 'Standard troubleshooting')}\n\n"
+            "Return a strictly valid JSON object:\n"
+            "{\n"
+            '  "title": "Article title (e.g. How to Resolve: ...)",\n'
+            '  "body": "Complete markdown body with ## Overview, ## Symptoms, ## Root Cause, ## Step-by-Step Resolution, ## Prevention & Workarounds"\n'
+            "}"
+        )
+
+        try:
+            config = types.GenerateContentConfig(
+                system_instruction=SYSTEM_SECURITY_PROMPT,
+                response_mime_type="application/json",
+                temperature=0.2,
+            )
+
+            response = await asyncio.wait_for(
+                self.client.aio.models.generate_content(
+                    model=self.model,
+                    contents=prompt,
+                    config=config,
+                ),
+                timeout=self.timeout,
+            )
+
+            data = self._clean_json_response(response.text)
+            return {
+                "title": data.get("title", f"How to Resolve: {case_context.get('title')}"),
+                "body": data.get("body", ""),
+            }
+        except Exception as exc:
+            logger.error(f"Gemini knowledge draft generation failed: {exc}")
+            raise AIProviderUnavailableError(f"Gemini knowledge draft generation failed: {exc}") from exc
+

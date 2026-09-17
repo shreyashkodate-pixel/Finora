@@ -120,3 +120,20 @@ async def suggest_articles_for_case(
 ):
     service = KnowledgeService(db)
     return await service.suggest_articles_for_case(case_id, current_user, limit=limit)
+
+
+@router.post(
+    "/ai/draft-from-case/{case_id}",
+    response_model=KnowledgeArticleCreate,
+    summary="AI-assisted Knowledge Article drafting from resolved case",
+)
+async def draft_knowledge_from_case(
+    case_id: uuid.UUID,
+    current_user: User = Depends(
+        require_roles([UserRole.OPERATOR, UserRole.TEAM_LEAD, UserRole.MANAGER, UserRole.ADMINISTRATOR])
+    ),
+    db: AsyncSession = Depends(get_db_session),
+):
+    service = KnowledgeService(db)
+    return await service.draft_from_case(case_id, current_user)
+

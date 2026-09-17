@@ -12,7 +12,9 @@ from models.case import Case
 from models.enums import KnowledgeState, UserRole
 from models.knowledge import KnowledgeArticle
 from models.user import User
+from providers.ai.factory import get_ai_provider
 from schemas.knowledge import KnowledgeArticleCreate, KnowledgeArticleUpdate
+
 
 
 class KnowledgeService:
@@ -354,3 +356,43 @@ class KnowledgeService:
         )
         fallback_result = await self.db.execute(fallback_query)
         return list(fallback_result.scalars().all())
+
+    async def draft_from_case(
+        self, case_id: uuid.UUID, current_user: User
+    ) -> KnowledgeArticleCreate:
+        """
+        Synthesizes a new draft Knowledge Article from a resolved Case per Phase 2.
+        """
+        if current_user.role == UserRole.REQUESTER:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail={"error": {"code": "PERMISSION_DENIED", "message": "Requesters cannot generate knowledge drafts."}},
+            )
+
+        case_stmt = select(Case).where(Case.id == case_id)
+        case_res = await self.db.execute(case_stmt)
+        case = case_res.scalar_one_or_none()
+        if not case:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail={"error": {"code": "CASE_NOT_FOUND", "message": f"Case {case_id} not found."}},
+            )
+
+        provider = get_ai_provider()
+        draft_content = await provider.draft_knowledge_article({
+            "title": case.title,
+            "description": case.description or "",
+            "category": case.type.value,
+            "priority": case.priority.value,
+            "root_cause": "Issue analyzed and remediated by support staff.",
+            "resolution_notes": f"Case {case.reference_number} was successfully verified and closed.",
+        })
+
+
+        return KnowledgeArticleCreate(
+            title=draft_content["title"],
+            body=draft_content["body"],
+            state=KnowledgeState.DRAFT,
+            source_case_id=case.id,
+        )
+
