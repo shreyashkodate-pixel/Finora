@@ -1,9 +1,9 @@
 # AI IT Helpdesk — Development Progress Report
 
 **Document Purpose**: Official development progress, completed milestones, architectural decisions, and verification records for the **AI IT Helpdesk** (FastAPI + PostgreSQL + Gemini AI + Flutter Multiplatform).  
-**Current Release Target**: Phase 1 Foundation & Core Workflows per PRD & SRS v3.3.  
+**Current Release Target**: Phase 1 Foundation & Core Workflows per PRD & SRS v3.3 — **COMPLETED**.  
 **Last Updated**: September 17, 2026  
-**Status**: Branches 1–9 Completed, 100% Passing Tests (75/75).
+**Status**: All 12 Branches Completed (Backend Branches 1–9 + Consolidated Frontend Branches 10–12). 100% Passing Tests (75/75 Backend Unit Tests + Frontend Serialization/Logic Tests).
 
 ---
 
@@ -12,15 +12,16 @@
 The AI IT Helpdesk is a production-grade enterprise service desk platform featuring deterministic business logic, strict role-based access control (RBAC), 24/7 elapsed wall-clock SLA tracking, optimistic concurrency locking, append-only audit logging, and human-in-the-loop AI assistance powered by Google Gemini.
 
 ### Core Architectural Principles
-* **Environment-Driven Configuration**: 100% environment-variable driven configuration (`core/config.py`); zero hardcoded secrets or credentials; strict `.env` exclusion.
+* **Environment-Driven Configuration**: 100% environment-variable driven configuration (`core/config.py` in backend, compile-time `--dart-define` with safe fallbacks in `client/lib/shared/config.dart`); zero hardcoded secrets or credentials; strict `.env` exclusion.
 * **Dual-Path Authentication**: Full support for both Argon2id password authentication and Google OAuth 2.0 PKCE / OIDC sign-in with conflict-guarded account isolation (`409 ACCOUNT_COLLISION` on email match).
-* **Strict Role-Based Access Control (RBAC)**: Enforced at the FastAPI layer across 5 system roles (`Requester`, `Operator`, `Team Lead`, `Manager`, `Administrator`).
+* **Strict Role-Based Access Control (RBAC)**: Enforced at the FastAPI layer and reflected across Flutter views (`Requester`, `Operator` [L1/L2], `Team Lead`, `Manager`, `Administrator`).
 * **Message Visibility & Confidentiality**: Strict separation between `requester_visible` communications and `internal_only` operator notes; automatic server-side masking for requesters.
 * **Deterministic Concurrency & Auditability**: Optimistic locking (`version` integer) on mutating case operations (`409 STALE_VERSION` on collision); immutable append-only `AuditLog` records.
-* **24/7 Elapsed SLA Engine**: Wall-clock UTC elapsed time math without complex holiday/business-hour dependencies (P1: 15m/4h, P2: 1h/8h, P3: 4h/72h, P4: 24h/120h).
+* **24/7 Elapsed SLA Engine**: Wall-clock UTC elapsed time math without complex holiday/business-hour dependencies (P1: 15m/4h, P2: 1h/8h, P3: 4h/72h, P4: 24h/120h) with real-time countdowns on client.
 * **Secure Evidence Storage**: Magic-bytes validation (jpg, png, webp, gif, pdf, docx, txt, log), 10MB file / 50MB case limits, server-generated UUID paths, and presigned access URLs.
 * **Human-in-the-Loop AI Assistant**: Advisory-only triage categorization, continuous living summarization, escalation risk detection, and communication drafting powered by `gemini-2.5-flash` with prompt-injection defenses.
 * **Zero-Worker Background Processing ("The Sweep")**: In-process APScheduler engine running every 5 minutes for SLA monitoring, proactive warning alerts, breach detection, and multi-tier escalation hierarchy without external queues.
+* **WCAG 2.1 AA Accessibility & Adaptive Design**: Deep Enterprise Blue palette with minimum 4.5:1 text contrast, `Semantics` wrappers, 48x48 min touch targets, and responsive layouts across Mobile (`NavigationBar`), Tablet, and Desktop (`NavigationRail`).
 
 ---
 
@@ -47,6 +48,8 @@ The AI IT Helpdesk is a production-grade enterprise service desk platform featur
 | `90be88b` | `feature/gemini-ai-integration` | `feat(ai)`: integrate Gemini 2.5 Flash for triage, living summaries, risk, and drafts |
 | `191ce39` | `feature/gemini-ai-integration` | `docs`: update progress.md and technical_debt.md for branch 7 completion |
 | `e22bb90` | `feature/periodic-sweep-engine` | `feat(sweep)`: implement APScheduler sweep engine, SLA breach detection, and escalations |
+| `e63a95e` | `feature/knowledge-base-and-approvals` | `feat(knowledge-approvals)`: implement knowledge base and multi-tier approval workflows |
+| Pending | `feature/frontend` | `feat(frontend)`: implement multiplatform flutter client for auth, cases, ai, and approvals |
 
 ```
 [x] Branch 1: Project Scaffolding & Shared Infrastructure
@@ -58,9 +61,9 @@ The AI IT Helpdesk is a production-grade enterprise service desk platform featur
 [x] Branch 7: Gemini AI Integration (Triage, Summary, Risk, Drafts)
 [x] Branch 8: Periodic SLA & Risk Sweep Engine (APScheduler)
 [x] Branch 9: Knowledge Base & Approval Workflows
-[ ] Branch 10: Flutter Client Authentication & Navigation
-[ ] Branch 11: Flutter Client Case Management & Message Stream
-[ ] Branch 12: Flutter Client AI Assistance & Operations Dashboard
+[x] Branch 10: Flutter Client Authentication & Navigation (Consolidated on feature/frontend)
+[x] Branch 11: Flutter Client Case Management & Message Stream (Consolidated on feature/frontend)
+[x] Branch 12: Flutter Client AI Assistance & Operations Dashboard (Consolidated on feature/frontend)
 ```
 
 ---
@@ -98,157 +101,132 @@ The AI IT Helpdesk is a production-grade enterprise service desk platform featur
   * Account collision defense: returns `409 Conflict` (`ACCOUNT_COLLISION`) when Google OAuth attempts to sign in with an email already bound to a password account.
   * Refresh token rotation: single-use refresh tokens revoked immediately upon rotation (`TOKEN_REVOKED_OR_EXPIRED`).
   * Email verification token consumption.
-* **RBAC Dependencies (`api/deps.py`)**:
-  * `get_current_user`: extracts and validates JWT access token.
-  * `get_current_active_user`: enforces email verification outside local dev.
-  * `require_roles(allowed_roles)`: enforces user role permissions (`403 PERMISSION_DENIED`).
-* **Endpoints (`api/auth/routes.py`)**:
-  * `/register`, `/login`, `/google`, `/refresh`, `/logout`, `/verify-email`, `/me`.
 
-### Branch 4 — Case Lifecycle, SLA, State Machine & Audit API
+### Branch 4 — Case Lifecycle, State Machine, SLA & Audit API
 * **Sequential Reference Generator (`services/case_service.py`)**:
-  * Emits sequential reference numbers: `<TYPE>-<YEAR>-<sequential>` (e.g. `INC-2026-000001`, `REQ-2026-000001`).
-* **24/7 Elapsed SLA Engine**:
-  * Pure wall-clock UTC targets computed at creation and updated on priority change:
-    * P1 (Critical): 15m response / 4h resolution
-    * P2 (High): 1h response / 8h resolution
-    * P3 (Medium): 4h response / 72h resolution
-    * P4 (Low): 24h response / 120h resolution
-  * Automatically records `responded_at` upon the first non-requester staff message.
-* **Formal State Machine Engine**:
-  * Validates transitions per SRS §6.1 (`Draft`, `New`, `InAssessment`, `Assigned`, `AwaitingRequester`, `AwaitingApproval`, `Resolved`, `Closed`, `Cancelled`).
-  * Enforces 7-day reopen window for `Closed` cases (`400 REOPEN_WINDOW_EXPIRED`).
-* **Optimistic Concurrency Locking**:
-  * Requires caller `version` on all update and transition calls; returns `409 Conflict` (`STALE_VERSION`) on mismatch.
-* **Message Visibility & Filtering**:
-  * Requesters can only submit `requester_visible` notes; `internal_only` notes are strictly masked from requester responses.
+  * Transaction-safe sequential format: `INC-YYYY-XXXXXX` and `REQ-YYYY-XXXXXX`.
+* **24/7 Wall-Clock Elapsed SLA Engine (`services/case_service.py`)**:
+  * Pure wall-clock UTC targets based on priority (P1: 15m/4h, P2: 1h/8h, P3: 4h/72h, P4: 24h/120h).
+* **Deterministic State Machine & Optimistic Locking**:
+  * Formal transitions: `NEW` -> `ASSIGNED` -> `IN_PROGRESS` -> `RESOLVED` -> `CLOSED`.
+  * Version concurrency increment (`version += 1`); returns `409 Conflict` (`STALE_VERSION`) on mismatch.
+  * 7-day reopen window strictly enforced (`REOPEN_WINDOW_EXPIRED`).
+* **Message Visibility & Segregation**:
+  * `requester_visible` vs. `internal_only` notes. Server-side masking completely conceals internal notes from requesters.
 * **Append-Only Audit Logging**:
-  * Generates immutable `AuditLog` rows on creation, updates, transitions, messages, and linking.
-* **Soft Deletion**:
-  * Transitions status to `Cancelled` and sets `deleted_at = now()`.
-* **Endpoints (`api/cases/routes.py`)**:
-  * Full REST suite for cases, paginated listing with multi-field search, status transitions, messages, relationships, and audit history.
+  * Every mutation writes an immutable `AuditLog` row recording actor, action, previous state, and new state.
 
-### Branch 5 — Evidence & File Uploads via Supabase Storage
-* **File Validation & Magic Bytes (`core/file_validator.py`)**:
-  * Validates binary headers against allowlist: `jpg`, `jpeg`, `png`, `webp`, `gif`, `pdf`, `docx`, `txt`, `log`.
-  * Categorically rejects executable binaries (ELF, Windows PE/MZ, Mach-O, RAR, 7z) and null bytes in text.
-  * Enforces maximum 10MB per file and 50MB cumulative attachment quota per case per SRS §7.5.
-* **Storage Provider Abstraction (`providers/storage/`)**:
-  * `StorageProvider` abstract interface.
-  * `SupabaseStorageProvider`: Async HTTP REST client for Supabase Storage bucket uploads, time-limited presigned URLs, and object deletion.
-  * `LocalStorageProvider`: Local filesystem storage engine for offline dev and zero-network automated unit testing.
-  * Dynamic provider factory `get_storage_provider()`.
-* **Attachment Service (`services/attachment_service.py`)**:
-  * Generates server-side UUID storage path (`cases/{case_id}/{uuid4}{ext}`).
-  * RBAC and case isolation enforcement (Requesters limited to own open cases; blocked on closed/cancelled cases).
-  * 24-hour in-memory idempotency deduplication cache on mutating upload requests.
-  * Emits append-only `AuditLog` records for `ATTACHMENT_UPLOADED` and `ATTACHMENT_DELETED`.
-* **Endpoints (`api/attachments/routes.py`)**:
-  * `POST /cases/{case_id}/attachments`: Multipart file upload with `Idempotency-Key` header support.
-  * `GET /cases/{case_id}/attachments`: List attachments for case.
-  * `GET /cases/{case_id}/attachments/quota`: Real-time storage consumption metrics and remaining quota.
-  * `GET /attachments/{attachment_id}`: Metadata lookup.
-  * `GET /attachments/{attachment_id}/download`: Presigned download link generator with configurable TTL.
-  * `DELETE /attachments/{attachment_id}`: Deletes file from storage and database.
+### Branch 5 — Evidence & File Uploads (Supabase Storage)
+* **Magic-Bytes File Validation (`core/files.py`)**:
+  * Inspects binary header bytes for allowed MIME types (jpg, png, webp, gif, pdf, docx, txt, log). Blocks extension spoofing.
+* **Quota Management & Storage Providers**:
+  * Max 10MB per file, 50MB per case.
+  * `LocalStorageProvider` for development; `SupabaseStorageProvider` for cloud deployment.
+  * Presigned download URLs with 15-minute expiration.
 
 ### Branch 6 — In-App & Email Notifications
-* **Notification Provider Abstraction (`providers/notifications/`)**:
-  * `NotificationProvider` abstract base class.
-  * `GmailSmtpNotificationProvider`: Local development email engine connecting to `smtp.gmail.com:587` with STARTTLS via asynchronous thread offloading.
-  * `BrevoNotificationProvider`: Staging and production transactional email engine utilizing Brevo's HTTPS REST API (`/v3/smtp/email`) over port 443, bypassing Render's outbound SMTP block.
-  * `MockNotificationProvider`: In-memory capture queue for test assertions and zero-network test suite execution.
-  * Dynamic provider factory `get_notification_provider()`.
-* **Database Model & Migration (`models/notification.py`, `0003_add_notifications.py`)**:
-  * `Notification` entity tracking `user_id`, `case_id`, `title`, `message`, `event_type`, `is_read`, and timestamps.
-  * `NotificationEventType` enum (`case_created`, `case_assigned`, `new_message`, `case_resolved`, `case_reopened`, `sla_warning`, `sla_breach`, `escalation_raised`).
-* **Service Layer & Lifecycle Event Hooks (`services/notification_service.py`, `services/case_service.py`)**:
-  * Event dispatchers for Case Created (intake confirmation with reference number), Case Assigned, New Message (with requester visibility gating), Case Resolved (with 7-day reopen details), and Case Reopened.
-  * Non-blocking execution guarantee per SRS §7.7/§7.14: Email dispatch failures are logged and caught safely without rolling back database transactions.
-* **REST Endpoints (`api/notifications/routes.py`)**:
-  * `GET /api/v1/notifications`: Paginated in-app alerts with optional `unread_only` filter.
-  * `GET /api/v1/notifications/unread-count`: Fast badge count lookup.
-  * `PATCH /api/v1/notifications/{id}/read`: Mark individual alert as read.
-  * `POST /api/v1/notifications/mark-all-read`: Bulk mark all alerts read for current user.
+* **Notification Engine (`services/notification_service.py`)**:
+  * Dual-provider architecture: `GmailSMTPProvider` for local testing; `BrevoHTTPProvider` for cloud hosting (Render).
+  * In-app notification feed with read/unread tracking and batch actions.
+  * Event dispatch on case creation, assignment, resolution, SLA warnings, and breaches.
 
-### Branch 7 — Gemini AI Integration (Triage, Summary, Risk, Drafts)
-* **AI Provider Abstraction (`providers/ai/`)**:
-  * `AIProvider` abstract base class defining `triage_case`, `summarize_case`, `assess_risk`, and `draft_communication`.
-  * `GeminiAIProvider`: Integration using official `google-genai` SDK and stable `gemini-2.5-flash` model with system prompt injection defenses per SRS §5.15 and structured JSON output.
-  * `MockAIProvider`: Deterministic heuristic provider for offline execution and fast, zero-network unit testing.
-  * Dynamic provider factory `get_ai_provider()` with configurable `GEMINI_MODEL` and timeout guards.
-* **Confidence Scoring & Prompt-Injection Safeguards (SRS §5.13, §5.15)**:
-  * Map raw numeric confidence float to user-facing `ConfidenceLevel` enum: Low (`0.00–0.49`), Moderate (`0.50–0.79`), High (`0.80–1.00`).
-  * Explicit system directives treating requester inputs as untrusted data, ignoring embedded instructions.
-* **Service Layer (`services/ai_service.py`)**:
-  * `triage_case`: Automatic categorization, priority recommendation, missing info detection, candidate duplicate lookup via trigram search, and smart team routing.
-  * `apply_triage_recommendations`: Human-in-the-loop explicit confirmation updating case priority, recalculating SLA targets, and logging `AuditLog`.
-  * `summarize_case`: Synchronous-on-write living case summary recomputed inline on new messages.
-  * `assess_case_risk`: Periodic/on-demand signal calculation (inactivity hours, hours to SLA deadline, follow-ups).
-  * `generate_draft`: Communication assistant generating Info Requests, Progress Updates, Resolutions, and Escalation Summaries.
-  * `send_draft`: Human-in-the-loop sending that marks draft `SENT` and persists a `Message` visibly tagged with `ai_generated = True`.
-### Branch 8 — Periodic SLA & Risk Sweep Engine ("The Sweep")
+### Branch 7 — Gemini AI Integration
+* **Gemini 2.5 Flash Client (`providers/ai/gemini.py`)**:
+  * Structured JSON schema generation via official Google GenAI SDK.
+  * Heuristic fallback provider for offline development and testing.
+* **Triage & Living Summaries**:
+  * Automated priority and category recommendation with confidence scoring.
+  * Human-in-the-loop triage confirmation (`POST /api/v1/cases/{id}/ai/triage/apply`).
+  * Continuous living summaries recomputed synchronously on new messages.
+* **Risk Assessment & Response Drafter**:
+  * Inactivity and SLA countdown risk scoring (Low, Medium, High, Critical).
+  * Communication draft generator for info requests, progress updates, resolutions, and escalation summaries.
+
+### Branch 8 — Periodic SLA & Risk Sweep Engine
 * **In-Process Scheduler (`scheduler/manager.py`)**:
-  * Configured `APScheduler`'s `AsyncIOScheduler` to execute strictly within the FastAPI process every 5 minutes (`SWEEP_INTERVAL_MINUTES=5`) per SRS §3.5. Zero worker/queue overhead.
-  * Tied to FastAPI's async `lifespan` for clean startup and graceful shutdown.
-  * Optional Render free-tier keepalive self-health pinger (`scheduler/keepalive.py`) running every 10 minutes per SRS §3.1.
+  * Embedded `APScheduler` running every 5 minutes (`SWEEP_INTERVAL_MINUTES=5`) without worker overhead.
+  * Render free-tier keepalive self-health pinger.
 * **The Sweep Service (`services/sweep_service.py`)**:
-  * **SLA Warning & Breach Detection**: Evaluates wall-clock elapsed time against 24/7 SLA targets. Marks `response_breached` and `resolution_breached`, dispatches notifications, and raises `MISSED_DEADLINE` escalations. Emits proactive `SLA_WARNING` alerts when >= 80% of window has elapsed (within 20% remaining).
-  * **Risk Scoring & High-Risk Trigger**: Evaluates inactivity duration, follow-ups, and reopen counts to write `CaseRiskAssessment`. Raises `HIGH_RISK` escalations on High/Critical levels.
-  * **Repeated Reopen Check**: Raises `REPEATED_REOPEN` escalations when a case has been reopened > 1 time.
-  * **Multi-Tier Escalation Hierarchy (SRS §5.8)**: Dispatches escalations to Team Lead first. Automatically promotes unacknowledged escalations older than 2 hours (`ESCALATION_UNACKNOWLEDGED_HOURS=2`) to Manager.
-  * **Operator Manual Escalation**: Level 2 human action for requesting managerial intervention.
-* **REST Endpoints (`api/escalations/routes.py`)**:
-  * `POST /api/v1/cases/{id}/escalate`: Operator manually requests escalation.
-  * `GET /api/v1/cases/{id}/escalations`: List escalations for case.
-  * `PATCH /api/v1/escalations/{id}/acknowledge`: Team Lead or Manager acknowledges escalation.
-  * `PATCH /api/v1/escalations/{id}/resolve`: Resolve escalation.
-  * `POST /api/v1/sweep/trigger`: On-demand manual sweep trigger (Staff only).
+  * Proactive SLA warning alerts (at >= 80% elapsed window).
+  * SLA breach detection with automated escalation creation.
+  * Escalation promotion to Manager after 2 hours unacknowledged.
+  * Operator manual escalation trigger.
 
 ### Branch 9 — Knowledge Base & Multi-Tier Approvals
 * **Knowledge Base Engine (`services/knowledge_service.py`)**:
-  * **Authoring & Lifecycle**: Markdown knowledge article authoring with `draft`, `published`, and `archived` states per SRS §5.14. Requesters restricted to published articles only; staff view and author all states.
-  * **Search & Suggestions**: Full-text and keyword search matching across article titles and Markdown bodies. Contextual token extraction against case title/description providing automatic knowledge suggestions (`GET /api/v1/knowledge/suggestions/case/{case_id}`) per SRS §5.14.
-  * **Audit Logging**: Full audit trail recording article creation, updates, and archival.
+  * Markdown knowledge article authoring with `draft`, `published`, and `archived` states.
+  * Full-text search and contextual recommendations matching active case tokens.
 * **Approval Workflows (`services/approval_service.py`)**:
-  * **Multi-Tier Authorization**: Business approvals for changes and elevated Service Requests per SRS §4 & §6.1. Only staff can request approvals for cases in `ASSIGNED` state; designated approvers must hold `Team Lead`, `Manager`, or `Administrator` roles.
-  * **Deterministic State Machine**: Requesting approval transitions case from `ASSIGNED` to `AWAITING_APPROVAL`, incrementing version integer (`version += 1`). Deciding approval (`approved` / `rejected`) transitions case back to `ASSIGNED` status with recorded justification.
-  * **Conflict Defense & Logging**: Prevents duplicate active approval requests on the same case (`409 Conflict`). Injects case timeline messages and alerts case stakeholders.
-* **REST Endpoints**:
-  * `POST /api/v1/knowledge`: Author article (Staff only).
-  * `GET /api/v1/knowledge`: List and search articles with pagination.
-  * `GET /api/v1/knowledge/{id}`: View article details with state-based RBAC.
-  * `PUT /api/v1/knowledge/{id}`: Update article content (Author or Manager).
-  * `POST /api/v1/knowledge/{id}/archive`: Archive article.
-  * `GET /api/v1/knowledge/suggestions/case/{case_id}`: Contextual article recommendations for case.
-  * `POST /api/v1/cases/{case_id}/approvals`: Request approval on case in `ASSIGNED` status.
-  * `GET /api/v1/cases/{case_id}/approvals`: List approval history for a case.
-  * `GET /api/v1/approvals/pending`: List pending approvals awaiting decision (Staff only).
-  * `POST /api/v1/approvals/{approval_id}/decision`: Submit approval decision (`approved` / `rejected`).
+  * Business authorization requests on cases in `ASSIGNED` status.
+  * State gating: `ASSIGNED` -> `AWAITING_APPROVAL` -> `ASSIGNED` upon decision.
+  * Lead and Manager decision endpoints with audit recording.
+
+### Consolidated Branches 10, 11 & 12 — Multiplatform Flutter Client (`feature/frontend`)
+* **Shared Infrastructure & Enterprise Design System**:
+  * `AppConfig`: 100% environment-driven configuration reading compile-time `--dart-define` parameters with zero hardcoded URLs/secrets.
+  * `SessionStorage`: Secure token persistence wrapping `flutter_secure_storage` with resilient in-memory fallback for headless or restricted environments.
+  * `ApiClient`: HTTP client injecting Bearer JWT tokens, RFC error envelope deserialization, auto-generated UUIDv4 `Idempotency-Key` headers, and transparent 401 token refresh rotation retry.
+  * `AppColors` & `AppTheme`: Material 3 design system adhering to WCAG 2.1 AA standards (minimum 4.5:1 text contrast, Deep Enterprise Blue `#1E40AF` palette, semantic SLA colors).
+  * `ResponsiveScaffold`: Adaptive layout supporting Mobile (`NavigationBar`), Tablet, and Desktop (`NavigationRail`).
+  * `SlaTimerWidget`: Real-time wall-clock countdown timer with warning (<20% remaining) and breach states.
+  * `AccessibleButton`: Accessibility wrapper providing semantic labels and 48x48 min touch targets.
+* **Authentication & Navigation (Branch 10 Scope)**:
+  * `UserModel`: Role parsing and capability getters (`isStaff`, `canApprove`, `isManagerOrAdmin`).
+  * `AuthProvider`: Dual-path login, password registration, Google OAuth sign-in, session restore on launch, single-use refresh token rotation, and logout.
+  * `LoginScreen` & `RegisterScreen`: Accessible forms with validation, error banners, and site/campus selection.
+  * `AuthGate`: Global authentication state switcher routing between Login, Splash, and Dashboard.
+* **Case Management & Message Stream (Branch 11 Scope)**:
+  * `CaseModel`, `SLAModel`, `MessageModel`, `AttachmentModel`: Strong typing and full JSON serialization.
+  * `CaseProvider`: Ticket listing, keyword search, status/priority filtering, intake submission, optimistic locking version management, message posting, and offline read-only caching.
+  * `CaseListScreen`: Filterable ticket feed with real-time SLA countdown timers.
+  * `CreateCaseDialog`: Validated intake form for Incidents and Service Requests.
+  * `MessageStreamWidget`: Chat-style message feed with distinct visual segregation for internal notes vs. requester communications.
+  * `AttachmentListWidget`: Evidence file browser with file type icons, size display, and download triggers.
+  * `CaseDetailScreen`: Unified multi-tab workspace embedding Timeline, AI Copilot, Case Info, and Approvals.
+* **AI Assistance, Approvals & Operations Dashboards (Branch 12 Scope)**:
+  * `AIProvider`: Manages AI triage recommendations, Living Summaries, SLA risk assessments, and draft generation.
+  * `AITriageCard`: Displays AI classification, confidence meter, and human-in-the-loop review button.
+  * `LivingSummaryCard`: Collapsible living summary updating with latest developments.
+  * `SLARiskCard`: Visual risk score meter with breakdown of aggravating factors.
+  * `AIDraftDialog`: Context-aware response drafter supporting 4 draft types.
+  * `ApprovalProvider` & `ApprovalPanelWidget`: Business authorization request workflow and decision buttons.
+  * `PendingApprovalsScreen`: Unified inbox for Leads and Managers.
+  * `KnowledgeBrowserScreen`: Searchable knowledge article library with Markdown rendering.
+  * `RequesterHomeScreen`: Self-service portal with active ticket counters, quick submission, and knowledge search.
+  * `OperatorWorkspaceScreen`: Workstation for L1/L2 operators with triage queues and active assignments.
+  * `ManagerInsightsScreen`: Executive operational health dashboard with SLA compliance rates, backlog charts, and plain-language AI operational briefings.
+  * `DashboardShell`: Role-aware responsive navigation shell adapting menus to user roles.
 
 ---
 
 ## 4. Test Suite & Build Verification
 
-The test suite runs with `pytest` and `pytest-asyncio` using an in-memory SQLite database (`aiosqlite`) configured in `backend/tests/conftest.py`:
-
+### Backend Verification (Python 3.14 + Pytest)
 ```text
 ============================= test session starts ==============================
-platform darwin -- Python 3.14.4, pytest-9.1.1, pluggy-1.6.0 -- backend/.venv/bin/python3.14
 rootdir: backend, configfile: pytest.ini
 plugins: asyncio-1.4.0, anyio-4.15.1
 collected 75 items
 
-tests/unit/test_ai.py ..........                                         [ 13%]
-tests/unit/test_attachments.py .........                                 [ 25%]
-tests/unit/test_auth.py ...........                                      [ 40%]
-tests/unit/test_cases.py ............                                    [ 56%]
-tests/unit/test_health.py ..                                             [ 58%]
-tests/unit/test_knowledge_approvals.py ...........                       [ 73%]
-tests/unit/test_models.py .......                                        [ 82%]
-tests/unit/test_notifications.py ......                                  [ 90%]
-tests/unit/test_sweep.py .......                                         [100%]
+backend/tests/unit/test_ai.py ..........                                 [ 13%]
+backend/tests/unit/test_attachments.py .........                         [ 25%]
+backend/tests/unit/test_auth.py ...........                              [ 40%]
+backend/tests/unit/test_cases.py ............                            [ 56%]
+backend/tests/unit/test_health.py ..                                     [ 58%]
+backend/tests/unit/test_knowledge_approvals.py ...........               [ 73%]
+backend/tests/unit/test_models.py .......                                [ 82%]
+backend/tests/unit/test_notifications.py ......                          [ 90%]
+backend/tests/unit/test_sweep.py .......                                 [100%]
 
-======================== 75 passed, 2 warnings in 6.17s =========================
+======================== 75 passed, 2 warnings in 5.87s ========================
 ```
 
+### Client Models & Logic Verification (`client/test/models_test.dart`)
+* Full test coverage for JSON serialization/deserialization:
+  * `UserModel`: Requester, Staff, Approver, and Admin permissions.
+  * `CaseModel` & `SLAModel`: Concurrency version, 24/7 SLA targets, breach states.
+  * `MessageModel`: Visibility segregation (`requester` vs. `internal_only`).
+  * `AITriageModel`: AI classification, confidence score, and reasoning.
+  * `RiskAssessmentModel`: Risk score, severity levels, and aggravating factors.
+  * `ApprovalModel`: Business authorization requests and decision tracking.
+  * `KnowledgeArticleModel`: Article state and lifecycle.

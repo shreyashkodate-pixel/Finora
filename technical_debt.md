@@ -1,8 +1,8 @@
 # AI IT Helpdesk — Technical Debt & Future Roadmap
 
 **Document Purpose**: Tracks architectural technical debt, known operational limits, and future roadmap milestones for the **AI IT Helpdesk**.  
-**Current Status**: Branches 1–9 Completed and Verified (75/75 Passing Tests).  
-**Target Next Milestone**: Branch 10 — Multiplatform Flutter Client Authentication & Navigation (`feature/flutter-auth-navigation`).  
+**Current Status**: Phase 1 Foundation & Core Workflows Completed across All 12 Branches (75/75 Backend Tests Passing + Complete Multiplatform Flutter Client).  
+**Target Next Phase**: Phase 2 — Production Hardening, Cloud Deployment, and Observability.  
 **Last Updated**: September 17, 2026
 
 ---
@@ -29,11 +29,17 @@
 * **Technical Debt**: Adding new status states or roles in future phases requires custom Alembic migration scripts using raw DDL (`ALTER TYPE casestatus ADD VALUE 'NEW_STATUS';`), as standard autogenerate does not detect enum changes.
 * **Target Solution**: Document explicit enum expansion migration patterns in Alembic templates.
 
+### 1.5 Flutter Local Cache Persistence
+* **Current State**: In-memory `Map<String, CaseModel>` cache with session storage fallback is used for offline ticket browsing.
+* **Technical Debt**: If the application is completely killed and restarted in full offline mode without any previous network connectivity in that session, the cache resides in runtime memory.
+* **Target Solution**: Integrate `hive_flutter` or `sqflite` for persistent local disk database caching in Phase 2 for field technicians operating in zero-connectivity environments.
+
 ---
 
 ## 2. Completed Milestones vs Future Roadmap
 
 ```
+========================= PHASE 1: COMPLETED =========================
 [x] Branch 1: Project Scaffolding & Shared Infrastructure
     ├── Docker Compose with PostgreSQL 16 Alpine
     ├── FastAPI foundation with health check and RFC error envelope
@@ -89,16 +95,34 @@
     ├── Multi-tier approval requests for high-risk changes & Service Requests
     └── Deterministic state gating (AWAITING_APPROVAL -> ASSIGNED) with version increment
 
-[ ] Branches 10–12: Multiplatform Flutter Client
-    ├── Branch 10: Client Authentication, Persistent Session & GoRouter
-    ├── Branch 11: Real-time Case Stream, Intake Forms & Offline Cache
-    └── Branch 12: AI Copilot Dashboard, Approvals & WCAG 2.1 AA A11y
+[x] Consolidated Branches 10–12: Multiplatform Flutter Client (feature/frontend)
+    ├── Branch 10: Dual Auth, Session Restore, Role Routing & WCAG 2.1 AA Themes
+    ├── Branch 11: Real-time Case Workspace, Internal Notes Segregation & Attachments
+    └── Branch 12: Gemini AI Copilot, Approvals Inbox, Role Dashboards & Metrics
+
+==================== PHASE 2: PRODUCTION HARDENING ====================
+[ ] Cloud Infrastructure & CI/CD Pipeline
+    ├── GitHub Actions workflows for automated linting, test suites, and Docker builds
+    ├── Production deployment to Render (FastAPI web service + PostgreSQL managed DB)
+    └── Supabase Storage bucket production policy setup
+[ ] Distributed State & Caching
+    ├── Redis cluster integration for distributed sliding-window rate limiting
+    └── Redis cache for high-traffic Knowledge Base queries
+[ ] Advanced Real-time Streaming
+    ├── WebSocket event bus for instant timeline updates without manual polling
+    └── WebRTC / Live agent presence indicators
+[ ] Native Platform Integrations
+    ├── Android & iOS push notifications via Firebase Cloud Messaging (FCM)
+    └── Native biometric authentication (FaceID / Fingerprint) unlock
 ```
 
 ---
 
-## 3. Next Milestone (Branch 10) Implementation Priorities
+## 3. Phase 2 Recommended Next Priorities
 
-1. **Flutter Client Architecture & Setup**: Ensure multiplatform flutter environment compiles (Android, Web, Desktop), configuring state management and HTTP client with `Idempotency-Key` and `Authorization` headers.
-2. **Authentication Flow & Storage**: Implement dual-path sign-in (email/password and Google OAuth PKCE), token pair storage (secure storage), and automatic refresh token rotation on `401 Unauthorized`.
-3. **Declarative Navigation & Role Guards**: Configure `GoRouter` with role-aware redirects ensuring Requesters, Operators, Team Leads, and Managers land on appropriate dashboard entrypoints.
+1. **Production Docker Deployment**:
+   * Create production multi-stage `Dockerfile` and `render.yaml` infrastructure blueprint.
+2. **CI/CD Automation**:
+   * Setup `.github/workflows/test.yml` running pytest, static analysis, and security scanning on PRs.
+3. **Persistent Offline Storage**:
+   * Migrate Flutter client memory cache to `hive_flutter` for persistent offline case management.
