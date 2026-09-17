@@ -26,6 +26,7 @@ from schemas.case import (
     MessageCreate,
     CaseRelationshipCreate,
 )
+from services.notification_service import NotificationService
 
 
 TYPE_PREFIXES: Dict[CaseType, str] = {
@@ -174,6 +175,10 @@ class CaseService:
         )
         self.db.add(audit)
 
+        # Dispatch notification to requester per SRS §5.10
+        notif_service = NotificationService(self.db)
+        await notif_service.notify_case_created(case, current_user)
+
         await self.db.commit()
         return await self._reload_case(case.id)
 
@@ -318,6 +323,7 @@ class CaseService:
                 resp_tgt, res_tgt = self._calculate_sla(payload.priority, case.created_at)
                 case.sla.target_response_at = resp_tgt
                 case.sla.target_resolve_at = res_tgt
+        before_owner_id = case.owner_id
         if payload.owner_id is not None:
             case.owner_id = payload.owner_id
         if payload.team_id is not None:
@@ -347,6 +353,15 @@ class CaseService:
             created_at=datetime.now(timezone.utc),
         )
         self.db.add(audit)
+
+        # Dispatch assignment notification if owner was updated
+        if payload.owner_id is not None and payload.owner_id != before_owner_id:
+            assignee_stmt = select(User).where(User.id == payload.owner_id)
+            assignee_res = await self.db.execute(assignee_stmt)
+            assignee = assignee_res.scalar_one_or_none()
+            if assignee:
+                notif_service = NotificationService(self.db)
+                await notif_service.notify_case_assigned(case, assignee, current_user)
 
         await self.db.commit()
         return await self._reload_case(case.id)
@@ -450,6 +465,22 @@ class CaseService:
         )
         self.db.add(audit)
 
+        # Dispatch resolution or reopen notifications per SRS §5.10
+        notif_service = NotificationService(self.db)
+        if payload.new_status == CaseStatus.RESOLVED:
+            req_stmt = select(User).where(User.id == case.requester_id)
+            req_res = await self.db.execute(req_stmt)
+            requester = req_res.scalar_one_or_none()
+            if requester:
+                await notif_service.notify_case_resolved(case, current_user, requester)
+        elif payload.new_status == CaseStatus.ASSIGNED and before_status in (CaseStatus.RESOLVED.value, CaseStatus.CLOSED.value):
+            if case.owner_id:
+                owner_stmt = select(User).where(User.id == case.owner_id)
+                owner_res = await self.db.execute(owner_stmt)
+                owner = owner_res.scalar_one_or_none()
+                if owner:
+                    await notif_service.notify_case_reopened(case, current_user, owner)
+
         await self.db.commit()
         return await self._reload_case(case.id)
 
@@ -547,6 +578,21 @@ class CaseService:
             created_at=now,
         )
         self.db.add(audit)
+
+        # Dispatch notification to other party per SRS §5.10
+        notif_service = NotificationService(self.db)
+        if current_user.id != case.requester_id and payload.visibility == MessageVisibility.REQUESTER_VISIBLE:
+            req_stmt = select(User).where(User.id == case.requester_id)
+            req_res = await self.db.execute(req_stmt)
+            requester = req_res.scalar_one_or_none()
+            if requester:
+                await notif_service.notify_new_message(case, message, current_user, requester)
+        elif current_user.id == case.requester_id and case.owner_id:
+            owner_stmt = select(User).where(User.id == case.owner_id)
+            owner_res = await self.db.execute(owner_stmt)
+            owner = owner_res.scalar_one_or_none()
+            if owner:
+                await notif_service.notify_new_message(case, message, current_user, owner)
 
         await self.db.commit()
         await self.db.refresh(message)

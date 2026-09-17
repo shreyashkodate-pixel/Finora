@@ -15,6 +15,7 @@ from models.enums import (
     DraftStatus,
     ApprovalDecision,
     KnowledgeState,
+    NotificationEventType,
 )
 from models.user import User, Team
 from models.case import Case, CaseRelationship
@@ -31,6 +32,7 @@ from models.ai import (
 from models.audit import AuditLog
 from models.knowledge import KnowledgeArticle, Approval
 from models.auth import RefreshToken
+from models.notification import Notification
 
 __all__ = [
     # Enums
@@ -50,6 +52,7 @@ __all__ = [
     "DraftStatus",
     "ApprovalDecision",
     "KnowledgeState",
+    "NotificationEventType",
     # Core Models
     "User",
     "Team",
@@ -67,4 +70,5 @@ __all__ = [
     "KnowledgeArticle",
     "Approval",
     "RefreshToken",
+    "Notification",
 ]

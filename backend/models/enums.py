@@ -107,3 +107,15 @@ class KnowledgeState(str, Enum):
     DRAFT = "draft"
     PUBLISHED = "published"
     ARCHIVED = "archived"
+
+
+class NotificationEventType(str, Enum):
+    CASE_CREATED = "case_created"
+    CASE_ASSIGNED = "case_assigned"
+    NEW_MESSAGE = "new_message"
+    CASE_RESOLVED = "case_resolved"
+    CASE_REOPENED = "case_reopened"
+    SLA_WARNING = "sla_warning"
+    SLA_BREACH = "sla_breach"
+    ESCALATION_RAISED = "escalation_raised"
+
