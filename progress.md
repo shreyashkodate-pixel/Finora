@@ -2,8 +2,8 @@
 
 **Document Purpose**: Official development progress, completed milestones, architectural decisions, and verification records for the **AI IT Helpdesk** (FastAPI + PostgreSQL + Gemini AI + Flutter Multiplatform).  
 **Current Release Target**: Phase 1 Foundation & Core Workflows per PRD & SRS v3.3.  
-**Last Updated**: September 16, 2026  
-**Status**: Branches 1, 2, 3, and 4 Completed, Merged into `dev`, 100% Passing Tests (32/32), and Pushed to Remote.
+**Last Updated**: September 17, 2026  
+**Status**: Branches 1, 2, 3, 4, and 5 Completed, 100% Passing Tests (41/41).
 
 ---
 
@@ -18,6 +18,7 @@ The AI IT Helpdesk is a production-grade enterprise service desk platform featur
 * **Message Visibility & Confidentiality**: Strict separation between `requester_visible` communications and `internal_only` operator notes; automatic server-side masking for requesters.
 * **Deterministic Concurrency & Auditability**: Optimistic locking (`version` integer) on mutating case operations (`409 STALE_VERSION` on collision); immutable append-only `AuditLog` records.
 * **24/7 Elapsed SLA Engine**: Wall-clock UTC elapsed time math without complex holiday/business-hour dependencies (P1: 15m/4h, P2: 1h/8h, P3: 4h/72h, P4: 24h/120h).
+* **Secure Evidence Storage**: Magic-bytes validation (jpg, png, webp, gif, pdf, docx, txt, log), 10MB file / 50MB case limits, server-generated UUID paths, and presigned access URLs.
 
 ---
 
@@ -36,13 +37,15 @@ The AI IT Helpdesk is a production-grade enterprise service desk platform featur
 | `fed13f9` | `feature/case-lifecycle-api` | `feat(cases)`: implement case lifecycle api, reference generator, and optimistic locking |
 | `9f87745` | `dev` | `feat`: merge branch 'feature/auth-and-rbac' into dev |
 | `fbaecd3` | `dev` | `feat`: merge branch 'feature/case-lifecycle-api' into dev |
+| `033231b` | `dev` | `docs`: add progress.md and technical_debt.md tracking project status and roadmap |
+| `3733318` | `feature/file-upload-api` | `feat(attachments)`: implement file upload api, magic-bytes validation, and storage providers |
 
 ```
 [x] Branch 1: Project Scaffolding & Shared Infrastructure
 [x] Branch 2: Relational Database Models & Alembic Migrations
 [x] Branch 3: Dual-Path Authentication, Google OAuth, & RBAC Engine
 [x] Branch 4: Case Lifecycle, State Machine, SLA & Audit API
-[ ] Branch 5: Evidence & File Uploads via Supabase Storage
+[x] Branch 5: Evidence & File Uploads via Supabase Storage
 [ ] Branch 6: In-App & Email Notifications (Gmail SMTP / Brevo HTTP)
 [ ] Branch 7: Gemini AI Integration (Triage, Summary, Risk, Drafts)
 [ ] Branch 8: Periodic SLA & Risk Sweep Engine (APScheduler)
@@ -118,6 +121,29 @@ The AI IT Helpdesk is a production-grade enterprise service desk platform featur
 * **Endpoints (`api/cases/routes.py`)**:
   * Full REST suite for cases, paginated listing with multi-field search, status transitions, messages, relationships, and audit history.
 
+### Branch 5 — Evidence & File Uploads via Supabase Storage
+* **File Validation & Magic Bytes (`core/file_validator.py`)**:
+  * Validates binary headers against allowlist: `jpg`, `jpeg`, `png`, `webp`, `gif`, `pdf`, `docx`, `txt`, `log`.
+  * Categorically rejects executable binaries (ELF, Windows PE/MZ, Mach-O, RAR, 7z) and null bytes in text.
+  * Enforces maximum 10MB per file and 50MB cumulative attachment quota per case per SRS §7.5.
+* **Storage Provider Abstraction (`providers/storage/`)**:
+  * `StorageProvider` abstract interface.
+  * `SupabaseStorageProvider`: Async HTTP REST client for Supabase Storage bucket uploads, time-limited presigned URLs, and object deletion.
+  * `LocalStorageProvider`: Local filesystem storage engine for offline dev and zero-network automated unit testing.
+  * Dynamic provider factory `get_storage_provider()`.
+* **Attachment Service (`services/attachment_service.py`)**:
+  * Generates server-side UUID storage path (`cases/{case_id}/{uuid4}{ext}`).
+  * RBAC and case isolation enforcement (Requesters limited to own open cases; blocked on closed/cancelled cases).
+  * 24-hour in-memory idempotency deduplication cache on mutating upload requests.
+  * Emits append-only `AuditLog` records for `ATTACHMENT_UPLOADED` and `ATTACHMENT_DELETED`.
+* **Endpoints (`api/attachments/routes.py`)**:
+  * `POST /cases/{case_id}/attachments`: Multipart file upload with `Idempotency-Key` header support.
+  * `GET /cases/{case_id}/attachments`: List attachments for case.
+  * `GET /cases/{case_id}/attachments/quota`: Real-time storage consumption metrics and remaining quota.
+  * `GET /attachments/{attachment_id}`: Metadata lookup.
+  * `GET /attachments/{attachment_id}/download`: Presigned download link generator with configurable TTL.
+  * `DELETE /attachments/{attachment_id}`: Deletes file from storage and database.
+
 ---
 
 ## 4. Test Suite & Build Verification
@@ -128,40 +154,49 @@ The test suite runs with `pytest` and `pytest-asyncio` using an in-memory SQLite
 ============================= test session starts ==============================
 platform darwin -- Python 3.14.4, pytest-9.1.1, pluggy-1.6.0 -- backend/.venv/bin/python3.14
 rootdir: backend, configfile: pytest.ini
-collected 32 items
+collected 41 items
 
-tests/unit/test_auth.py::test_password_registration_success PASSED       [  3%]
-tests/unit/test_auth.py::test_password_registration_short_password_rejected PASSED [  6%]
-tests/unit/test_auth.py::test_duplicate_registration_returns_409 PASSED  [  9%]
-tests/unit/test_auth.py::test_password_login_success PASSED              [ 12%]
-tests/unit/test_auth.py::test_password_login_wrong_password PASSED       [ 15%]
-tests/unit/test_auth.py::test_refresh_token_rotation PASSED              [ 18%]
-tests/unit/test_auth.py::test_google_oauth_signup_and_account_collision PASSED [ 21%]
-tests/unit/test_auth.py::test_verify_email_flow PASSED                   [ 25%]
-tests/unit/test_auth.py::test_get_current_user_profile PASSED            [ 28%]
-tests/unit/test_auth.py::test_require_roles_enforcement PASSED           [ 31%]
-tests/unit/test_auth.py::test_unverified_email_blocked_in_production PASSED [ 34%]
-tests/unit/test_cases.py::test_create_case_and_reference_number PASSED   [ 37%]
-tests/unit/test_cases.py::test_sequential_reference_numbers PASSED       [ 40%]
-tests/unit/test_cases.py::test_list_cases_requester_isolation PASSED     [ 43%]
-tests/unit/test_cases.py::test_get_case_access_control PASSED            [ 46%]
-tests/unit/test_cases.py::test_optimistic_locking_collision PASSED       [ 50%]
-tests/unit/test_cases.py::test_case_state_transitions PASSED             [ 53%]
-tests/unit/test_cases.py::test_invalid_state_transition_rejected PASSED  [ 56%]
-tests/unit/test_cases.py::test_reopen_window_expired PASSED              [ 59%]
-tests/unit/test_cases.py::test_message_visibility_filtering PASSED       [ 62%]
-tests/unit/test_cases.py::test_case_soft_delete PASSED                   [ 65%]
-tests/unit/test_cases.py::test_case_relationships PASSED                 [ 68%]
-tests/unit/test_cases.py::test_audit_logs_recorded PASSED                [ 71%]
-tests/unit/test_health.py::test_health_check_returns_ok PASSED           [ 75%]
-tests/unit/test_health.py::test_root_endpoint PASSED                     [ 78%]
-tests/unit/test_models.py::test_user_model_defaults_and_oauth PASSED     [ 81%]
-tests/unit/test_models.py::test_case_model_defaults_and_optimistic_locking PASSED [ 84%]
-tests/unit/test_models.py::test_sla_model_24_7_fields PASSED             [ 87%]
-tests/unit/test_models.py::test_ai_triage_result_confidence_level PASSED [ 90%]
-tests/unit/test_models.py::test_case_risk_assessment_signals PASSED      [ 93%]
-tests/unit/test_models.py::test_audit_log_system_actor_nullable PASSED   [ 96%]
-tests/unit/test_models.py::test_message_visibility_control PASSED        [100%]
+tests/unit/test_attachments.py::test_upload_valid_png_attachment PASSED     [  2%]
+tests/unit/test_attachments.py::test_upload_valid_pdf_and_docx PASSED      [  4%]
+tests/unit/test_attachments.py::test_reject_disallowed_extension PASSED    [  7%]
+tests/unit/test_attachments.py::test_reject_spoofed_extension PASSED       [  9%]
+tests/unit/test_attachments.py::test_reject_file_exceeding_10mb PASSED     [ 12%]
+tests/unit/test_attachments.py::test_case_quota_and_50mb_limit PASSED      [ 14%]
+tests/unit/test_attachments.py::test_requester_isolation_and_staff_access PASSED [ 17%]
+tests/unit/test_attachments.py::test_download_and_delete_attachment PASSED [ 19%]
+tests/unit/test_attachments.py::test_idempotent_attachment_upload PASSED   [ 21%]
+tests/unit/test_auth.py::test_password_registration_success PASSED          [ 24%]
+tests/unit/test_auth.py::test_password_registration_short_password_rejected PASSED [ 26%]
+tests/unit/test_auth.py::test_duplicate_registration_returns_409 PASSED     [ 29%]
+tests/unit/test_auth.py::test_password_login_success PASSED                 [ 31%]
+tests/unit/test_auth.py::test_password_login_wrong_password PASSED          [ 34%]
+tests/unit/test_auth.py::test_refresh_token_rotation PASSED                 [ 36%]
+tests/unit/test_auth.py::test_google_oauth_signup_and_account_collision PASSED [ 39%]
+tests/unit/test_auth.py::test_verify_email_flow PASSED                      [ 41%]
+tests/unit/test_auth.py::test_get_current_user_profile PASSED               [ 43%]
+tests/unit/test_auth.py::test_require_roles_enforcement PASSED              [ 46%]
+tests/unit/test_auth.py::test_unverified_email_blocked_in_production PASSED [ 48%]
+tests/unit/test_cases.py::test_create_case_and_reference_number PASSED      [ 51%]
+tests/unit/test_cases.py::test_sequential_reference_numbers PASSED          [ 53%]
+tests/unit/test_cases.py::test_list_cases_requester_isolation PASSED        [ 56%]
+tests/unit/test_cases.py::test_get_case_access_control PASSED               [ 58%]
+tests/unit/test_cases.py::test_optimistic_locking_collision PASSED          [ 60%]
+tests/unit/test_cases.py::test_case_state_transitions PASSED                [ 63%]
+tests/unit/test_cases.py::test_invalid_state_transition_rejected PASSED     [ 65%]
+tests/unit/test_cases.py::test_reopen_window_expired PASSED                 [ 68%]
+tests/unit/test_cases.py::test_message_visibility_filtering PASSED          [ 70%]
+tests/unit/test_cases.py::test_case_soft_delete PASSED                      [ 73%]
+tests/unit/test_cases.py::test_case_relationships PASSED                    [ 75%]
+tests/unit/test_cases.py::test_audit_logs_recorded PASSED                   [ 78%]
+tests/unit/test_health.py::test_health_check_returns_ok PASSED              [ 80%]
+tests/unit/test_health.py::test_root_endpoint PASSED                        [ 82%]
+tests/unit/test_models.py::test_user_model_defaults_and_oauth PASSED        [ 85%]
+tests/unit/test_models.py::test_case_model_defaults_and_optimistic_locking PASSED [ 87%]
+tests/unit/test_models.py::test_sla_model_24_7_fields PASSED                [ 90%]
+tests/unit/test_models.py::test_ai_triage_result_confidence_level PASSED    [ 92%]
+tests/unit/test_models.py::test_case_risk_assessment_signals PASSED         [ 95%]
+tests/unit/test_models.py::test_audit_log_system_actor_nullable PASSED      [ 97%]
+tests/unit/test_message_visibility_control PASSED                           [100%]
 
-======================== 32 passed, 1 warning in 2.23s =========================
+======================== 41 passed, 1 warning in 2.78s =========================
 ```

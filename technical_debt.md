@@ -1,9 +1,9 @@
 # AI IT Helpdesk — Technical Debt & Future Roadmap
 
 **Document Purpose**: Tracks architectural technical debt, known operational limits, and future roadmap milestones for the **AI IT Helpdesk**.  
-**Current Status**: Branches 1–4 Completed and Merged into `dev`.  
-**Target Next Milestone**: Branch 5 — Evidence & File Uploads via Supabase Storage (`feature/file-upload-api`).  
-**Last Updated**: September 16, 2026
+**Current Status**: Branches 1–5 Completed and Verified (41/41 Passing Tests).  
+**Target Next Milestone**: Branch 6 — In-App & Email Notifications via Gmail SMTP / Brevo HTTP (`feature/notifications-api`).  
+**Last Updated**: September 17, 2026
 
 ---
 
@@ -58,7 +58,7 @@
     ├── Strict message visibility masking (requester vs internal)
     └── Immutable append-only AuditLog tracking
 
-[ ] Branch 5: Evidence & File Uploads via Supabase Storage
+[x] Branch 5: Evidence & File Uploads via Supabase Storage
     ├── MIME & magic-bytes file validation (jpg, png, webp, gif, pdf, docx, txt, log)
     ├── Size constraints (max 10MB per file, 50MB per case)
     ├── Server-generated UUID storage filenames
@@ -92,8 +92,8 @@
 
 ---
 
-## 3. Next Milestone (Branch 5) Implementation Priorities
+## 3. Next Milestone (Branch 6) Implementation Priorities
 
-1. **File Type Magic-Bytes Verification**: Inspect binary headers (`python-magic` or raw byte signatures) to ensure uploaded files match allowlisted extensions regardless of filename extension.
-2. **Quota Enforcement**: Calculate cumulative attachment size per case to enforce the 50MB per case threshold prior to storage dispatch.
-3. **Storage Abstraction**: Implement `StorageProvider` interface with `SupabaseStorageProvider` and local filesystem mock for zero-network testing.
+1. **Notification Provider Abstraction**: Implement `NotificationProvider` base interface with `GmailSmtpNotificationProvider` (local dev) and `BrevoNotificationProvider` (staging/production HTTP API over port 443).
+2. **Event Dispatch Integration**: Hook notifications into case lifecycle events (case created, assigned, SLA warning/breach, resolved) per SRS §3.9 & §5.10.
+3. **Resilient Non-Blocking Delivery**: Ensure email send failures are logged and retried without rolling back the underlying database transactions per SRS §7.7/§7.14.
