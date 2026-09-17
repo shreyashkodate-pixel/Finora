@@ -1,8 +1,8 @@
 # AI IT Helpdesk — Technical Debt & Future Roadmap
 
 **Document Purpose**: Tracks architectural technical debt, known operational limits, and future roadmap milestones for the **AI IT Helpdesk**.  
-**Current Status**: Branches 1–7 Completed and Verified (57/57 Passing Tests).  
-**Target Next Milestone**: Branch 8 — Periodic SLA & Risk Sweep Engine (`feature/periodic-sweep-engine`).  
+**Current Status**: Branches 1–8 Completed and Verified (64/64 Passing Tests).  
+**Target Next Milestone**: Branch 9 — Knowledge Base & Approval Workflows (`feature/knowledge-base-and-approvals`).  
 **Last Updated**: September 17, 2026
 
 ---
@@ -76,10 +76,12 @@
     ├── AI Communication Draft Assistant with Human-in-the-Loop review
     └── Strict prompt-injection defenses (untrusted requester input)
 
-[ ] Branch 8: Periodic SLA & Risk Sweep Engine
+[x] Branch 8: Periodic SLA & Risk Sweep Engine
     ├── In-process APScheduler background sweep (every 5 mins)
     ├── Automated SLA breach detection and escalation triggering
-    └── Render free-tier spin-down mitigation with uptime health pinger
+    ├── Proactive 80% SLA deadline warnings (in-app + email)
+    ├── Managerial escalation promotion after 2 hours unacknowledged
+    └── Render free-tier spin-down mitigation with keepalive health pinger
 
 [ ] Branch 9: Knowledge Base & Approval Workflows
     ├── Markdown Knowledge Article management and pg_trgm search
@@ -93,9 +95,8 @@
 
 ---
 
-## 3. Next Milestone (Branch 8) Implementation Priorities
+## 3. Next Milestone (Branch 9) Implementation Priorities
 
-1. **APScheduler Background Engine (`core/scheduler.py`)**: Configure in-process `AsyncIOScheduler` executing the periodic sweep every 5 minutes per SRS §3.5.
-2. **Automated SLA Warning & Breach Detection**: Query cases approaching response/resolution deadlines (configurable 20% remaining target window) or already breached; dispatch alerts via `NotificationService`.
-3. **Escalation Engine (SRS §5.8)**: Raise `EscalationEvent` records when SLA deadline is breached, risk level is High/Critical, or case reopened multiple times. Route first to Team Lead, then escalate to Manager if unacknowledged within 2 hours.
-4. **Render Spin-Down Mitigation**: Integrate periodic self-health pinger to prevent Render free-tier instance inactivity spin-downs per SRS §3.1.
+1. **Knowledge Base Engine (`services/knowledge_service.py`)**: Implement Markdown knowledge article authoring with `draft`, `published`, and `archived` states per SRS §5.14.
+2. **Search Optimization**: Leverage existing PostgreSQL `pg_trgm` GIN indexes and full-text search vectors for fast offline-capable knowledge retrieval.
+3. **Approval Workflows (`services/approval_service.py`)**: Implement multi-tier approval requests for changes (`CaseType.CHANGE`), enforcing decision-maker authorization, status locking, and audit trail logging.

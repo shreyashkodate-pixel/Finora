@@ -3,7 +3,7 @@
 **Document Purpose**: Official development progress, completed milestones, architectural decisions, and verification records for the **AI IT Helpdesk** (FastAPI + PostgreSQL + Gemini AI + Flutter Multiplatform).  
 **Current Release Target**: Phase 1 Foundation & Core Workflows per PRD & SRS v3.3.  
 **Last Updated**: September 17, 2026  
-**Status**: Branches 1, 2, 3, 4, 5, 6, and 7 Completed, 100% Passing Tests (57/57).
+**Status**: Branches 1, 2, 3, 4, 5, 6, 7, and 8 Completed, 100% Passing Tests (64/64).
 
 ---
 
@@ -20,6 +20,7 @@ The AI IT Helpdesk is a production-grade enterprise service desk platform featur
 * **24/7 Elapsed SLA Engine**: Wall-clock UTC elapsed time math without complex holiday/business-hour dependencies (P1: 15m/4h, P2: 1h/8h, P3: 4h/72h, P4: 24h/120h).
 * **Secure Evidence Storage**: Magic-bytes validation (jpg, png, webp, gif, pdf, docx, txt, log), 10MB file / 50MB case limits, server-generated UUID paths, and presigned access URLs.
 * **Human-in-the-Loop AI Assistant**: Advisory-only triage categorization, continuous living summarization, escalation risk detection, and communication drafting powered by `gemini-2.5-flash` with prompt-injection defenses.
+* **Zero-Worker Background Processing ("The Sweep")**: In-process APScheduler engine running every 5 minutes for SLA monitoring, proactive warning alerts, breach detection, and multi-tier escalation hierarchy without external queues.
 
 ---
 
@@ -43,7 +44,9 @@ The AI IT Helpdesk is a production-grade enterprise service desk platform featur
 | `3553af0` | `dev` | `feat`: merge branch 'feature/file-upload-api' into dev |
 | `77158d0` | `feature/notifications-api` | `feat(notifications)`: implement in-app alerts, email providers, and lifecycle hooks |
 | `7fc0b9b` | `feature/notifications-api` | `docs`: update progress.md and technical_debt.md for branch 6 completion |
-| `dec759e` | `feature/gemini-ai-integration` | `feat(ai)`: integrate Gemini 2.5 Flash for triage, living summaries, risk, and drafts |
+| `90be88b` | `feature/gemini-ai-integration` | `feat(ai)`: integrate Gemini 2.5 Flash for triage, living summaries, risk, and drafts |
+| `191ce39` | `feature/gemini-ai-integration` | `docs`: update progress.md and technical_debt.md for branch 7 completion |
+| `e22bb90` | `feature/periodic-sweep-engine` | `feat(sweep)`: implement APScheduler sweep engine, SLA breach detection, and escalations |
 
 ```
 [x] Branch 1: Project Scaffolding & Shared Infrastructure
@@ -53,7 +56,7 @@ The AI IT Helpdesk is a production-grade enterprise service desk platform featur
 [x] Branch 5: Evidence & File Uploads via Supabase Storage
 [x] Branch 6: In-App & Email Notifications (Gmail SMTP / Brevo HTTP)
 [x] Branch 7: Gemini AI Integration (Triage, Summary, Risk, Drafts)
-[ ] Branch 8: Periodic SLA & Risk Sweep Engine (APScheduler)
+[x] Branch 8: Periodic SLA & Risk Sweep Engine (APScheduler)
 [ ] Branch 9: Knowledge Base & Approval Workflows
 [ ] Branch 10: Flutter Client Authentication & Navigation
 [ ] Branch 11: Flutter Client Case Management & Message Stream
@@ -184,17 +187,23 @@ The AI IT Helpdesk is a production-grade enterprise service desk platform featur
   * `assess_case_risk`: Periodic/on-demand signal calculation (inactivity hours, hours to SLA deadline, follow-ups).
   * `generate_draft`: Communication assistant generating Info Requests, Progress Updates, Resolutions, and Escalation Summaries.
   * `send_draft`: Human-in-the-loop sending that marks draft `SENT` and persists a `Message` visibly tagged with `ai_generated = True`.
-* **REST Endpoints (`api/ai/routes.py`)**:
-  * `GET /api/v1/cases/{id}/triage`: Inspect triage recommendations.
-  * `POST /api/v1/cases/{id}/triage`: Re-evaluate triage on demand.
-  * `POST /api/v1/cases/{id}/triage/apply`: Operator explicitly accepts recommendations.
-  * `GET /api/v1/cases/{id}/summary`: Retrieve continuous living summary.
-  * `POST /api/v1/cases/{id}/summary/refresh`: Force living summary update.
-  * `POST /api/v1/cases/{id}/risk`: Evaluate SLA breach risk signals.
-  * `POST /api/v1/cases/{id}/drafts`: Generate communication draft.
-  * `GET /api/v1/cases/{id}/drafts`: List drafts.
-  * `POST /api/v1/cases/{id}/drafts/{draft_id}/send`: Review and send draft as AI-labeled message.
-  * `DELETE /api/v1/cases/{id}/drafts/{draft_id}`: Discard draft.
+### Branch 8 — Periodic SLA & Risk Sweep Engine ("The Sweep")
+* **In-Process Scheduler (`scheduler/manager.py`)**:
+  * Configured `APScheduler`'s `AsyncIOScheduler` to execute strictly within the FastAPI process every 5 minutes (`SWEEP_INTERVAL_MINUTES=5`) per SRS §3.5. Zero worker/queue overhead.
+  * Tied to FastAPI's async `lifespan` for clean startup and graceful shutdown.
+  * Optional Render free-tier keepalive self-health pinger (`scheduler/keepalive.py`) running every 10 minutes per SRS §3.1.
+* **The Sweep Service (`services/sweep_service.py`)**:
+  * **SLA Warning & Breach Detection**: Evaluates wall-clock elapsed time against 24/7 SLA targets. Marks `response_breached` and `resolution_breached`, dispatches notifications, and raises `MISSED_DEADLINE` escalations. Emits proactive `SLA_WARNING` alerts when >= 80% of window has elapsed (within 20% remaining).
+  * **Risk Scoring & High-Risk Trigger**: Evaluates inactivity duration, follow-ups, and reopen counts to write `CaseRiskAssessment`. Raises `HIGH_RISK` escalations on High/Critical levels.
+  * **Repeated Reopen Check**: Raises `REPEATED_REOPEN` escalations when a case has been reopened > 1 time.
+  * **Multi-Tier Escalation Hierarchy (SRS §5.8)**: Dispatches escalations to Team Lead first. Automatically promotes unacknowledged escalations older than 2 hours (`ESCALATION_UNACKNOWLEDGED_HOURS=2`) to Manager.
+  * **Operator Manual Escalation**: Level 2 human action for requesting managerial intervention.
+* **REST Endpoints (`api/escalations/routes.py`)**:
+  * `POST /api/v1/cases/{id}/escalate`: Operator manually requests escalation.
+  * `GET /api/v1/cases/{id}/escalations`: List escalations for case.
+  * `PATCH /api/v1/escalations/{id}/acknowledge`: Team Lead or Manager acknowledges escalation.
+  * `PATCH /api/v1/escalations/{id}/resolve`: Resolve escalation.
+  * `POST /api/v1/sweep/trigger`: On-demand manual sweep trigger (Staff only).
 
 ---
 
@@ -206,16 +215,18 @@ The test suite runs with `pytest` and `pytest-asyncio` using an in-memory SQLite
 ============================= test session starts ==============================
 platform darwin -- Python 3.14.4, pytest-9.1.1, pluggy-1.6.0 -- backend/.venv/bin/python3.14
 rootdir: backend, configfile: pytest.ini
-collected 57 items
+plugins: asyncio-1.4.0, anyio-4.15.1
+collected 64 items
 
-tests/unit/test_ai.py ..........                                         [ 17%]
-tests/unit/test_attachments.py .........                                 [ 33%]
-tests/unit/test_auth.py ...........                                      [ 52%]
-tests/unit/test_cases.py ............                                    [ 73%]
-tests/unit/test_health.py ..                                             [ 77%]
-tests/unit/test_models.py .......                                        [ 89%]
-tests/unit/test_notifications.py ......                                  [100%]
+tests/unit/test_ai.py ..........                                         [ 15%]
+tests/unit/test_attachments.py .........                                 [ 29%]
+tests/unit/test_auth.py ...........                                      [ 46%]
+tests/unit/test_cases.py ............                                    [ 65%]
+tests/unit/test_health.py ..                                             [ 68%]
+tests/unit/test_models.py .......                                        [ 79%]
+tests/unit/test_notifications.py ......                                  [ 89%]
+tests/unit/test_sweep.py .......                                         [100%]
 
-======================== 57 passed, 2 warnings in 4.42s =========================
+======================== 64 passed, 2 warnings in 4.79s =========================
 ```
 
