@@ -10,6 +10,10 @@ import '../features/changes/providers/change_provider.dart';
 import '../features/knowledge/providers/knowledge_provider.dart';
 import '../features/major_incidents/providers/major_incident_provider.dart';
 import '../features/problems/providers/problem_provider.dart';
+import '../features/alerts/providers/alert_provider.dart';
+import '../features/analytics/providers/predictive_analytics_provider.dart';
+import '../features/notifications/providers/notification_provider.dart';
+import '../features/search/providers/search_provider.dart';
 import '../shared/api_client.dart';
 import '../shared/storage.dart';
 import '../shared/theme/app_theme.dart';
@@ -58,14 +62,31 @@ class AIHelpdeskApp extends StatelessWidget {
         ChangeNotifierProvider<AutoFixProvider>(
           create: (_) => AutoFixProvider(apiClient: apiClient),
         ),
+        ChangeNotifierProvider<SearchProvider>(
+          create: (_) => SearchProvider(apiClient: apiClient),
+        ),
+        ChangeNotifierProvider<AlertProvider>(
+          create: (_) => AlertProvider(apiClient: apiClient),
+        ),
+        ChangeNotifierProvider<PredictiveAnalyticsProvider>(
+          create: (_) => PredictiveAnalyticsProvider(apiClient: apiClient),
+        ),
+        ChangeNotifierProvider<NotificationProvider>(
+          create: (ctx) {
+            final np = NotificationProvider(apiClient: apiClient);
+            final auth = ctx.read<AuthProvider>();
+            auth.registerLogoutCallback(np.clearState);
+            return np;
+          },
+        ),
       ],
 
       child: MaterialApp(
         title: 'AI IT Helpdesk',
         debugShowCheckedModeBanner: false,
         theme: AppTheme.lightTheme,
-        darkTheme: AppTheme.darkTheme,
-        themeMode: ThemeMode.system,
+        darkTheme: AppTheme.lightTheme,
+        themeMode: ThemeMode.light,
         home: const AuthGate(),
       ),
     );

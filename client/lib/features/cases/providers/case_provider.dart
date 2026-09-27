@@ -219,6 +219,80 @@ class CaseProvider extends ChangeNotifier {
     }
   }
 
+  /// Assign case to an operator or self (with optimistic concurrency check)
+  Future<bool> assignCase({
+    required String caseId,
+    required String ownerId,
+    required int currentVersion,
+  }) async {
+    _isActionLoading = true;
+    _errorMessage = null;
+    notifyListeners();
+
+    try {
+      final res = await apiClient.patch(
+        '/cases/$caseId',
+        body: {'owner_id': ownerId, 'version': currentVersion},
+      );
+      _selectedCase = CaseModel.fromJson(res as Map<String, dynamic>);
+      _offlineCaseCache[_selectedCase!.id] = _selectedCase!;
+
+      final idx = _cases.indexWhere((c) => c.id == caseId);
+      if (idx != -1) _cases[idx] = _selectedCase!;
+
+      _isActionLoading = false;
+      notifyListeners();
+      return true;
+    } on ApiException catch (e) {
+      _errorMessage = e.message;
+      _isActionLoading = false;
+      notifyListeners();
+      return false;
+    } catch (_) {
+      _errorMessage = 'Failed to assign case.';
+      _isActionLoading = false;
+      notifyListeners();
+      return false;
+    }
+  }
+
+  /// Update case priority (with optimistic concurrency check)
+  Future<bool> updatePriority({
+    required String caseId,
+    required String priority,
+    required int currentVersion,
+  }) async {
+    _isActionLoading = true;
+    _errorMessage = null;
+    notifyListeners();
+
+    try {
+      final res = await apiClient.patch(
+        '/cases/$caseId',
+        body: {'priority': priority.toLowerCase(), 'version': currentVersion},
+      );
+      _selectedCase = CaseModel.fromJson(res as Map<String, dynamic>);
+      _offlineCaseCache[_selectedCase!.id] = _selectedCase!;
+
+      final idx = _cases.indexWhere((c) => c.id == caseId);
+      if (idx != -1) _cases[idx] = _selectedCase!;
+
+      _isActionLoading = false;
+      notifyListeners();
+      return true;
+    } on ApiException catch (e) {
+      _errorMessage = e.message;
+      _isActionLoading = false;
+      notifyListeners();
+      return false;
+    } catch (_) {
+      _errorMessage = 'Failed to update priority.';
+      _isActionLoading = false;
+      notifyListeners();
+      return false;
+    }
+  }
+
   /// Reopen a resolved/closed case within 7-day window per SRS §4.1
   Future<bool> reopenCase({
     required String caseId,

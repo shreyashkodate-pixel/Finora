@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../../../shared/theme/app_theme.dart';
 import '../../../shared/theme/colors.dart';
 import '../../../shared/widgets/accessible_button.dart';
 import '../providers/auth_provider.dart';
@@ -55,8 +56,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
   Widget build(BuildContext context) {
     final auth = context.watch<AuthProvider>();
 
-    return Scaffold(
-      appBar: AppBar(
+    return Theme(
+      data: AppTheme.lightTheme,
+      child: Scaffold(
+        appBar: AppBar(
         title: const Text('Create Helpdesk Account'),
         elevation: 0,
       ),
@@ -106,6 +109,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       // Email Field
                       TextFormField(
                         controller: _emailController,
+                        style: const TextStyle(color: Color(0xFF0F172A), fontSize: 14),
+                        cursorColor: AppColors.primaryBlue,
                         keyboardType: TextInputType.emailAddress,
                         decoration: const InputDecoration(
                           labelText: 'Work Email Address',
@@ -122,6 +127,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       // Password Field
                       TextFormField(
                         controller: _passwordController,
+                        style: const TextStyle(color: Color(0xFF0F172A), fontSize: 14),
+                        cursorColor: AppColors.primaryBlue,
                         obscureText: _obscurePassword,
                         decoration: InputDecoration(
                           labelText: 'Password (min 8 characters)',
@@ -141,7 +148,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                       // Role Dropdown
                       DropdownButtonFormField<String>(
-                        value: _selectedRole,
+                        initialValue: _selectedRole,
+                        dropdownColor: Colors.white,
+                        style: const TextStyle(color: Color(0xFF0F172A), fontSize: 14),
                         decoration: const InputDecoration(
                           labelText: 'System Role',
                           prefixIcon: Icon(Icons.badge_outlined),
@@ -161,6 +170,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       // Site / Campus Field
                       TextFormField(
                         controller: _siteController,
+                        style: const TextStyle(color: Color(0xFF0F172A), fontSize: 14),
+                        cursorColor: AppColors.primaryBlue,
                         decoration: const InputDecoration(
                           labelText: 'Office Site / Campus Location',
                           prefixIcon: Icon(Icons.location_on_outlined),
@@ -189,6 +200,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             ),
           ),
         ),
+      ),
       ),
     );
   }

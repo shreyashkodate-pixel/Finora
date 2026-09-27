@@ -205,13 +205,13 @@ class AttachmentModel {
 
   factory AttachmentModel.fromJson(Map<String, dynamic> json) {
     return AttachmentModel(
-      id: json['id'] as String,
-      caseId: json['case_id'] as String,
-      filename: json['filename'] as String,
-      mimeType: json['mime_type'] as String,
-      sizeBytes: json['size_bytes'] as int,
-      storagePath: json['storage_path'] as String,
-      createdAt: DateTime.parse(json['created_at'] as String),
+      id: json['id'] as String? ?? '',
+      caseId: json['case_id'] as String? ?? '',
+      filename: json['filename'] as String? ?? 'file',
+      mimeType: json['mime_type'] as String? ?? 'application/octet-stream',
+      sizeBytes: (json['size_bytes'] ?? json['file_size'] ?? 0) as int,
+      storagePath: json['storage_path'] as String? ?? '',
+      createdAt: json['created_at'] != null ? DateTime.parse(json['created_at'] as String) : DateTime.now(),
     );
   }
 

@@ -10,20 +10,42 @@ class StatusBadge extends StatelessWidget {
   Color _getStatusColor() {
     switch (status.toLowerCase()) {
       case 'new':
+      case 'open':
         return AppColors.statusNew;
       case 'in_assessment':
+      case 'investigating':
         return AppColors.statusInAssessment;
       case 'assigned':
+      case 'scheduled':
         return AppColors.statusAssigned;
       case 'awaiting_requester':
       case 'awaiting_approval':
+      case 'pending_cab':
         return AppColors.statusAwaiting;
+      case 'approved':
+      case 'workaround_found':
+        return AppColors.slaHealthy;
+      case 'implementing':
+      case 'mitigated':
+        return AppColors.priorityP2;
+      case 'declared':
+      case 'active':
+        return AppColors.priorityP1;
       case 'resolved':
+      case 'completed':
         return AppColors.statusResolved;
       case 'closed':
         return AppColors.statusClosed;
       case 'cancelled':
+      case 'rejected':
+      case 'failed':
+      case 'rollback':
         return AppColors.statusCancelled;
+      case 'known_error':
+        return AppColors.priorityP3;
+      case 'draft':
+      case 'post_mortem':
+        return AppColors.primaryBlue;
       default:
         return Colors.grey;
     }
@@ -41,7 +63,7 @@ class StatusBadge extends StatelessWidget {
     return Semantics(
       label: 'Case status: $label',
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
         decoration: BoxDecoration(
           color: color.withValues(alpha: 0.12),
           borderRadius: BorderRadius.circular(16),
@@ -56,79 +78,20 @@ class StatusBadge extends StatelessWidget {
               decoration: BoxDecoration(shape: BoxShape.circle, color: color),
             ),
             const SizedBox(width: 6),
-            Text(
-              label,
-              style: TextStyle(
-                color: color,
-                fontSize: 11,
-                fontWeight: FontWeight.bold,
-                letterSpacing: 0.5,
+            Flexible(
+              child: Text(
+                label,
+                style: TextStyle(
+                  color: color,
+                  fontSize: 11,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 0.5,
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
               ),
             ),
           ],
-        ),
-      ),
-    );
-  }
-}
-
-/// Accessible priority badge (P1 Critical, P2 High, P3 Medium, P4 Low).
-class PriorityBadge extends StatelessWidget {
-  final String priority;
-
-  const PriorityBadge({super.key, required this.priority});
-
-  Color _getPriorityColor() {
-    switch (priority.toLowerCase()) {
-      case 'p1':
-        return AppColors.priorityP1;
-      case 'p2':
-        return AppColors.priorityP2;
-      case 'p3':
-        return AppColors.priorityP3;
-      case 'p4':
-        return AppColors.priorityP4;
-      default:
-        return Colors.grey;
-    }
-  }
-
-  String _getPriorityLabel() {
-    switch (priority.toLowerCase()) {
-      case 'p1':
-        return 'P1 - Critical';
-      case 'p2':
-        return 'P2 - High';
-      case 'p3':
-        return 'P3 - Medium';
-      case 'p4':
-        return 'P4 - Low';
-      default:
-        return priority.toUpperCase();
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final color = _getPriorityColor();
-    final label = _getPriorityLabel();
-
-    return Semantics(
-      label: 'Priority: $label',
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-        decoration: BoxDecoration(
-          color: color.withValues(alpha: 0.12),
-          borderRadius: BorderRadius.circular(4),
-          border: Border.all(color: color.withValues(alpha: 0.3)),
-        ),
-        child: Text(
-          priority.toUpperCase(),
-          style: TextStyle(
-            color: color,
-            fontSize: 11,
-            fontWeight: FontWeight.w700,
-          ),
         ),
       ),
     );

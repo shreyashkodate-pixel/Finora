@@ -6,7 +6,7 @@ class MajorIncidentTimelineModel {
   final String? details;
   final DateTime eventTimestamp;
 
-  MajorIncidentTimelineModel({
+  const MajorIncidentTimelineModel({
     required this.id,
     required this.majorIncidentId,
     this.authorId,
@@ -23,6 +23,35 @@ class MajorIncidentTimelineModel {
       summary: json['summary'] as String,
       details: json['details'] as String?,
       eventTimestamp: DateTime.parse(json['event_timestamp'] as String),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'major_incident_id': majorIncidentId,
+      'author_id': authorId,
+      'summary': summary,
+      'details': details,
+      'event_timestamp': eventTimestamp.toIso8601String(),
+    };
+  }
+
+  MajorIncidentTimelineModel copyWith({
+    String? id,
+    String? majorIncidentId,
+    String? authorId,
+    String? summary,
+    String? details,
+    DateTime? eventTimestamp,
+  }) {
+    return MajorIncidentTimelineModel(
+      id: id ?? this.id,
+      majorIncidentId: majorIncidentId ?? this.majorIncidentId,
+      authorId: authorId ?? this.authorId,
+      summary: summary ?? this.summary,
+      details: details ?? this.details,
+      eventTimestamp: eventTimestamp ?? this.eventTimestamp,
     );
   }
 }
@@ -44,7 +73,7 @@ class MajorIncidentModel {
   final String? postMortemUrl;
   final List<MajorIncidentTimelineModel> timelineEvents;
 
-  MajorIncidentModel({
+  const MajorIncidentModel({
     required this.id,
     required this.incidentNumber,
     required this.caseId,
@@ -61,6 +90,12 @@ class MajorIncidentModel {
     this.postMortemUrl,
     this.timelineEvents = const [],
   });
+
+  bool get isDeclared => status.toLowerCase() == 'declared';
+  bool get isActive => status.toLowerCase() == 'active' || isDeclared;
+  bool get isMitigated => status.toLowerCase() == 'mitigated';
+  bool get isResolved => status.toLowerCase() == 'resolved';
+  bool get isPostMortem => status.toLowerCase() == 'post_mortem';
 
   factory MajorIncidentModel.fromJson(Map<String, dynamic> json) {
     return MajorIncidentModel(
@@ -86,6 +121,62 @@ class MajorIncidentModel {
               ?.map((e) => MajorIncidentTimelineModel.fromJson(e as Map<String, dynamic>))
               .toList() ??
           [],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'incident_number': incidentNumber,
+      'case_id': caseId,
+      'title': title,
+      'status': status,
+      'commander_id': commanderId,
+      'bridge_url': bridgeUrl,
+      'communications_lead_id': communicationsLeadId,
+      'executive_summary': executiveSummary,
+      'impact_summary': impactSummary,
+      'declared_at': declaredAt.toIso8601String(),
+      'mitigated_at': mitigatedAt?.toIso8601String(),
+      'resolved_at': resolvedAt?.toIso8601String(),
+      'post_mortem_url': postMortemUrl,
+      'timeline_events': timelineEvents.map((e) => e.toJson()).toList(),
+    };
+  }
+
+  MajorIncidentModel copyWith({
+    String? id,
+    String? incidentNumber,
+    String? caseId,
+    String? title,
+    String? status,
+    String? commanderId,
+    String? bridgeUrl,
+    String? communicationsLeadId,
+    String? executiveSummary,
+    String? impactSummary,
+    DateTime? declaredAt,
+    DateTime? mitigatedAt,
+    DateTime? resolvedAt,
+    String? postMortemUrl,
+    List<MajorIncidentTimelineModel>? timelineEvents,
+  }) {
+    return MajorIncidentModel(
+      id: id ?? this.id,
+      incidentNumber: incidentNumber ?? this.incidentNumber,
+      caseId: caseId ?? this.caseId,
+      title: title ?? this.title,
+      status: status ?? this.status,
+      commanderId: commanderId ?? this.commanderId,
+      bridgeUrl: bridgeUrl ?? this.bridgeUrl,
+      communicationsLeadId: communicationsLeadId ?? this.communicationsLeadId,
+      executiveSummary: executiveSummary ?? this.executiveSummary,
+      impactSummary: impactSummary ?? this.impactSummary,
+      declaredAt: declaredAt ?? this.declaredAt,
+      mitigatedAt: mitigatedAt ?? this.mitigatedAt,
+      resolvedAt: resolvedAt ?? this.resolvedAt,
+      postMortemUrl: postMortemUrl ?? this.postMortemUrl,
+      timelineEvents: timelineEvents ?? this.timelineEvents,
     );
   }
 }

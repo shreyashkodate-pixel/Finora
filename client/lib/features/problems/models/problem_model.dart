@@ -118,4 +118,38 @@ class ProblemModel {
           [],
     );
   }
+
+  ProblemModel copyWith({
+    String? id,
+    String? problemNumber,
+    String? title,
+    String? description,
+    String? rootCause,
+    String? workaround,
+    String? status,
+    String? priority,
+    String? ownerId,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    DateTime? resolvedAt,
+    List<ProblemCaseLinkModel>? caseLinks,
+    List<KnownErrorModel>? knownErrors,
+  }) {
+    return ProblemModel(
+      id: id ?? this.id,
+      problemNumber: problemNumber ?? this.problemNumber,
+      title: title ?? this.title,
+      description: description ?? this.description,
+      rootCause: rootCause ?? this.rootCause,
+      workaround: workaround ?? this.workaround,
+      status: status ?? this.status,
+      priority: priority ?? this.priority,
+      ownerId: ownerId ?? this.ownerId,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      resolvedAt: resolvedAt ?? this.resolvedAt,
+      caseLinks: caseLinks ?? this.caseLinks,
+      knownErrors: knownErrors ?? this.knownErrors,
+    );
+  }
 }

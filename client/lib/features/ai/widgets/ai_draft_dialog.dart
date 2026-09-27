@@ -81,7 +81,7 @@ class _AIDraftDialogState extends State<AIDraftDialog> {
 
               // Draft type selector
               DropdownButtonFormField<String>(
-                value: _selectedType,
+                initialValue: _selectedType,
                 decoration: const InputDecoration(labelText: 'Select Draft Intent'),
                 items: _draftTypes.map((d) {
                   return DropdownMenuItem(value: d['value'], child: Text(d['label']!));

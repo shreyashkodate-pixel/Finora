@@ -1,13 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../../../shared/responsive/breakpoints.dart';
 import '../../../shared/theme/colors.dart';
+import '../../../shared/theme/dimensions.dart';
+import '../../../shared/theme/typography.dart';
+import '../../../shared/widgets/custom_buttons.dart';
+import '../../../shared/widgets/metric_card.dart';
+import '../../../shared/widgets/page_header.dart';
+import '../../analytics/screens/predictive_analytics_screen.dart';
 import '../../approvals/providers/approval_provider.dart';
 import '../../approvals/screens/pending_approvals_screen.dart';
 import '../../cases/providers/case_provider.dart';
 
-/// Operational & Leadership Insights dashboard per SRS §4 & §7.
-/// Displays SLA compliance rates, high-priority incident volume,
-/// pending business authorizations, and plain-language operational summaries.
+/// Stitch-aligned Leadership & Operational Health Insights Dashboard
+/// Corresponds to Stitch design: manager_operational_health_insights
 class ManagerInsightsScreen extends StatefulWidget {
   const ManagerInsightsScreen({super.key});
 
@@ -46,178 +52,216 @@ class _ManagerInsightsScreenState extends State<ManagerInsightsScreen> {
         : '100.0';
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Leadership & Service Insights'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: () {
-              context.read<CaseProvider>().fetchCases();
-              context.read<ApprovalProvider>().fetchPendingApprovals();
-            },
-          ),
-        ],
-      ),
       body: RefreshIndicator(
         onRefresh: () async {
-          await context.read<CaseProvider>().fetchCases();
-          await context.read<ApprovalProvider>().fetchPendingApprovals();
+          await Future.wait([
+            context.read<CaseProvider>().fetchCases(),
+            context.read<ApprovalProvider>().fetchPendingApprovals(),
+          ]);
         },
         child: SingleChildScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.all(AppDimensions.spaceLg),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              // Executive KPI Grid
-              Row(
-                children: [
-                  Expanded(
-                    child: _buildMetricTile(
-                      label: 'SLA Compliance',
-                      value: '$complianceRate%',
-                      subtext: '$breachedCases breached / ${casesWithSla.length} contracts',
-                      color: double.tryParse(complianceRate) != null && double.parse(complianceRate) >= 90
-                          ? AppColors.slaHealthy
-                          : AppColors.priorityP1,
-                      icon: Icons.speed,
-                    ),
+              // 1. Page Header with Refresh & Analytics Navigation
+              PageHeader(
+                title: 'Operational Health & Service Insights',
+                subtitle: 'Executive SLA telemetry, squad throughput, and capacity governance.',
+                actions: [
+                  CustomButtons.secondary(
+                    text: 'Predictive Radar',
+                    icon: Icons.auto_graph_rounded,
+                    onPressed: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(builder: (_) => const PredictiveAnalyticsScreen()),
+                      );
+                    },
                   ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: _buildMetricTile(
-                      label: 'P1 Escalations',
-                      value: p1Cases.length.toString(),
-                      subtext: 'Critical priority tickets',
-                      color: p1Cases.isNotEmpty ? AppColors.priorityP1 : AppColors.slaHealthy,
-                      icon: Icons.warning_amber,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 12),
-              Row(
-                children: [
-                  Expanded(
-                    child: _buildMetricTile(
-                      label: 'Pending Approvals',
-                      value: pendingApprovals.length.toString(),
-                      subtext: 'Awaiting Lead/Manager sign-off',
-                      color: pendingApprovals.isNotEmpty ? AppColors.statusAwaiting : AppColors.slaHealthy,
-                      icon: Icons.approval,
-                      onTap: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(builder: (_) => const PendingApprovalsScreen()),
-                        );
-                      },
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: _buildMetricTile(
-                      label: 'Active Backlog',
-                      value: activeCases.length.toString(),
-                      subtext: 'Across all sites & teams',
-                      color: AppColors.primaryBlue,
-                      icon: Icons.inventory_2_outlined,
-                    ),
+                  const SizedBox(width: 8),
+                  CustomButtons.secondary(
+                    text: 'Refresh Telemetry',
+                    icon: Icons.refresh,
+                    isLoading: caseProv.isLoading || apprProv.isLoading,
+                    onPressed: () {
+                      context.read<CaseProvider>().fetchCases();
+                      context.read<ApprovalProvider>().fetchPendingApprovals();
+                    },
                   ),
                 ],
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: AppDimensions.spaceLg),
 
-              // AI Operational Synthesis Narrative Card
-              Card(
-                elevation: 0,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  side: const BorderSide(color: AppColors.borderLight),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+              // 2. Executive Metric Cards Grid
+              LayoutBuilder(
+                builder: (context, constraints) {
+                  final isMobile = constraints.maxWidth < ResponsiveBreakpoints.mobileMax;
+
+                  final card1 = MetricCard(
+                    label: 'SLA Compliance Rate',
+                    value: '$complianceRate%',
+                    icon: Icons.speed_rounded,
+                    valueColor: (double.tryParse(complianceRate) ?? 100) >= 90
+                        ? AppColors.slaHealthy
+                        : AppColors.priorityP1,
+                    subtitle: '$breachedCases breaches / ${casesWithSla.length} active SLA contracts',
+                  );
+
+                  final card2 = MetricCard(
+                    label: 'Critical P1 Outages',
+                    value: p1Cases.length.toString(),
+                    icon: Icons.warning_amber_rounded,
+                    valueColor: p1Cases.isNotEmpty ? AppColors.priorityP1 : AppColors.slaHealthy,
+                    subtitle: 'Requires immediate command escalation',
+                  );
+
+                  final card3 = MetricCard(
+                    label: 'Pending Approvals',
+                    value: pendingApprovals.length.toString(),
+                    icon: Icons.approval_rounded,
+                    valueColor: pendingApprovals.isNotEmpty ? AppColors.statusAwaiting : AppColors.slaHealthy,
+                    subtitle: 'Awaiting Lead / Manager authorization',
+                    onTap: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(builder: (_) => const PendingApprovalsScreen()),
+                      );
+                    },
+                  );
+
+                  final card4 = MetricCard(
+                    label: 'Active Backlog',
+                    value: activeCases.length.toString(),
+                    icon: Icons.inventory_2_outlined,
+                    valueColor: AppColors.primaryBlue,
+                    subtitle: '${resolvedCases.length} resolved / $totalCases all-time',
+                  );
+
+                  if (isMobile) {
+                    return Column(
+                      children: [
+                        card1,
+                        const SizedBox(height: 10),
+                        card2,
+                        const SizedBox(height: 10),
+                        card3,
+                        const SizedBox(height: 10),
+                        card4,
+                      ],
+                    );
+                  }
+
+                  return Row(
                     children: [
-                      const Row(
-                        children: [
-                          Icon(Icons.auto_awesome, color: AppColors.primaryBlue, size: 20),
-                          SizedBox(width: 8),
-                          Text(
-                            'AI Operational Briefing',
-                            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                      Expanded(child: card1),
+                      const SizedBox(width: AppDimensions.spaceMd),
+                      Expanded(child: card2),
+                      const SizedBox(width: AppDimensions.spaceMd),
+                      Expanded(child: card3),
+                      const SizedBox(width: AppDimensions.spaceMd),
+                      Expanded(child: card4),
+                    ],
+                  );
+                },
+              ),
+              const SizedBox(height: AppDimensions.spaceLg),
+
+              // 3. AI Operational Briefing Card (Stitch AI Accent Style)
+              Container(
+                padding: const EdgeInsets.all(AppDimensions.spaceLg),
+                decoration: BoxDecoration(
+                  color: AppColors.aiBackground,
+                  borderRadius: BorderRadius.circular(AppDimensions.radiusCard),
+                  border: Border.all(color: AppColors.aiBorder),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(6),
+                          decoration: BoxDecoration(
+                            color: AppColors.aiAccent,
+                            borderRadius: BorderRadius.circular(6),
                           ),
-                        ],
-                      ),
-                      const SizedBox(height: 12),
-                      Text(
-                        _generateOperationalNarrative(
-                          totalCases: totalCases,
-                          activeCases: activeCases.length,
-                          p1Cases: p1Cases.length,
-                          pendingApprovals: pendingApprovals.length,
-                          complianceRate: complianceRate,
-                          resolvedCount: resolvedCases.length,
+                          child: const Icon(Icons.auto_awesome, color: Colors.white, size: 16),
                         ),
-                        style: const TextStyle(fontSize: 14, height: 1.5),
+                        const SizedBox(width: 10),
+                        Text(
+                          'AI Operational Health Synthesis',
+                          style: AppTypography.headlineSm.copyWith(
+                            color: AppColors.textPrimaryLight,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const Spacer(),
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(AppDimensions.radiusPill),
+                            border: Border.all(color: AppColors.aiBorder),
+                          ),
+                          child: Text(
+                            'Real-time Synthesis',
+                            style: AppTypography.labelSm.copyWith(
+                              color: AppColors.aiAccent,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                    Text(
+                      _generateOperationalNarrative(
+                        totalCases: totalCases,
+                        activeCases: activeCases.length,
+                        p1Cases: p1Cases.length,
+                        pendingApprovals: pendingApprovals.length,
+                        complianceRate: complianceRate,
+                        resolvedCount: resolvedCases.length,
                       ),
-                    ],
-                  ),
+                      style: AppTypography.bodyMd.copyWith(
+                        color: AppColors.textPrimaryLight,
+                        height: 1.5,
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: AppDimensions.spaceLg),
 
-              // Pending Approvals Action Banner
-              if (pendingApprovals.isNotEmpty) ...[
-                Card(
-                  color: AppColors.statusAwaiting.withValues(alpha: 0.1),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    side: const BorderSide(color: AppColors.statusAwaiting),
-                  ),
-                  child: ListTile(
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    leading: const CircleAvatar(
-                      backgroundColor: AppColors.statusAwaiting,
-                      child: Icon(Icons.notification_important, color: Colors.white, size: 20),
-                    ),
-                    title: Text(
-                      '${pendingApprovals.length} Authorization Requests Pending',
-                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
-                    ),
-                    subtitle: const Text('Review and decide on case tier escalations, role grants, and purchases.'),
-                    trailing: ElevatedButton(
-                      onPressed: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(builder: (_) => const PendingApprovalsScreen()),
-                        );
-                      },
-                      child: const Text('Review Inbox'),
-                    ),
-                  ),
+              // 4. Incident Distribution & Lifecycle Breakdown Section
+              Container(
+                padding: const EdgeInsets.all(AppDimensions.spaceLg),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(AppDimensions.radiusCard),
+                  border: Border.all(color: AppColors.borderLight),
                 ),
-                const SizedBox(height: 24),
-              ],
-
-              // Queue Health breakdown
-              const Text(
-                'Incident Distribution & Lifecycle Breakdown',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 12),
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Column(
-                    children: [
-                      _buildLifecycleRow('New & Unassigned', cases.where((c) => c.status == 'new').length, totalCases, AppColors.statusNew),
-                      const SizedBox(height: 12),
-                      _buildLifecycleRow('Assigned / In Progress', cases.where((c) => c.status == 'assigned' || c.status == 'in_progress').length, totalCases, AppColors.statusAssigned),
-                      const SizedBox(height: 12),
-                      _buildLifecycleRow('Awaiting Authorization', cases.where((c) => c.status == 'awaiting_approval').length, totalCases, AppColors.statusAwaiting),
-                      const SizedBox(height: 12),
-                      _buildLifecycleRow('Resolved & Closed', resolvedCases.length, totalCases, AppColors.slaHealthy),
-                    ],
-                  ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Incident Distribution & Lifecycle Breakdown',
+                      style: AppTypography.headlineSm,
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      'Live distribution of tickets across the intake-to-resolution pipeline.',
+                      style: AppTypography.bodySm.copyWith(color: AppColors.textSecondaryLight),
+                    ),
+                    const SizedBox(height: AppDimensions.spaceLg),
+                    _buildLifecycleRow('New & Unassigned', cases.where((c) => c.status == 'new').length, totalCases, AppColors.statusNew),
+                    const SizedBox(height: 16),
+                    _buildLifecycleRow('Assigned / In Progress', cases.where((c) => c.status == 'assigned' || c.status == 'in_progress').length, totalCases, AppColors.statusAssigned),
+                    const SizedBox(height: 16),
+                    _buildLifecycleRow('Awaiting Authorization', cases.where((c) => c.status == 'awaiting_approval').length, totalCases, AppColors.statusAwaiting),
+                    const SizedBox(height: 16),
+                    _buildLifecycleRow('Resolved & Closed', resolvedCases.length, totalCases, AppColors.slaHealthy),
+                  ],
                 ),
               ),
             ],
@@ -252,49 +296,6 @@ class _ManagerInsightsScreenState extends State<ManagerInsightsScreen> {
         '$p1Note $apprNote Automated Gemini triage and background sweep monitoring remain fully operational.';
   }
 
-  Widget _buildMetricTile({
-    required String label,
-    required String value,
-    required String subtext,
-    required Color color,
-    required IconData icon,
-    VoidCallback? onTap,
-  }) {
-    return Card(
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(12),
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(label, style: const TextStyle(fontSize: 12, color: AppColors.textSecondaryLight)),
-                  Icon(icon, color: color, size: 20),
-                ],
-              ),
-              const SizedBox(height: 10),
-              Text(
-                value,
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: color),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                subtext,
-                style: const TextStyle(fontSize: 11, color: AppColors.textSecondaryLight),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
   Widget _buildLifecycleRow(String label, int count, int total, Color color) {
     final pct = total > 0 ? count / total : 0.0;
 
@@ -304,17 +305,22 @@ class _ManagerInsightsScreenState extends State<ManagerInsightsScreen> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(label, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500)),
-            Text('$count (${(pct * 100).toStringAsFixed(0)}%)', style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+            Text(label, style: AppTypography.bodyMd.copyWith(fontWeight: FontWeight.w600)),
+            Text(
+              '$count (${(pct * 100).toStringAsFixed(0)}%)',
+              style: AppTypography.codeMd.copyWith(fontWeight: FontWeight.bold),
+            ),
           ],
         ),
-        const SizedBox(height: 6),
-        LinearProgressIndicator(
-          value: pct,
-          backgroundColor: AppColors.borderLight,
-          valueColor: AlwaysStoppedAnimation<Color>(color),
-          minHeight: 6,
-          borderRadius: BorderRadius.circular(3),
+        const SizedBox(height: 8),
+        ClipRRect(
+          borderRadius: BorderRadius.circular(4),
+          child: LinearProgressIndicator(
+            value: pct,
+            backgroundColor: AppColors.borderLight,
+            valueColor: AlwaysStoppedAnimation<Color>(color),
+            minHeight: 8,
+          ),
         ),
       ],
     );

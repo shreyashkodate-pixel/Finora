@@ -27,6 +27,12 @@ class AuthProvider extends ChangeNotifier {
   String? get errorMessage => _errorMessage;
   bool get isInitialized => _isInitialized;
 
+  @visibleForTesting
+  void setMockUser(UserModel? user) {
+    _currentUser = user;
+    notifyListeners();
+  }
+
   /// Restore existing session from secure storage on startup
   Future<void> initialize() async {
     _isLoading = true;
@@ -209,6 +215,16 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
+  final List<VoidCallback> _onLogoutCallbacks = [];
+
+  void registerLogoutCallback(VoidCallback callback) {
+    _onLogoutCallbacks.add(callback);
+  }
+
+  void unregisterLogoutCallback(VoidCallback callback) {
+    _onLogoutCallbacks.remove(callback);
+  }
+
   /// End current session and revoke tokens
   Future<void> logout() async {
     try {
@@ -217,6 +233,14 @@ class AuthProvider extends ChangeNotifier {
         await apiClient.post('/auth/logout', body: {'refresh_token': refreshToken});
       }
     } catch (_) {}
+
+    for (final cb in _onLogoutCallbacks) {
+      try {
+        cb();
+      } catch (e) {
+        debugPrint('Logout callback error: $e');
+      }
+    }
 
     await storage.clearSession();
     apiClient.setAccessToken(null);

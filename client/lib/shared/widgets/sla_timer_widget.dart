@@ -106,12 +106,16 @@ class _SlaTimerWidgetState extends State<SlaTimerWidget> {
             children: [
               const Icon(Icons.error_outline, size: 14, color: AppColors.slaBreached),
               const SizedBox(width: 4),
-              Text(
-                '${widget.label}: $text',
-                style: const TextStyle(
-                  fontSize: 11,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.slaBreached,
+              Flexible(
+                child: Text(
+                  '${widget.label}: $text',
+                  style: const TextStyle(
+                    fontSize: 11,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.slaBreached,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
             ],
@@ -142,12 +146,16 @@ class _SlaTimerWidgetState extends State<SlaTimerWidget> {
               color: color,
             ),
             const SizedBox(width: 4),
-            Text(
-              '${widget.label}: $text',
-              style: TextStyle(
-                fontSize: 11,
-                fontWeight: isWarning ? FontWeight.bold : FontWeight.w500,
-                color: color,
+            Flexible(
+              child: Text(
+                '${widget.label}: $text',
+                style: TextStyle(
+                  fontSize: 11,
+                  fontWeight: isWarning ? FontWeight.bold : FontWeight.w500,
+                  color: color,
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
               ),
             ),
           ],

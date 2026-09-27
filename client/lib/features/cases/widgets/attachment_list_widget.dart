@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import '../../../shared/theme/colors.dart';
-import '../../../shared/widgets/accessible_button.dart';
+import '../../../shared/theme/dimensions.dart';
+import '../../../shared/theme/typography.dart';
+import '../../../shared/widgets/custom_buttons.dart';
 import '../providers/case_provider.dart';
 
-/// Displays evidence attachments and upload actions per SRS §7.5.
+/// Displays evidence attachments and upload actions per SRS §7.5 & Stitch Screen 4.
 class AttachmentListWidget extends StatelessWidget {
   final String caseId;
 
@@ -15,6 +17,7 @@ class AttachmentListWidget extends StatelessWidget {
     if (mimeType.contains('image')) return Icons.image_outlined;
     if (mimeType.contains('pdf')) return Icons.picture_as_pdf_outlined;
     if (mimeType.contains('word') || mimeType.contains('document')) return Icons.description_outlined;
+    if (mimeType.contains('text') || mimeType.contains('log')) return Icons.article_outlined;
     return Icons.attach_file;
   }
 
@@ -23,8 +26,13 @@ class AttachmentListWidget extends StatelessWidget {
     final caseProv = context.watch<CaseProvider>();
     final attachments = caseProv.attachments;
 
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
+    return Container(
+      padding: const EdgeInsets.all(AppDimensions.spaceMd),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(AppDimensions.radiusCard),
+        border: Border.all(color: AppColors.borderLight),
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -32,87 +40,107 @@ class AttachmentListWidget extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                'Evidence Files (${attachments.length})',
-                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              Row(
+                children: [
+                  const Icon(Icons.attach_file_rounded, size: 18, color: AppColors.primaryBlue),
+                  const SizedBox(width: 8),
+                  Text(
+                    'Evidence Files (${attachments.length})',
+                    style: AppTypography.headlineSm.copyWith(fontSize: 15),
+                  ),
+                ],
               ),
-              AccessibleButton(
+              CustomButtons.secondary(
+                text: 'Attach File',
+                icon: Icons.upload_file,
                 onPressed: () {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
-                      content: Text('File upload picker ready. 10MB per-file / 50MB case limit enforced.'),
+                      content: Text('File upload ready. Enforcing 10MB file limit / 50MB case total.'),
                     ),
                   );
                 },
-                icon: Icons.upload_file,
-                semanticLabel: 'Upload evidence file',
-                child: const Text('Attach File'),
               ),
             ],
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppDimensions.spaceSm),
+          Text(
+            'Accepted: .jpg, .png, .webp, .pdf, .docx, .txt, .log (max 10MB per file)',
+            style: AppTypography.bodySm.copyWith(fontSize: 11, color: AppColors.textSecondaryLight),
+          ),
+          const Divider(height: 24, color: AppColors.borderLight),
 
-          // Attachments list
+          // Attachments list or empty state
           if (attachments.isEmpty)
-            Expanded(
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 24.0),
               child: Center(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
-                  children: const [
-                    Icon(Icons.folder_open, size: 48, color: AppColors.textSecondaryLight),
-                    SizedBox(height: 8),
-                    Text(
-                      'No evidence attachments uploaded.',
-                      style: TextStyle(color: AppColors.textSecondaryLight),
+                  children: [
+                    Container(
+                      width: 44,
+                      height: 44,
+                      decoration: BoxDecoration(
+                        color: AppColors.backgroundLight,
+                        borderRadius: BorderRadius.circular(AppDimensions.radiusCard),
+                      ),
+                      child: const Icon(Icons.folder_open, size: 24, color: AppColors.textSecondaryLight),
                     ),
-                    SizedBox(height: 4),
+                    const SizedBox(height: 8),
                     Text(
-                      'Accepted: jpg, png, webp, gif, pdf, docx, txt, log (max 10MB)',
-                      style: TextStyle(fontSize: 12, color: AppColors.textSecondaryLight),
+                      'No evidence attachments uploaded yet',
+                      style: AppTypography.bodySm.copyWith(fontWeight: FontWeight.w600),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      'Provide logs or screenshots to assist engineers with rapid diagnosis.',
+                      style: AppTypography.bodySm.copyWith(fontSize: 12, color: AppColors.textSecondaryLight),
                     ),
                   ],
                 ),
               ),
             )
           else
-            Expanded(
-              child: ListView.separated(
-                itemCount: attachments.length,
-                separatorBuilder: (_, __) => const Divider(height: 1, color: AppColors.borderLight),
-                itemBuilder: (context, index) {
-                  final att = attachments[index];
-                  final timeStr = DateFormat('MMM d, yyyy').format(att.createdAt);
+            ListView.separated(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: attachments.length,
+              separatorBuilder: (_, __) => const Divider(height: 1, color: AppColors.borderLight),
+              itemBuilder: (context, index) {
+                final att = attachments[index];
+                final timeStr = DateFormat('MMM d, yyyy').format(att.createdAt.toLocal());
 
-                  return ListTile(
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                    leading: Container(
-                      padding: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color: AppColors.primaryBlue.withValues(alpha: 0.1),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Icon(_getMimeIcon(att.mimeType), color: AppColors.primaryBlue),
+                return ListTile(
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+                  leading: Container(
+                    width: 36,
+                    height: 36,
+                    decoration: BoxDecoration(
+                      color: AppColors.primaryLight.withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(AppDimensions.radiusButton),
                     ),
-                    title: Text(
-                      att.filename,
-                      style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
-                    ),
-                    subtitle: Text(
-                      '${att.formattedSize} • Uploaded $timeStr',
-                      style: const TextStyle(fontSize: 12, color: AppColors.textSecondaryLight),
-                    ),
-                    trailing: IconButton(
-                      icon: const Icon(Icons.download_outlined),
-                      tooltip: 'Download file',
-                      onPressed: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('Downloading ${att.filename}...')),
-                        );
-                      },
-                    ),
-                  );
-                },
-              ),
+                    child: Icon(_getMimeIcon(att.mimeType), size: 18, color: AppColors.primaryBlue),
+                  ),
+                  title: Text(
+                    att.filename,
+                    style: AppTypography.bodySm.copyWith(fontWeight: FontWeight.w600),
+                  ),
+                  subtitle: Text(
+                    '${att.formattedSize} • Uploaded $timeStr',
+                    style: AppTypography.bodySm.copyWith(fontSize: 11, color: AppColors.textSecondaryLight),
+                  ),
+                  trailing: IconButton(
+                    icon: const Icon(Icons.download_outlined, size: 18, color: AppColors.primaryBlue),
+                    tooltip: 'Download evidence file',
+                    onPressed: () {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Downloading ${att.filename}...')),
+                      );
+                    },
+                  ),
+                );
+              },
             ),
         ],
       ),

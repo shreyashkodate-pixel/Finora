@@ -5,6 +5,9 @@ class UserModel {
   final String role; // requester, operator, team_lead, manager, administrator
   final String? teamId;
   final String? site;
+  final String? organizationId;
+  final String? organizationName;
+  final String? organizationSlug;
   final String availabilityStatus; // available, away, offline
   final bool emailVerified;
 
@@ -15,6 +18,9 @@ class UserModel {
     required this.role,
     this.teamId,
     this.site,
+    this.organizationId,
+    this.organizationName,
+    this.organizationSlug,
     this.availabilityStatus = 'available',
     this.emailVerified = true,
   });
@@ -41,6 +47,9 @@ class UserModel {
       role: (json['role'] as String?)?.toLowerCase() ?? 'requester',
       teamId: json['team_id'] as String?,
       site: json['site'] as String?,
+      organizationId: json['organization_id'] as String? ?? json['organizationId'] as String?,
+      organizationName: json['organization_name'] as String? ?? json['organizationName'] as String?,
+      organizationSlug: json['organization_slug'] as String? ?? json['organizationSlug'] as String?,
       availabilityStatus: (json['availability_status'] as String?)?.toLowerCase() ?? 'available',
       emailVerified: json['email_verified'] as bool? ?? true,
     );
@@ -54,6 +63,9 @@ class UserModel {
       'role': role,
       'team_id': teamId,
       'site': site,
+      'organization_id': organizationId,
+      'organization_name': organizationName,
+      'organization_slug': organizationSlug,
       'availability_status': availabilityStatus,
       'email_verified': emailVerified,
     };

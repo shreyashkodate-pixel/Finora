@@ -4,7 +4,7 @@ import 'dart:math';
 import 'package:http/http.dart' as http;
 import 'config.dart';
 
-/// Structured API Exception wrapping the RFC error envelope per SRS §3.6.
+/// Structured API Exception wrapping the RFC error envelope per SRS §3.6 and Section 13.
 class ApiException implements Exception {
   final int statusCode;
   final String code;
@@ -17,6 +17,32 @@ class ApiException implements Exception {
     required this.message,
     this.details,
   });
+
+  /// True if a concurrent edit produced a 409 STALE_VERSION error per Locked Invariant 2.
+  bool get isStaleVersion =>
+      statusCode == 409 && (code == 'STALE_VERSION' || message.contains('stale version'));
+
+  /// True if Google OAuth collided with an existing password account (409 ACCOUNT_COLLISION).
+  bool get isAccountCollision =>
+      statusCode == 409 && (code == 'ACCOUNT_COLLISION' || code == 'ACCOUNT_ALREADY_EXISTS');
+
+  /// True if authentication failed or token expired (401).
+  bool get isUnauthorized => statusCode == 401;
+
+  /// True if RBAC forbidden access (403).
+  bool get isForbidden => statusCode == 403;
+
+  /// True if resource not found (404).
+  bool get isNotFound => statusCode == 404;
+
+  /// True if validation failed (422).
+  bool get isValidationError => statusCode == 422;
+
+  /// True if rate limited (429).
+  bool get isRateLimited => statusCode == 429;
+
+  /// True if 5xx server error.
+  bool get isServerError => statusCode >= 500;
 
   @override
   String toString() => 'ApiException($statusCode, $code): $message';

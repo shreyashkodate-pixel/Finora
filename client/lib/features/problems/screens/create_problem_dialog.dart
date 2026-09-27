@@ -86,9 +86,11 @@ class _CreateProblemDialogState extends State<CreateProblemDialog> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text(
-                        'Create ITIL Problem Record',
-                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      const Expanded(
+                        child: Text(
+                          'Create ITIL Problem Record',
+                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                        ),
                       ),
                       IconButton(
                         icon: const Icon(Icons.close),
@@ -119,7 +121,7 @@ class _CreateProblemDialogState extends State<CreateProblemDialog> {
                   ),
                   const SizedBox(height: 16),
                   DropdownButtonFormField<String>(
-                    value: _priority,
+                    initialValue: _priority,
                     decoration: const InputDecoration(labelText: 'Priority Level'),
                     items: const [
                       DropdownMenuItem(value: 'p1', child: Text('P1 - Critical')),

@@ -68,4 +68,48 @@ class ChangeRequestModel {
       updatedAt: DateTime.parse(json['updated_at'] as String),
     );
   }
+
+  ChangeRequestModel copyWith({
+    String? id,
+    String? changeNumber,
+    String? title,
+    String? description,
+    String? reason,
+    String? riskLevel,
+    String? changeType,
+    String? status,
+    String? requesterId,
+    String? cabApproverId,
+    String? problemId,
+    String? implementationPlan,
+    String? testPlan,
+    String? rollbackPlan,
+    DateTime? scheduledStart,
+    DateTime? scheduledEnd,
+    String? cabFeedback,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) {
+    return ChangeRequestModel(
+      id: id ?? this.id,
+      changeNumber: changeNumber ?? this.changeNumber,
+      title: title ?? this.title,
+      description: description ?? this.description,
+      reason: reason ?? this.reason,
+      riskLevel: riskLevel ?? this.riskLevel,
+      changeType: changeType ?? this.changeType,
+      status: status ?? this.status,
+      requesterId: requesterId ?? this.requesterId,
+      cabApproverId: cabApproverId ?? this.cabApproverId,
+      problemId: problemId ?? this.problemId,
+      implementationPlan: implementationPlan ?? this.implementationPlan,
+      testPlan: testPlan ?? this.testPlan,
+      rollbackPlan: rollbackPlan ?? this.rollbackPlan,
+      scheduledStart: scheduledStart ?? this.scheduledStart,
+      scheduledEnd: scheduledEnd ?? this.scheduledEnd,
+      cabFeedback: cabFeedback ?? this.cabFeedback,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+    );
+  }
 }
