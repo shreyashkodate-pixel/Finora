@@ -58,14 +58,22 @@ class Settings(BaseSettings):
     ENABLE_KEEPALIVE_PING: bool = Field(default=False)
     KEEPALIVE_PING_INTERVAL_MINUTES: int = Field(default=10)
 
+    # Inbound Webhook Authentication Secrets
+    ALERT_WEBHOOK_SECRET: str = Field(default="", description="Secret token for inbound webhook authentication")
+    PROMETHEUS_WEBHOOK_SECRET: str = Field(default="")
+    DATADOG_WEBHOOK_SECRET: str = Field(default="")
+    SENTRY_WEBHOOK_SECRET: str = Field(default="")
+    CLOUDWATCH_WEBHOOK_SECRET: str = Field(default="")
+
     # Client Configuration
     API_BASE_URL: str = Field(default="http://localhost:8000/api/v1")
 
     model_config = SettingsConfigDict(
-        env_file=".env",
+        env_file=(".env", "../.env"),
         env_file_encoding="utf-8",
         extra="ignore",
     )
+
 
     @property
     def cors_origins(self) -> List[str]:

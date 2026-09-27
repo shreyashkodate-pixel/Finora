@@ -45,6 +45,16 @@ async def triage_case(
         logger.warning(f"Triage aborted: Case {case_id} not found.")
         return None
 
+    # 0. Check TenantPolicy if case belongs to an organization
+    if case.organization_id:
+        from models.organization import TenantPolicy
+        policy_stmt = select(TenantPolicy).where(TenantPolicy.organization_id == case.organization_id)
+        policy_res = await db.execute(policy_stmt)
+        policy = policy_res.scalar_one_or_none()
+        if policy and not policy.ai_auto_triage_enabled:
+            logger.info(f"Triage skipped: AI auto-triage is disabled by tenant policy for org {case.organization_id}")
+            return None
+
     provider = ai_provider or get_ai_provider()
 
     try:
@@ -59,28 +69,30 @@ async def triage_case(
         logger.error(f"Unexpected error during triage for case {case_id}: {exc}")
         return None
 
-    # 1. Resolve suggested team by name if possible
+    # 1. Resolve suggested team by name if possible (scoped to tenant if case has org)
     suggested_team_id = None
     if triage_data.suggested_team_name:
-        team_stmt = select(Team).where(func.lower(Team.name) == triage_data.suggested_team_name.lower())
+        team_filters = [func.lower(Team.name) == triage_data.suggested_team_name.lower()]
+        if case.organization_id:
+            team_filters.append(Team.organization_id == case.organization_id)
+        team_stmt = select(Team).where(*team_filters)
         team_res = await db.execute(team_stmt)
         matched_team = team_res.scalar_one_or_none()
         if matched_team:
             suggested_team_id = matched_team.id
 
-    # 2. Candidate related / duplicate cases per SRS §5.5 (same service or similar keywords)
-    related_stmt = (
-        select(Case.id, Case.reference_number, Case.title)
-        .where(
-            Case.id != case_id,
-            Case.deleted_at.is_(None),
-            or_(
-                Case.service_id == case.service_id if case.service_id else False,
-                Case.type == case.type,
-            ),
-        )
-        .limit(3)
-    )
+    # 2. Candidate related / duplicate cases per SRS §5.5 (same service or similar keywords, strictly tenant scoped)
+    related_filters = [
+        Case.id != case_id,
+        Case.deleted_at.is_(None),
+        or_(
+            Case.service_id == case.service_id if case.service_id else False,
+            Case.type == case.type,
+        ),
+    ]
+    if case.organization_id:
+        related_filters.append(Case.organization_id == case.organization_id)
+    related_stmt = select(Case.id, Case.reference_number, Case.title).where(*related_filters).limit(3)
     rel_res = await db.execute(related_stmt)
     related_cases = [
         {"id": str(r[0]), "reference_number": r[1], "title": r[2]}

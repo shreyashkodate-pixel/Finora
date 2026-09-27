@@ -59,8 +59,10 @@ class OrganizationService:
         return org
 
     @staticmethod
-    async def list_organizations(db: AsyncSession) -> List[Organization]:
+    async def list_organizations(db: AsyncSession, current_org_id: Optional[UUID] = None) -> List[Organization]:
         stmt = select(Organization).order_by(desc(Organization.created_at))
+        if current_org_id:
+            stmt = stmt.where(Organization.id == current_org_id)
         res = await db.execute(stmt)
         return list(res.scalars().all())
 

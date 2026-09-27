@@ -19,6 +19,7 @@ from core.security import (
 from models.enums import UserRole, AuthProvider
 from models.user import User
 from models.auth import RefreshToken
+from models.organization import Organization, TenantPolicy
 from schemas.auth import (
     PasswordRegisterRequest,
     PasswordLoginRequest,
@@ -65,11 +66,23 @@ class AuthService:
         # Local development skips mandatory email verification per SRS §3.3a
         is_verified = True if settings.ENVIRONMENT == "local" else False
 
+        # Match domain to organization if applicable
+        domain = normalized_email.split("@")[-1] if "@" in normalized_email else None
+        matched_org_id = None
+        if domain:
+            org_all_stmt = select(Organization).where(Organization.is_active.is_(True))
+            org_all_res = await db.execute(org_all_stmt)
+            for o in org_all_res.scalars().all():
+                if o.domain_whitelist and domain in o.domain_whitelist:
+                    matched_org_id = o.id
+                    break
+
         user = User(
             email=normalized_email,
             password_hash=hashed_pw,
             auth_provider=AuthProvider.PASSWORD,
             role=UserRole.REQUESTER,
+            organization_id=matched_org_id,
             site=request.site,
             email_verified=is_verified,
         )
@@ -123,6 +136,35 @@ class AuthService:
                 },
             )
 
+        # Enforce organization active status and TenantPolicy for password auth
+        if user.organization_id:
+            org_stmt = select(Organization).where(Organization.id == user.organization_id)
+            org_res = await db.execute(org_stmt)
+            org = org_res.scalar_one_or_none()
+            if org:
+                if not org.is_active:
+                    raise HTTPException(
+                        status_code=status.HTTP_403_FORBIDDEN,
+                        detail={
+                            "error": {
+                                "code": "ORGANIZATION_INACTIVE",
+                                "message": "Your organization account is deactivated. Please contact support.",
+                                "details": {},
+                            }
+                        },
+                    )
+                if org.policy and not org.policy.allow_password_auth:
+                    raise HTTPException(
+                        status_code=status.HTTP_403_FORBIDDEN,
+                        detail={
+                            "error": {
+                                "code": "PASSWORD_AUTH_DISABLED",
+                                "message": "Password authentication is disabled for your organization. Please use single sign-on.",
+                                "details": {},
+                            }
+                        },
+                    )
+
         # Enforce email verification in production per SRS §3.3a & §6
         if settings.ENVIRONMENT != "local" and not user.email_verified:
             raise HTTPException(
@@ -165,16 +207,14 @@ class AuthService:
 
         normalized_email = google_info.email.lower().strip()
 
-        # Check existing user
+        # Check existing account by email
         stmt = select(User).where(User.email == normalized_email, User.deleted_at.is_(None))
         result = await db.execute(stmt)
         existing_user = result.scalar_one_or_none()
 
         if existing_user:
-            # Account Collision Check per SRS §7.4:
-            # A Google sign-in with an email that already has a password account is treated as
-            # a 409 Conflict rather than silently merged, to prevent account-takeover vectors.
-            if existing_user.auth_provider == AuthProvider.PASSWORD and existing_user.oauth_subject_id != google_info.subject_id:
+            # Collision guard
+            if existing_user.auth_provider != AuthProvider.GOOGLE and existing_user.password_hash:
                 raise HTTPException(
                     status_code=status.HTTP_409_CONFLICT,
                     detail={
@@ -192,17 +232,58 @@ class AuthService:
             # Google accounts are pre-verified per SRS §3.3a
             user.email_verified = True
         else:
+            # Match domain for new Google OAuth user
+            domain = normalized_email.split("@")[-1] if "@" in normalized_email else None
+            matched_org_id = None
+            if domain:
+                org_all_stmt = select(Organization).where(Organization.is_active.is_(True))
+                org_all_res = await db.execute(org_all_stmt)
+                for o in org_all_res.scalars().all():
+                    if o.domain_whitelist and domain in o.domain_whitelist:
+                        matched_org_id = o.id
+                        break
+
             # New Google account
             user = User(
                 email=normalized_email,
                 auth_provider=AuthProvider.GOOGLE,
                 oauth_subject_id=google_info.subject_id,
+                organization_id=matched_org_id,
                 password_hash=None,  # Nullable for OAuth accounts
                 role=UserRole.REQUESTER,
                 email_verified=True,  # Google already verified email per SRS §3.3a
             )
             db.add(user)
             await db.flush()
+
+        # Enforce organization active status and TenantPolicy for OAuth
+        if user.organization_id:
+            org_stmt = select(Organization).where(Organization.id == user.organization_id)
+            org_res = await db.execute(org_stmt)
+            org = org_res.scalar_one_or_none()
+            if org:
+                if not org.is_active:
+                    raise HTTPException(
+                        status_code=status.HTTP_403_FORBIDDEN,
+                        detail={
+                            "error": {
+                                "code": "ORGANIZATION_INACTIVE",
+                                "message": "Your organization account is deactivated. Please contact support.",
+                                "details": {},
+                            }
+                        },
+                    )
+                if org.policy and not org.policy.allow_google_oauth:
+                    raise HTTPException(
+                        status_code=status.HTTP_403_FORBIDDEN,
+                        detail={
+                            "error": {
+                                "code": "OAUTH_AUTH_DISABLED",
+                                "message": "Google OAuth is disabled for your organization.",
+                                "details": {},
+                            }
+                        },
+                    )
 
         return await AuthService._issue_session_tokens(
             db=db,

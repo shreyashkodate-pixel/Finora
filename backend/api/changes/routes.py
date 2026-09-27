@@ -50,6 +50,7 @@ async def list_change_requests(
 ):
     service = ChangeService(db)
     items, _ = await service.list_change_requests(
+        current_user=current_user,
         status_filter=status,
         type_filter=type,
         limit=limit,
@@ -69,7 +70,7 @@ async def get_change_request(
     db: AsyncSession = Depends(get_db_session),
 ):
     service = ChangeService(db)
-    return await service.get_change_request(change_id)
+    return await service.get_change_request(change_id, current_user)
 
 
 @router.post(

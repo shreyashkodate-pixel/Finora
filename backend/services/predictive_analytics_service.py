@@ -1,5 +1,6 @@
 from datetime import datetime, timezone
-from typing import List, Dict
+from typing import List, Dict, Optional
+from uuid import UUID
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, func
 
@@ -20,14 +21,17 @@ class PredictiveAnalyticsService:
     @staticmethod
     async def generate_workload_forecast(
         db: AsyncSession,
+        organization_id: Optional[UUID] = None,
         horizon_days: int = 7,
     ) -> WorkloadForecastResponse:
         """
         Generates statistical workload predictions for incoming ticket volume,
         priority breakdown, category distribution, and capacity planning advice.
         """
-        # Count total historical cases
+        # Count total historical cases scoped by tenant
         stmt_count = select(func.count(Case.id))
+        if organization_id is not None:
+            stmt_count = stmt_count.where(Case.organization_id == organization_id)
         count_res = await db.execute(stmt_count)
         historical_total = count_res.scalar() or 10
 
@@ -70,7 +74,10 @@ class PredictiveAnalyticsService:
         )
 
     @staticmethod
-    async def get_predictive_risk_forecast(db: AsyncSession) -> PredictiveRiskResponse:
+    async def get_predictive_risk_forecast(
+        db: AsyncSession,
+        organization_id: Optional[UUID] = None,
+    ) -> PredictiveRiskResponse:
         """
         Identifies active tickets with high statistical likelihood of breaching SLA deadlines.
         """
@@ -89,6 +96,9 @@ class PredictiveAnalyticsService:
                 SLA.resolution_breached.is_(False),
             )
         )
+        if organization_id is not None:
+            stmt = stmt.where(Case.organization_id == organization_id)
+
         res = await db.execute(stmt)
         rows = res.all()
 
@@ -131,13 +141,13 @@ class PredictiveAnalyticsService:
                         title=case.title,
                         priority=case.priority.value,
                         current_status=case.status.value,
-                        predicted_breach_probability=round(prob, 2),
+                        risk_score=round(prob, 2),
                         time_to_breach_minutes=time_to_breach_min,
                         risk_drivers=drivers,
                     )
                 )
 
-        at_risk_items.sort(key=lambda x: x.predicted_breach_probability, reverse=True)
+        at_risk_items.sort(key=lambda x: x.risk_score, reverse=True)
 
         ai_summary = (
             f"Detected {len(at_risk_items)} active tickets with high risk of SLA breach. "
@@ -153,11 +163,16 @@ class PredictiveAnalyticsService:
         )
 
     @staticmethod
-    async def get_team_capacity_overview(db: AsyncSession) -> TeamCapacityOverviewResponse:
+    async def get_team_capacity_overview(
+        db: AsyncSession,
+        organization_id: Optional[UUID] = None,
+    ) -> TeamCapacityOverviewResponse:
         """
         Calculates operator load, closure velocity, capacity utilization %, and burnout risk index per team.
         """
         stmt_teams = select(Team)
+        if organization_id is not None:
+            stmt_teams = stmt_teams.where(Team.organization_id == organization_id)
         team_res = await db.execute(stmt_teams)
         teams = team_res.scalars().all()
 
@@ -170,6 +185,8 @@ class PredictiveAnalyticsService:
                 User.team_id == t.id,
                 User.role.in_([UserRole.OPERATOR, UserRole.TEAM_LEAD]),
             )
+            if organization_id is not None:
+                stmt_ops = stmt_ops.where(User.organization_id == organization_id)
             ops_count = (await db.execute(stmt_ops)).scalar() or 1
 
             # Count open cases
@@ -183,6 +200,8 @@ class PredictiveAnalyticsService:
                     CaseStatus.AWAITING_APPROVAL,
                 ]),
             )
+            if organization_id is not None:
+                stmt_cases = stmt_cases.where(Case.organization_id == organization_id)
             open_cases = (await db.execute(stmt_cases)).scalar() or 0
 
             avg_per_op = round(open_cases / ops_count, 1)

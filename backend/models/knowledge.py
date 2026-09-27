@@ -43,6 +43,12 @@ class KnowledgeArticle(Base):
         ForeignKey("cases.id", ondelete="SET NULL"),
         nullable=True,
     )
+    organization_id = Column(
+        UUID(as_uuid=True),
+        ForeignKey("organizations.id", ondelete="CASCADE"),
+        nullable=True,
+        index=True,
+    )
     created_at = Column(
         DateTime(timezone=True),
         server_default=func.now(),

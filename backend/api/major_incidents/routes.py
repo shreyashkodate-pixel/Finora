@@ -50,6 +50,7 @@ async def list_major_incidents(
 ):
     service = MajorIncidentService(db)
     items, _ = await service.list_major_incidents(
+        current_user=current_user,
         status_filter=status,
         limit=limit,
         offset=offset,
@@ -68,7 +69,7 @@ async def get_major_incident(
     db: AsyncSession = Depends(get_db_session),
 ):
     service = MajorIncidentService(db)
-    return await service.get_major_incident(incident_id)
+    return await service.get_major_incident(incident_id, current_user)
 
 
 @router.patch(

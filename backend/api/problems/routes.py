@@ -53,6 +53,7 @@ async def list_problems(
 ):
     service = ProblemService(db)
     items, _ = await service.list_problems(
+        current_user=current_user,
         status_filter=status,
         priority_filter=priority,
         limit=limit,
@@ -72,7 +73,7 @@ async def get_problem(
     db: AsyncSession = Depends(get_db_session),
 ):
     service = ProblemService(db)
-    return await service.get_problem(problem_id)
+    return await service.get_problem(problem_id, current_user)
 
 
 @router.patch(

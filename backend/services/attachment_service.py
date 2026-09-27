@@ -79,6 +79,19 @@ class AttachmentService:
                 },
             )
 
+        # Tenant isolation check
+        if current_user.organization_id and case.organization_id and case.organization_id != current_user.organization_id:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail={
+                    "error": {
+                        "code": "CASE_NOT_FOUND",
+                        "message": f"Case {case_id} not found.",
+                        "details": {},
+                    }
+                },
+            )
+
         # Requesters can only access their own cases
         if current_user.role == UserRole.REQUESTER and case.requester_id != current_user.id:
             raise HTTPException(

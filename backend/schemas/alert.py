@@ -17,6 +17,7 @@ class InboundAlertResponse(BaseModel):
     status: AlertStatus
     raw_payload: Dict[str, Any] = Field(default_factory=dict)
     case_id: Optional[UUID] = None
+    organization_id: Optional[UUID] = None
     acknowledged_at: Optional[datetime] = None
     acknowledged_by_id: Optional[UUID] = None
     created_at: datetime
@@ -44,6 +45,7 @@ class AlertRuleResponse(BaseModel):
     auto_create_incident: bool
     incident_priority: CasePriority
     target_team_id: Optional[UUID] = None
+    organization_id: Optional[UUID] = None
     is_active: bool
     created_at: datetime
 

@@ -24,15 +24,19 @@ class PredictiveRiskItem(BaseModel):
     title: str
     priority: str
     current_status: str
-    predicted_breach_probability: float
+    risk_score: float = Field(default=0.0, validation_alias="predicted_breach_probability", serialization_alias="risk_score")
     time_to_breach_minutes: int
     risk_drivers: List[str] = Field(default_factory=list)
+
+    model_config = ConfigDict(populate_by_name=True, from_attributes=True)
 
 
 class PredictiveRiskResponse(BaseModel):
     total_at_risk_cases: int
     high_risk_cases: List[PredictiveRiskItem] = Field(default_factory=list)
     ai_summary: str
+
+    model_config = ConfigDict(populate_by_name=True, from_attributes=True)
 
 
 class TeamCapacityMetricItem(BaseModel):

@@ -51,6 +51,7 @@ class UserResponse(BaseModel):
     availability_status: AvailabilityStatus
     email_verified: bool
     auth_provider: AuthProvider
+    organization_id: Optional[UUID] = None
     created_at: datetime
 
     model_config = ConfigDict(from_attributes=True)

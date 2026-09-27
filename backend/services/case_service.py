@@ -10,7 +10,7 @@ from models.case import Case, CaseRelationship, CaseSequence
 from models.sla import SLA
 from models.message import Message
 from models.audit import AuditLog
-from models.user import User
+from models.user import User, Team
 from models.enums import (
     CaseType,
     CaseStatus,
@@ -170,6 +170,7 @@ class CaseService:
             status=CaseStatus.NEW,
             priority=payload.priority,
             requester_id=current_user.id,
+            organization_id=current_user.organization_id,
             site=site,
             service_id=payload.service_id,
             version=1,
@@ -247,6 +248,19 @@ class CaseService:
                 },
             )
 
+        # Tenant isolation check
+        if current_user.organization_id and case.organization_id and case.organization_id != current_user.organization_id:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail={
+                    "error": {
+                        "code": "CASE_NOT_FOUND",
+                        "message": f"Case {case_id} not found.",
+                        "details": {},
+                    }
+                },
+            )
+
         # Requesters can only view their own cases per SRS §2.2 & §7.6
         if current_user.role == UserRole.REQUESTER and case.requester_id != current_user.id:
             raise HTTPException(
@@ -274,6 +288,10 @@ class CaseService:
     ) -> Tuple[List[Case], int]:
         """List cases with role scoping, filtering, and pagination."""
         base_query = select(Case).options(selectinload(Case.sla)).where(Case.deleted_at.is_(None))
+
+        # Tenant isolation: filter by organization for all roles
+        if current_user.organization_id:
+            base_query = base_query.where(Case.organization_id == current_user.organization_id)
 
         # Requesters only see their own cases
         if current_user.role == UserRole.REQUESTER:
@@ -363,8 +381,24 @@ class CaseService:
                 case.sla.target_resolve_at = res_tgt
         before_owner_id = case.owner_id
         if payload.owner_id is not None:
+            owner_stmt = select(User).where(User.id == payload.owner_id, User.deleted_at.is_(None))
+            owner_res = await self.db.execute(owner_stmt)
+            owner = owner_res.scalar_one_or_none()
+            if not owner or (current_user.organization_id and owner.organization_id and owner.organization_id != current_user.organization_id):
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail={"error": {"code": "INVALID_OWNER", "message": "Assigned owner does not exist or belongs to another organization."}},
+                )
             case.owner_id = payload.owner_id
         if payload.team_id is not None:
+            team_stmt = select(Team).where(Team.id == payload.team_id)
+            team_res = await self.db.execute(team_stmt)
+            team = team_res.scalar_one_or_none()
+            if not team or (current_user.organization_id and team.organization_id and team.organization_id != current_user.organization_id):
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail={"error": {"code": "INVALID_TEAM", "message": "Assigned team does not exist or belongs to another organization."}},
+                )
             case.team_id = payload.team_id
         if payload.service_id is not None:
             case.service_id = payload.service_id

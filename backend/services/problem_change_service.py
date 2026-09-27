@@ -83,6 +83,7 @@ class ProblemService:
             root_cause=payload.root_cause,
             workaround=payload.workaround,
             owner_id=payload.owner_id or current_user.id,
+            organization_id=current_user.organization_id,
             status=ProblemStatus.OPEN,
         )
         self.db.add(problem)
@@ -91,6 +92,14 @@ class ProblemService:
         # Link initial cases if supplied
         if payload.case_ids:
             for c_id in payload.case_ids:
+                case_stmt = select(Case).where(Case.id == c_id)
+                case_res = await self.db.execute(case_stmt)
+                case_obj = case_res.scalar_one_or_none()
+                if not case_obj or (current_user.organization_id and case_obj.organization_id and case_obj.organization_id != current_user.organization_id):
+                    raise HTTPException(
+                        status_code=status.HTTP_400_BAD_REQUEST,
+                        detail={"error": {"code": "INVALID_CASE_ORGANIZATION", "message": f"Case {c_id} does not exist or belongs to another organization."}},
+                    )
                 link = ProblemCaseLink(
                     problem_id=problem.id,
                     case_id=c_id,
@@ -113,9 +122,9 @@ class ProblemService:
         self.db.add(audit)
         await self.db.commit()
 
-        return await self.get_problem(problem.id)
+        return await self.get_problem(problem.id, current_user)
 
-    async def get_problem(self, problem_id: uuid.UUID) -> Problem:
+    async def get_problem(self, problem_id: uuid.UUID, current_user: Optional[User] = None) -> Problem:
         stmt = (
             select(Problem)
             .where(Problem.id == problem_id)
@@ -137,10 +146,22 @@ class ProblemService:
                     }
                 },
             )
+        if current_user and current_user.organization_id and problem.organization_id and problem.organization_id != current_user.organization_id:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail={
+                    "error": {
+                        "code": "PROBLEM_NOT_FOUND",
+                        "message": f"Problem {problem_id} does not exist.",
+                        "details": {},
+                    }
+                },
+            )
         return problem
 
     async def list_problems(
         self,
+        current_user: Optional[User] = None,
         status_filter: Optional[ProblemStatus] = None,
         priority_filter: Optional[CasePriority] = None,
         limit: int = 50,
@@ -155,6 +176,10 @@ class ProblemService:
             .order_by(Problem.created_at.desc())
         )
         count_stmt = select(func.count(Problem.id))
+
+        if current_user and current_user.organization_id:
+            stmt = stmt.where(Problem.organization_id == current_user.organization_id)
+            count_stmt = count_stmt.where(Problem.organization_id == current_user.organization_id)
 
         if status_filter:
             stmt = stmt.where(Problem.status == status_filter)
@@ -185,7 +210,7 @@ class ProblemService:
                 },
             )
 
-        problem = await self.get_problem(problem_id)
+        problem = await self.get_problem(problem_id, current_user)
         old_status = problem.status
 
         if payload.title is not None:
@@ -215,17 +240,17 @@ class ProblemService:
         )
         self.db.add(audit)
         await self.db.commit()
-        return await self.get_problem(problem.id)
+        return await self.get_problem(problem.id, current_user)
 
     async def link_case(
         self, problem_id: uuid.UUID, case_id: uuid.UUID, current_user: User
     ) -> ProblemCaseLink:
-        problem = await self.get_problem(problem_id)
-        # Check case exists
+        problem = await self.get_problem(problem_id, current_user)
+        # Check case exists and belongs to same tenant
         case_stmt = select(Case).where(Case.id == case_id)
         case_res = await self.db.execute(case_stmt)
         case = case_res.scalar_one_or_none()
-        if not case:
+        if not case or (current_user.organization_id and case.organization_id and case.organization_id != current_user.organization_id):
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail={"error": {"code": "CASE_NOT_FOUND", "message": f"Case {case_id} not found."}},
@@ -253,6 +278,7 @@ class ProblemService:
     async def unlink_case(
         self, problem_id: uuid.UUID, case_id: uuid.UUID, current_user: User
     ) -> bool:
+        await self.get_problem(problem_id, current_user)
         link_stmt = select(ProblemCaseLink).where(
             ProblemCaseLink.problem_id == problem_id,
             ProblemCaseLink.case_id == case_id,
@@ -270,7 +296,7 @@ class ProblemService:
     async def create_known_error(
         self, problem_id: uuid.UUID, payload: KnownErrorCreate, current_user: User
     ) -> KnownError:
-        problem = await self.get_problem(problem_id)
+        problem = await self.get_problem(problem_id, current_user)
         ke = KnownError(
             problem_id=problem.id,
             title=payload.title,
@@ -312,6 +338,16 @@ class ChangeService:
                 detail={"error": {"code": "PERMISSION_DENIED", "message": "Requesters cannot create change requests."}},
             )
 
+        if payload.problem_id:
+            prob_stmt = select(Problem).where(Problem.id == payload.problem_id)
+            prob_res = await self.db.execute(prob_stmt)
+            problem_obj = prob_res.scalar_one_or_none()
+            if not problem_obj or (current_user.organization_id and problem_obj.organization_id and problem_obj.organization_id != current_user.organization_id):
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail={"error": {"code": "INVALID_PROBLEM_ORGANIZATION", "message": "Problem belongs to another organization."}},
+                )
+
         change_number = await self._generate_change_number()
         initial_status = (
             ChangeStatus.SCHEDULED
@@ -328,6 +364,7 @@ class ChangeService:
             change_type=payload.change_type,
             status=initial_status,
             requester_id=current_user.id,
+            organization_id=current_user.organization_id,
             problem_id=payload.problem_id,
             implementation_plan=payload.implementation_plan,
             test_plan=payload.test_plan,
@@ -340,7 +377,7 @@ class ChangeService:
         await self.db.refresh(change)
         return change
 
-    async def get_change_request(self, change_id: uuid.UUID) -> ChangeRequest:
+    async def get_change_request(self, change_id: uuid.UUID, current_user: Optional[User] = None) -> ChangeRequest:
         stmt = select(ChangeRequest).where(ChangeRequest.id == change_id)
         result = await self.db.execute(stmt)
         change = result.scalar_one_or_none()
@@ -349,10 +386,16 @@ class ChangeService:
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail={"error": {"code": "CHANGE_NOT_FOUND", "message": f"Change request {change_id} not found."}},
             )
+        if current_user and current_user.organization_id and change.organization_id and change.organization_id != current_user.organization_id:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail={"error": {"code": "CHANGE_NOT_FOUND", "message": f"Change request {change_id} not found."}},
+            )
         return change
 
     async def list_change_requests(
         self,
+        current_user: Optional[User] = None,
         status_filter: Optional[ChangeStatus] = None,
         type_filter: Optional[ChangeType] = None,
         limit: int = 50,
@@ -360,6 +403,10 @@ class ChangeService:
     ) -> Tuple[List[ChangeRequest], int]:
         stmt = select(ChangeRequest).order_by(ChangeRequest.created_at.desc())
         count_stmt = select(func.count(ChangeRequest.id))
+
+        if current_user and current_user.organization_id:
+            stmt = stmt.where(ChangeRequest.organization_id == current_user.organization_id)
+            count_stmt = count_stmt.where(ChangeRequest.organization_id == current_user.organization_id)
 
         if status_filter:
             stmt = stmt.where(ChangeRequest.status == status_filter)
@@ -384,7 +431,7 @@ class ChangeService:
                 detail={"error": {"code": "PERMISSION_DENIED", "message": "Only CAB members / Leads can review changes."}},
             )
 
-        change = await self.get_change_request(change_id)
+        change = await self.get_change_request(change_id, current_user)
         if change.status != ChangeStatus.PENDING_CAB:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
@@ -410,7 +457,7 @@ class ChangeService:
     async def update_change_status(
         self, change_id: uuid.UUID, new_status: ChangeStatus, current_user: User
     ) -> ChangeRequest:
-        change = await self.get_change_request(change_id)
+        change = await self.get_change_request(change_id, current_user)
         change.status = new_status
         await self.db.commit()
         await self.db.refresh(change)
@@ -443,11 +490,11 @@ class MajorIncidentService:
                 detail={"error": {"code": "PERMISSION_DENIED", "message": "Requesters cannot declare major incidents."}},
             )
 
-        # Validate case exists and is P1
+        # Validate case exists and belongs to current user's organization
         case_stmt = select(Case).where(Case.id == payload.case_id)
         case_res = await self.db.execute(case_stmt)
         case = case_res.scalar_one_or_none()
-        if not case:
+        if not case or (current_user.organization_id and case.organization_id and case.organization_id != current_user.organization_id):
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail={"error": {"code": "CASE_NOT_FOUND", "message": f"Case {payload.case_id} not found."}},
@@ -487,13 +534,16 @@ class MajorIncidentService:
         self.db.add(audit)
         await self.db.commit()
 
-        return await self.get_major_incident(maj.id)
+        return await self.get_major_incident(maj.id, current_user)
 
-    async def get_major_incident(self, incident_id: uuid.UUID) -> MajorIncident:
+    async def get_major_incident(self, incident_id: uuid.UUID, current_user: Optional[User] = None) -> MajorIncident:
         stmt = (
             select(MajorIncident)
             .where(MajorIncident.id == incident_id)
-            .options(selectinload(MajorIncident.timeline_events))
+            .options(
+                selectinload(MajorIncident.timeline_events),
+                selectinload(MajorIncident.case),
+            )
         )
         result = await self.db.execute(stmt)
         maj = result.scalar_one_or_none()
@@ -502,20 +552,33 @@ class MajorIncidentService:
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail={"error": {"code": "INCIDENT_NOT_FOUND", "message": "Major incident not found."}},
             )
+        if current_user and current_user.organization_id and maj.case and maj.case.organization_id and maj.case.organization_id != current_user.organization_id:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail={"error": {"code": "INCIDENT_NOT_FOUND", "message": "Major incident not found."}},
+            )
         return maj
 
     async def list_major_incidents(
         self,
+        current_user: Optional[User] = None,
         status_filter: Optional[MajorIncidentStatus] = None,
         limit: int = 50,
         offset: int = 0,
     ) -> Tuple[List[MajorIncident], int]:
         stmt = (
             select(MajorIncident)
-            .options(selectinload(MajorIncident.timeline_events))
+            .options(
+                selectinload(MajorIncident.timeline_events),
+                selectinload(MajorIncident.case),
+            )
             .order_by(MajorIncident.declared_at.desc())
         )
         count_stmt = select(func.count(MajorIncident.id))
+
+        if current_user and current_user.organization_id:
+            stmt = stmt.join(Case).where(Case.organization_id == current_user.organization_id)
+            count_stmt = count_stmt.join(Case).where(Case.organization_id == current_user.organization_id)
 
         if status_filter:
             stmt = stmt.where(MajorIncident.status == status_filter)
@@ -534,7 +597,7 @@ class MajorIncidentService:
         payload: MajorIncidentTimelineCreate,
         current_user: User,
     ) -> MajorIncidentTimeline:
-        maj = await self.get_major_incident(incident_id)
+        maj = await self.get_major_incident(incident_id, current_user)
         tl = MajorIncidentTimeline(
             major_incident_id=maj.id,
             author_id=current_user.id,
@@ -552,7 +615,7 @@ class MajorIncidentService:
         payload: MajorIncidentUpdate,
         current_user: User,
     ) -> MajorIncident:
-        maj = await self.get_major_incident(incident_id)
+        maj = await self.get_major_incident(incident_id, current_user)
 
         if payload.title is not None:
             maj.title = payload.title
@@ -576,4 +639,4 @@ class MajorIncidentService:
             maj.post_mortem_url = payload.post_mortem_url
 
         await self.db.commit()
-        return await self.get_major_incident(maj.id)
+        return await self.get_major_incident(maj.id, current_user)

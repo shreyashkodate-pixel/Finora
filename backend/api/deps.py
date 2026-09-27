@@ -55,8 +55,26 @@ async def get_current_user(
 
 async def get_current_active_user(
     current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db_session),
 ) -> User:
-    """Verify that the authenticated user has verified their email per SRS §6 & §3.3a."""
+    """Verify that the authenticated user has verified their email and their organization is active."""
+    if current_user.organization_id:
+        from models.organization import Organization
+        org_stmt = select(Organization).where(Organization.id == current_user.organization_id)
+        org_res = await db.execute(org_stmt)
+        org = org_res.scalar_one_or_none()
+        if org and not org.is_active:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail={
+                    "error": {
+                        "code": "ORGANIZATION_INACTIVE",
+                        "message": "Your organization account is deactivated. Please contact support.",
+                        "details": {},
+                    }
+                },
+            )
+
     if settings.ENVIRONMENT != "local" and not current_user.email_verified:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,

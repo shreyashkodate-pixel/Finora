@@ -17,7 +17,7 @@ router = APIRouter(prefix="/analytics", tags=["Predictive Analytics & Capacity"]
 
 @router.get("/predictive/workload", response_model=WorkloadForecastResponse, status_code=status.HTTP_200_OK)
 async def get_workload_forecast(
-    horizon_days: int = Query(7, ge=1, le=90, description="Forecast horizon in days (e.g. 7 or 30)"),
+    horizon_days: int = Query(7, ge=1, le=30, description="Forecast horizon in days (e.g. 7, 14, or 30)"),
     current_user: User = Depends(
         require_roles([UserRole.TEAM_LEAD, UserRole.MANAGER, UserRole.ADMINISTRATOR])
     ),
@@ -28,6 +28,7 @@ async def get_workload_forecast(
     """
     return await PredictiveAnalyticsService.generate_workload_forecast(
         db=db,
+        organization_id=current_user.organization_id,
         horizon_days=horizon_days,
     )
 
@@ -42,7 +43,10 @@ async def get_predictive_risk_forecast(
     """
     Identifies active tickets with statistically high likelihood of SLA breach.
     """
-    return await PredictiveAnalyticsService.get_predictive_risk_forecast(db=db)
+    return await PredictiveAnalyticsService.get_predictive_risk_forecast(
+        db=db,
+        organization_id=current_user.organization_id,
+    )
 
 
 @router.get("/capacity/teams", response_model=TeamCapacityOverviewResponse, status_code=status.HTTP_200_OK)
@@ -55,4 +59,8 @@ async def get_team_capacity_overview(
     """
     Returns real-time operator caseload, capacity utilization %, and burnout risk index across teams.
     """
-    return await PredictiveAnalyticsService.get_team_capacity_overview(db=db)
+    return await PredictiveAnalyticsService.get_team_capacity_overview(
+        db=db,
+        organization_id=current_user.organization_id,
+    )
+

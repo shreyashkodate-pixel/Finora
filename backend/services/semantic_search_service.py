@@ -123,16 +123,42 @@ class SemanticSearchService:
             UserRole.ADMINISTRATOR,
         )
 
+        SUPPORTED_ENTITY_TYPES = {
+            "case",
+            "knowledge_article",
+            "problem",
+            "known_error",
+            "audit_log",
+        }
+
         for item in all_embeddings:
+            # 1. Reject unsupported / unknown entity types
+            if item.entity_type not in SUPPORTED_ENTITY_TYPES:
+                continue
+
             meta = item.metadata_json or {}
 
-            # Strict RBAC filtering for Requesters
+            # 2. Strict Tenant / Organization Isolation
+            if current_user.organization_id is not None:
+                item_org = meta.get("organization_id") or meta.get("tenant_id")
+                if item_org is not None and str(item_org) != str(current_user.organization_id):
+                    continue
+
+            # 3. Strict RBAC filtering for Requesters
             if not is_staff:
                 if item.entity_type == "case":
                     if meta.get("requester_id") != str(current_user.id):
                         continue
                 elif item.entity_type == "knowledge_article":
                     if meta.get("state") != "published":
+                        continue
+                else:
+                    # Requesters cannot access audit_log, problem, known_error, etc.
+                    continue
+            else:
+                # 4. Strict RBAC filtering for Staff: Audit logs are strictly Administrator-only
+                if item.entity_type == "audit_log":
+                    if current_user.role != UserRole.ADMINISTRATOR:
                         continue
 
             score = _cosine_similarity(query_vec, item.embedding)

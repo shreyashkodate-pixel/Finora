@@ -52,17 +52,7 @@ def upgrade() -> None:
         ),
         sa.Column("title", sa.String(length=255), nullable=False),
         sa.Column("message", sa.Text(), nullable=False),
-        sa.Column("event_type", sa.Enum(
-            "case_created",
-            "case_assigned",
-            "new_message",
-            "case_resolved",
-            "case_reopened",
-            "sla_warning",
-            "sla_breach",
-            "escalation_raised",
-            name="notificationeventtype",
-        ), nullable=False),
+        sa.Column("event_type", notification_event_type, nullable=False),
         sa.Column("is_read", sa.Boolean(), default=False, nullable=False),
         sa.Column(
             "created_at",

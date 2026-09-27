@@ -41,6 +41,14 @@ class InboundAlert(Base):
     acknowledged_at = Column(DateTime(timezone=True), nullable=True)
     acknowledged_by_id = Column(UUID(as_uuid=True), ForeignKey("users.id", ondelete="SET NULL"), nullable=True)
 
+    # Organization / Tenant ownership
+    organization_id = Column(
+        UUID(as_uuid=True),
+        ForeignKey("organizations.id", ondelete="CASCADE"),
+        nullable=True,
+        index=True,
+    )
+
     created_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), nullable=False)
     updated_at = Column(
         DateTime(timezone=True),
@@ -51,6 +59,7 @@ class InboundAlert(Base):
 
     case = relationship("Case", foreign_keys=[case_id], lazy="joined")
     acknowledged_by = relationship("User", foreign_keys=[acknowledged_by_id], lazy="joined")
+    organization = relationship("Organization", foreign_keys=[organization_id], lazy="joined")
 
     __table_args__ = (
         Index("ix_inbound_alerts_fp_created", "fingerprint", "created_at"),
@@ -71,7 +80,17 @@ class AlertRule(Base):
     auto_create_incident = Column(Boolean, default=True, nullable=False)
     incident_priority = Column(SQLEnum(CasePriority), nullable=False, default=CasePriority.P2)
     target_team_id = Column(UUID(as_uuid=True), ForeignKey("teams.id", ondelete="SET NULL"), nullable=True)
+    
+    # Organization / Tenant ownership
+    organization_id = Column(
+        UUID(as_uuid=True),
+        ForeignKey("organizations.id", ondelete="CASCADE"),
+        nullable=True,
+        index=True,
+    )
+    
     is_active = Column(Boolean, default=True, nullable=False)
     created_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), nullable=False)
 
     target_team = relationship("Team", foreign_keys=[target_team_id], lazy="joined")
+    organization = relationship("Organization", foreign_keys=[organization_id], lazy="joined")

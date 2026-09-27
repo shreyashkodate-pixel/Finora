@@ -51,7 +51,7 @@ class ApprovalService:
         case_result = await self.db.execute(case_stmt)
         case = case_result.scalar_one_or_none()
 
-        if not case:
+        if not case or (current_user.organization_id and case.organization_id and case.organization_id != current_user.organization_id):
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail={
@@ -106,6 +106,19 @@ class ApprovalService:
                     "error": {
                         "code": "APPROVER_NOT_FOUND",
                         "message": f"Designated approver {payload.approver_id} does not exist.",
+                        "details": {},
+                    }
+                },
+            )
+
+        # Tenant isolation for approver
+        if current_user.organization_id and approver.organization_id and approver.organization_id != current_user.organization_id:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail={
+                    "error": {
+                        "code": "INVALID_APPROVER_ORGANIZATION",
+                        "message": "Approver belongs to another organization.",
                         "details": {},
                     }
                 },
@@ -205,12 +218,27 @@ class ApprovalService:
                 },
             )
 
-        # Lookup approval
+        # Lookup approval and its case
         stmt = select(Approval).where(Approval.id == approval_id)
         result = await self.db.execute(stmt)
         approval = result.scalar_one_or_none()
 
         if not approval:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail={
+                    "error": {
+                        "code": "APPROVAL_NOT_FOUND",
+                        "message": f"Approval request {approval_id} not found.",
+                        "details": {},
+                    }
+                },
+            )
+
+        case_stmt = select(Case).where(Case.id == approval.case_id)
+        case_res = await self.db.execute(case_stmt)
+        case = case_res.scalar_one_or_none()
+        if not case or (current_user.organization_id and case.organization_id and case.organization_id != current_user.organization_id):
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail={

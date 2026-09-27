@@ -49,13 +49,14 @@ class KnowledgeService:
         if payload.source_case_id:
             case_stmt = select(Case).where(Case.id == payload.source_case_id)
             case_result = await self.db.execute(case_stmt)
-            if not case_result.scalar_one_or_none():
+            case_obj = case_result.scalar_one_or_none()
+            if not case_obj or (current_user.organization_id and case_obj.organization_id and case_obj.organization_id != current_user.organization_id):
                 raise HTTPException(
                     status_code=status.HTTP_404_NOT_FOUND,
                     detail={
                         "error": {
                             "code": "CASE_NOT_FOUND",
-                            "message": f"Source case {payload.source_case_id} does not exist.",
+                            "message": f"Source case {payload.source_case_id} does not exist or belongs to another organization.",
                             "details": {},
                         }
                     },
@@ -68,6 +69,7 @@ class KnowledgeService:
             title=payload.title,
             body=payload.body,
             owner_id=current_user.id,
+            organization_id=current_user.organization_id,
             state=payload.state or KnowledgeState.DRAFT,
             review_date=payload.review_date,
             source_case_id=payload.source_case_id,
@@ -117,6 +119,19 @@ class KnowledgeService:
                 },
             )
 
+        # Tenant isolation
+        if current_user.organization_id and article.organization_id and article.organization_id != current_user.organization_id:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail={
+                    "error": {
+                        "code": "KNOWLEDGE_NOT_FOUND",
+                        "message": "Knowledge article not found.",
+                        "details": {"article_id": str(article_id)},
+                    }
+                },
+            )
+
         if current_user.role == UserRole.REQUESTER and article.state != KnowledgeState.PUBLISHED:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
@@ -144,6 +159,14 @@ class KnowledgeService:
         Requesters are restricted to published articles only.
         """
         query = select(KnowledgeArticle)
+
+        if current_user.organization_id:
+            query = query.where(
+                or_(
+                    KnowledgeArticle.organization_id == current_user.organization_id,
+                    KnowledgeArticle.organization_id.is_(None),
+                )
+            )
 
         if current_user.role == UserRole.REQUESTER:
             query = query.where(KnowledgeArticle.state == KnowledgeState.PUBLISHED)
