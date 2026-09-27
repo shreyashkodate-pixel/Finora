@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_dashboard" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        "colors": {
+          "on-tertiary-fixed-variant": "#3f465c",
+          "tertiary-fixed-dim": "#bec6e0",
+          "on-surface-variant": "#444653",
+          "surface-dim": "#cbdbf5",
+          "surface-container-low": "#eff4ff",
+          "background": "#f8f9ff",
+          "secondary-container": "#6063ee",
+          "on-secondary-container": "#fffbff",
+          "on-tertiary-fixed": "#131b2e",
+          "outline": "#757684",
+          "on-secondary-fixed": "#07006c",
+          "surface-bright": "#f8f9ff",
+          "on-primary": "#ffffff",
+          "outline-variant": "#c4c5d5",
+          "secondary": "#4648d4",
+          "surface-container-lowest": "#ffffff",
+          "inverse-primary": "#b8c4ff",
+          "tertiary-fixed": "#dae2fd",
+          "surface-variant": "#d3e4fe",
+          "on-background": "#0b1c30",
+          "primary-fixed-dim": "#b8c4ff",
+          "surface-container-highest": "#d3e4fe",
+          "primary-fixed": "#dde1ff",
+          "surface-container-high": "#dce9ff",
+          "surface-container": "#e5eeff",
+          "on-secondary": "#ffffff",
+          "on-primary-fixed-variant": "#173bab",
+          "on-tertiary": "#ffffff",
+          "tertiary": "#2d3449",
+          "inverse-surface": "#213145",
+          "on-surface": "#0b1c30",
+          "surface-tint": "#3755c3",
+          "primary": "#00288e",
+          "primary-container": "#1e40af",
+          "secondary-fixed": "#e1e0ff",
+          "on-primary-fixed": "#001453",
+          "on-secondary-fixed-variant": "#2f2ebe",
+          "on-error": "#ffffff",
+          "on-error-container": "#93000a",
+          "on-tertiary-container": "#b4bbd5",
+          "error-container": "#ffdad6",
+          "on-primary-container": "#a8b8ff",
+          "error": "#ba1a1a",
+          "secondary-fixed-dim": "#c0c1ff",
+          "tertiary-container": "#434b60",
+          "surface": "#f8f9ff",
+          "inverse-on-surface": "#eaf1ff"
+        },
+        "borderRadius": {
+          "DEFAULT": "0.25rem",
+          "lg": "0.5rem",
+          "xl": "0.75rem",
+          "full": "9999px"
+        },
+        "spacing": {
+          "space-md": "1rem",
+          "space-xl": "2rem",
+          "space-sm": "0.5rem",
+          "space-lg": "1.5rem",
+          "margin-desktop": "1.5rem",
+          "space-xs": "0.25rem",
+          "margin": "1rem",
+          "gutter-desktop": "1.5rem",
+          "gutter": "1rem"
+        },
+        "fontFamily": {
+          "headline-sm": [
+            "Inter"
+          ],
+          "body-lg": [
+            "Inter"
+          ],
+          "body-sm": [
+            "Inter"
+          ],
+          "sla-timer": [
+            "JetBrains Mono"
+          ],
+          "body-md": [
+            "Inter"
+          ],
+          "code-md": [
+            "JetBrains Mono"
+          ],
+          "label-md": [
+            "Inter"
+          ],
+          "headline-md": [
+            "Inter"
+          ],
+          "headline-lg": [
+            "Inter"
+          ],
+          "label-sm": [
+            "Inter"
+          ],
+          "headline-lg-mobile": [
+            "Inter"
+          ]
+        },
+        "fontSize": {
+          "headline-sm": [
+            "18px",
+            {
+              "lineHeight": "24px",
+              "letterSpacing": "-0.01em",
+              "fontWeight": "600"
+            }
+          ],
+          "body-lg": [
+            "16px",
+            {
+              "lineHeight": "24px",
+              "letterSpacing": "0em",
+              "fontWeight": "400"
+            }
+          ],
+          "body-sm": [
+            "13px",
+            {
+              "lineHeight": "18px",
+              "letterSpacing": "0.005em",
+              "fontWeight": "400"
+            }
+          ],
+          "sla-timer": [
+            "12px",
+            {
+              "lineHeight": "16px",
+              "letterSpacing": "0.02em",
+              "fontWeight": "500"
+            }
+          ],
+          "body-md": [
+            "14px",
+            {
+              "lineHeight": "20px",
+              "letterSpacing": "0em",
+              "fontWeight": "400"
+            }
+          ],
+          "code-md": [
+            "13px",
+            {
+              "lineHeight": "18px",
+              "letterSpacing": "-0.01em",
+              "fontWeight": "400"
+            }
+          ],
+          "label-md": [
+            "12px",
+            {
+              "lineHeight": "16px",
+              "letterSpacing": "0.02em",
+              "fontWeight": "500"
+            }
+          ],
+          "headline-md": [
+            "22px",
+            {
+              "lineHeight": "28px",
+              "letterSpacing": "-0.015em",
+              "fontWeight": "600"
+            }
+          ],
+          "headline-lg": [
+            "32px",
+            {
+              "lineHeight": "40px",
+              "letterSpacing": "-0.02em",
+              "fontWeight": "600"
+            }
+          ],
+          "label-sm": [
+            "11px",
+            {
+              "lineHeight": "14px",
+              "letterSpacing": "0.04em",
+              "fontWeight": "600"
+            }
+          ],
+          "headline-lg-mobile": [
+            "26px",
+            {
+              "lineHeight": "32px",
+              "letterSpacing": "-0.015em",
+              "fontWeight": "600"
+            }
+          ]
+        }
+      },
+    },
+  }</script></head><body class="bg-background font-body-md text-body-md text-on-surface antialiased"><aside class="fixed left-0 top-0 h-full w-[4.5rem] bg-surface-container-lowest z-50 flex flex-col items-center py-space-sm shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="flex flex-col items-center justify-center mb-space-sm pt-space-xs"><div class="w-10 h-10 rounded-lg bg-surface-container-low flex items-center justify-center"><span class="material-symbols-outlined text-primary text-[22px]">shield_with_heart</span></div></div><nav class="flex-1 w-full flex flex-col items-center gap-space-xs px-space-xs overflow-y-auto" data-active-classes="bg-surface-container-low text-primary font-semibold relative after:content-[''] after:absolute after:right-0 after:top-1/2 after:-translate-y-1/2 after:w-[3px] after:h-6 after:bg-primary after:rounded-l"><a class="w-12 h-11 flex items-center justify-center rounded-lg text-on-surface-variant font-label-sm text-[11px] hover:bg-surface-container-low hover:text-on-surface transition-all text-center tracking-tight" data-path="predictive-workload-capacity-forecast" href="#" title="Capacity Forecast">Forecast</a><a class="w-12 h-11 flex items-center justify-center rounded-lg text-on-surface-variant font-label-sm text-[11px] hover:bg-surface-container-low hover:text-on-surface transition-all text-center tracking-tight" data-path="controlled-auto-fix-console" href="#" title="Auto-Fix Console">Auto-Fix</a><a aria-current="page" class="w-12 h-11 flex items-center justify-center rounded-lg transition-all tracking-tight bg-surface-container-low text-primary font-semibold relative after:content-[''] after:absolute after:right-0 after:top-1/2 after:-translate-y-1/2 after:w-[3px] after:h-6 after:bg-primary after:rounded-l" data-path="semantic-search" href="#" title="Semantic Search &amp; Neural Index">Search</a><a class="w-12 h-11 flex items-center justify-center rounded-lg text-on-surface-variant font-label-sm text-[11px] hover:bg-surface-container-low hover:text-on-surface transition-all text-center tracking-tight" data-path="inbound-apm-monitoring-alerts" href="#" title="Inbound APM Monitoring &amp; Alerts">APM</a><a class="w-12 h-11 flex items-center justify-center rounded-lg text-on-surface-variant font-label-sm text-[11px] hover:bg-surface-container-low hover:text-on-surface transition-all text-center tracking-tight" data-path="multi-tenant-saas-security-policies" href="#" title="Multi-Tenant SaaS &amp; Security Policies">Tenants</a><a class="w-12 h-11 flex items-center justify-center rounded-lg text-on-surface-variant font-label-sm text-[11px] hover:bg-surface-container-low hover:text-on-surface transition-all text-center tracking-tight" data-path="push-notification-device-registry-preferences" href="#" title="Push Notification Registry &amp; Preferences">Notify</a></nav><div class="mt-auto flex flex-col items-center gap-space-xs pt-space-xs"><div class="w-7 h-[2px] bg-surface-container rounded-full mb-1"></div><span class="font-label-sm text-[9px] text-primary font-semibold tracking-wider uppercase">Admin</span><button class="w-10 h-10 flex items-center justify-center rounded-lg text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-colors" title="Shortcuts &amp; Global Actions" type="button"><span class="material-symbols-outlined text-[20px]">keyboard</span></button></div></aside><div class="pl-[4.5rem]"><header class="fixed top-0 left-[4.5rem] right-0 h-14 bg-surface-container-lowest/90 backdrop-blur-xl z-40 shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="w-full h-full px-gutter flex items-center justify-between gap-space-md"><div class="flex items-center gap-space-md"><img alt="AI IT Helpdesk Logo" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1X7SUa7td0syGhN1cfQiVXQ9OafEdk2a4K27rn7CTEpXYs76VGlkzCdpnf-MhcKQISVUZN9vbqc-zYj-6J77t5qtTvl_-SkXleX17iUFT-vStUNm4mZHglzxi0K_TuZOIgEC0wvJEHiDXMQxwVgp4zOnXe2KTHI7HW6C_zDY4JxC-MSumx5Z3S2Rf1ElEFg2UCnW9uW32mFg1MHfpH5EBT_YSV9EsBvemQ9hEd-08El"/><div class="flex items-center gap-space-xs px-space-sm py-1 rounded bg-surface-container-low text-on-surface"><span class="material-symbols-outlined text-[16px] text-primary">corporate_fare</span><span class="font-label-md text-label-md font-semibold tracking-tight">Acme Enterprise Corp</span><span class="material-symbols-outlined text-[16px] text-on-surface-variant">unfold_more</span></div><div class="h-4 w-[1px] bg-surface-container"></div><div class="flex items-center gap-space-xs font-label-md text-label-md text-on-surface-variant"><span class="hover:text-on-surface transition-colors cursor-pointer">Administration</span><span class="material-symbols-outlined text-[14px]">chevron_right</span><span class="text-on-surface font-medium">Command &amp; Policy Core</span></div></div><div class="flex items-center gap-space-md"><div class="flex items-center gap-space-xs px-2.5 py-1 rounded-full bg-surface-container-low"><span class="w-2 h-2 rounded-full bg-secondary-container animate-pulse"></span><span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider font-semibold">All Systems Live</span></div><button aria-label="Notifications" class="relative p-1.5 rounded-lg text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-colors" type="button"><span class="material-symbols-outlined text-[20px]">notifications</span><span class="absolute top-1 right-1 w-2 h-2 rounded-full bg-error ring-2 ring-surface-container-lowest"></span></button><div class="h-4 w-[1px] bg-surface-container"></div><div class="flex items-center gap-space-sm pl-space-xs"><img alt="Profile" class="w-8 h-8 rounded-full object-cover ring-1 ring-primary/20" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB4xbusmfx0F0mMT5vji7K_J1m7S1HBMqLDKptI_z2WNmHsPFdD1ufxX0h6j_iIWx8gLnK1X9CU91J88_d7BeU9FaRKDUAzvSJrFa15QQvUPZhNojk2hX23SZszQPH49QxBYKbDnw-JEmRpuKfUnsFhVKNErKOidB1MN-0qPcjPltdr7ZiuwocStZKSTDCR61KXKKvW-dSJSJDgj_PFPrpVlXGxjHeif542SnWwOP0"/><div class="hidden md:flex flex-col text-left"><div class="flex items-center gap-1.5"><span class="font-label-md text-label-md text-on-surface leading-none font-semibold">Alex Vance</span><span class="font-label-sm text-[10px] px-1.5 py-0.5 rounded bg-primary text-on-primary font-semibold leading-none">Admin</span></div><span class="font-label-sm text-[11px] text-on-surface-variant leading-none mt-1">Lead SecOps / Staff Admin</span></div></div></div></div></header><main class="relative pt-14 bg-background min-h-screen w-full"><div class="flex flex-col w-full">
+<div class="w-full px-gutter-desktop py-space-md flex flex-col gap-space-md">
+<!-- Top Breadcrumb & Status Telemetry Bar -->
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-space-sm bg-surface-container-lowest p-space-sm rounded-lg shadow-sm">
+<div class="flex items-center gap-space-sm min-w-0">
+<div class="w-8 h-8 rounded bg-surface-container-low flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-primary text-[20px]">manage_search</span>
+</div>
+<div class="min-w-0">
+<div class="flex items-center gap-space-xs">
+<h1 class="font-headline-sm text-headline-sm text-on-surface truncate">Semantic Vector Search &amp; NL Discovery</h1>
+<span class="px-2 py-0.5 rounded-full bg-secondary-fixed text-on-secondary-fixed font-label-sm text-label-sm">pgvector v0.7.2</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant truncate">Natural language discovery across historical cases, standard operating procedures, and KEDB with verifiable citations.</p>
+</div>
+</div>
+<div class="flex items-center gap-space-sm shrink-0">
+<div class="flex items-center gap-1.5 px-2.5 py-1 rounded bg-surface-container-low text-on-surface-variant font-code-md text-code-md">
+<span class="w-2 h-2 rounded-full bg-secondary animate-pulse"></span>
+<span>HNSW latency: 12ms</span>
+</div>
+<button class="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface font-label-md text-label-md transition-all" type="button">
+<span class="material-symbols-outlined text-[16px]">tune</span>
+<span>Vector Tuner</span>
+</button>
+</div>
+</div>
+<!-- Search Query Bar & Precision Controls -->
+<div class="bg-surface-container-lowest p-space-md rounded-lg shadow-sm flex flex-col gap-space-sm">
+<!-- Main Search Input -->
+<div class="relative w-full flex items-center">
+<span class="material-symbols-outlined absolute left-space-md text-on-surface-variant text-[22px] pointer-events-none">search_spark</span>
+<input class="w-full pl-12 pr-28 py-3 bg-surface-container-low text-on-surface font-body-md text-body-md rounded-lg focus:outline-none focus:bg-surface-container-lowest transition-all" id="vector-query-input" placeholder="Ask an operational query or paste error traces..." type="text" value="How do we resolve error 0x80070005 on Windows print spooler and RPC endpoint mapping?"/>
+<div class="absolute right-space-sm flex items-center gap-1">
+<button class="p-1.5 rounded hover:bg-surface-container text-on-surface-variant hover:text-on-surface transition-colors" onclick="document.getElementById('vector-query-input').value=''" title="Clear query" type="button">
+<span class="material-symbols-outlined text-[18px]">close</span>
+</button>
+<button class="flex items-center gap-1.5 px-3 py-1.5 rounded bg-primary text-on-primary font-label-md text-label-md hover:bg-primary-container transition-colors shadow-sm" type="button">
+<span>Query</span>
+<span class="font-code-md text-[10px] px-1 py-0.5 rounded bg-white/20">↵</span>
+</button>
+</div>
+</div>
+<!-- Filters & Similarity Threshold -->
+<div class="flex flex-wrap items-center justify-between gap-space-sm pt-space-xs">
+<div class="flex flex-wrap items-center gap-1.5">
+<button class="px-3 py-1 rounded-full bg-primary text-on-primary font-label-md text-label-md font-medium transition-colors shadow-sm" type="button">
+            All Sources (342)
+          </button>
+<button class="px-3 py-1 rounded-full bg-surface-container-low hover:bg-surface-container text-on-surface-variant font-label-md text-label-md transition-colors" type="button">
+            Incidents (INC) <span class="text-on-surface font-semibold">189</span>
+</button>
+<button class="px-3 py-1 rounded-full bg-surface-container-low hover:bg-surface-container text-on-surface-variant font-label-md text-label-md transition-colors" type="button">
+            Knowledge &amp; SOPs <span class="text-on-surface font-semibold">94</span>
+</button>
+<button class="px-3 py-1 rounded-full bg-surface-container-low hover:bg-surface-container text-on-surface-variant font-label-md text-label-md transition-colors" type="button">
+            Problems (PRB) <span class="text-on-surface font-semibold">31</span>
+</button>
+<button class="px-3 py-1 rounded-full bg-surface-container-low hover:bg-surface-container text-on-surface-variant font-label-md text-label-md transition-colors" type="button">
+            Known Errors (KEDB) <span class="text-on-surface font-semibold">28</span>
+</button>
+</div>
+<!-- Similarity Cutoff Toggle -->
+<div class="flex items-center gap-space-sm bg-surface-container-low px-3 py-1 rounded-full">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Min Cosine Match:</span>
+<span class="font-code-md text-code-md text-primary font-semibold">≥ 85%</span>
+<input class="w-20 accent-primary cursor-pointer h-1.5 bg-surface-container-highest rounded-lg" max="99" min="70" type="range" value="85"/>
+</div>
+</div>
+<!-- Recent Query History Chips -->
+<div class="flex items-center gap-space-xs pt-1 overflow-x-auto text-on-surface-variant">
+<span class="font-label-sm text-label-sm shrink-0 flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">history</span> Quick Rerun:
+        </span>
+<button class="px-2.5 py-0.5 rounded bg-surface-container-low hover:bg-surface-container text-on-surface font-label-sm text-label-sm shrink-0 transition-colors" onclick="document.getElementById('vector-query-input').value='VPN handshake dropped on macOS Sonoma'" type="button">
+          VPN handshake dropped on macOS Sonoma
+        </button>
+<button class="px-2.5 py-0.5 rounded bg-surface-container-low hover:bg-surface-container text-on-surface font-label-sm text-label-sm shrink-0 transition-colors" onclick="document.getElementById('vector-query-input').value='Okta SAML 403 Forbidden loop'" type="button">
+          Okta SAML 403 Forbidden loop
+        </button>
+<button class="px-2.5 py-0.5 rounded bg-surface-container-low hover:bg-surface-container text-on-surface font-label-sm text-label-sm shrink-0 transition-colors" onclick="document.getElementById('vector-query-input').value='PostgreSQL connection pool exhaustion'" type="button">
+          PostgreSQL connection pool exhaustion
+        </button>
+</div>
+</div>
+<!-- Main Workspace: Split Content Grid -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-space-md items-start">
+<!-- Left / Center Primary Stream (Cols 8) -->
+<div class="lg:col-span-8 flex flex-col gap-space-md">
+<!-- AI-Synthesized Answer Box -->
+<section class="bg-surface-container-lowest rounded-lg shadow-md relative overflow-hidden">
+<div class="h-1 bg-gradient-to-r from-secondary via-primary to-secondary-container"></div>
+<div class="p-space-md flex flex-col gap-space-sm">
+<!-- Summary Header -->
+<div class="flex flex-wrap items-center justify-between gap-space-xs">
+<div class="flex items-center gap-2">
+<span class="w-6 h-6 rounded bg-secondary-fixed flex items-center justify-center text-on-secondary-fixed">
+<span class="material-symbols-outlined text-[16px]">auto_awesome</span>
+</span>
+<span class="font-headline-sm text-headline-sm text-on-surface">AI-Synthesized Resolution Summary</span>
+</div>
+<div class="flex items-center gap-1.5">
+<span class="px-2 py-0.5 rounded bg-secondary-fixed text-on-secondary-fixed font-label-sm text-label-sm flex items-center gap-1">
+<span class="material-symbols-outlined text-[12px]">psychology</span>
+                  Gemini 2.5 Flash • pgvector 1536-dim
+                </span>
+<span class="px-2 py-0.5 rounded bg-surface-container text-primary font-label-sm text-label-sm font-semibold">
+                  96% Confidence
+                </span>
+</div>
+</div>
+<!-- Synthesis Text Body -->
+<div class="bg-surface-container-low p-space-sm rounded-lg text-on-surface font-body-md text-body-md flex flex-col gap-space-xs">
+<p>
+                Windows Print Spooler error <strong class="font-code-md text-code-md text-error">0x80070005</strong> signifies an <em class="not-italic font-semibold">Access Denied / RPC Security Descriptor Mismatch</em>. This occurs when Windows Point and Print RPC driver isolation restrictions reject non-elevated client handles after hardened domain GPO updates.
+              </p>
+<div class="mt-1 flex flex-col gap-1.5">
+<span class="font-label-sm text-label-sm text-on-surface-variant font-semibold uppercase tracking-wider">Verified 3-Step Remediation Pathway:</span>
+<ol class="list-decimal list-inside space-y-1 font-body-sm text-body-sm text-on-surface">
+<li>
+<strong class="font-semibold">Reset Registry ACL Security Descriptors:</strong> Re-establish default spooler RPC delegation keys under <code class="px-1 py-0.5 bg-surface-container-lowest rounded font-code-md text-code-md text-primary">HKLM\System\CurrentControlSet\Control\Print</code>.
+                  </li>
+<li>
+<strong class="font-semibold">Unblock Dynamic RPC Endpoint Range:</strong> Verify firewall allow-rules for high dynamic ports <code class="px-1 py-0.5 bg-surface-container-lowest rounded font-code-md text-code-md text-primary">TCP 49152-65535</code> between workstation VLAN and print gateways.
+                  </li>
+<li>
+<strong class="font-semibold">Restart Service with Isolated Driver Context:</strong> Force cycle spooler daemon using PowerShell <code class="px-1 py-0.5 bg-surface-container-lowest rounded font-code-md text-code-md text-primary">Restart-Service -Name Spooler -Force</code>.
+                  </li>
+</ol>
+</div>
+<!-- Clickable Citations -->
+<div class="flex flex-wrap items-center gap-2 pt-space-xs">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Validated Source Citations:</span>
+<button class="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-surface-container-lowest hover:bg-surface-container text-primary font-code-md text-code-md shadow-sm transition-colors" type="button">
+<span class="material-symbols-outlined text-[13px]">confirmation_number</span>
+                  [INC-2025-008192]
+                </button>
+<button class="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-surface-container-lowest hover:bg-surface-container text-secondary font-code-md text-code-md shadow-sm transition-colors" type="button">
+<span class="material-symbols-outlined text-[13px]">menu_book</span>
+                  [SOP-104: Windows RPC Hardening]
+                </button>
+<button class="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-surface-container-lowest hover:bg-surface-container text-on-tertiary-fixed-variant font-code-md text-code-md shadow-sm transition-colors" type="button">
+<span class="material-symbols-outlined text-[13px]">bug_report</span>
+                  [KEDB-4419]
+                </button>
+</div>
+</div>
+<!-- Footer: Actions & Explainability Safeguard -->
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-space-sm pt-space-xs text-on-surface-variant font-body-sm text-body-sm">
+<div class="flex items-center gap-1.5 text-on-surface-variant text-[12px]">
+<span class="material-symbols-outlined text-[16px] text-secondary">verified_user</span>
+<span>Verified against PostgreSQL <code class="font-code-md">pgvector</code> cosine distance (L2 normalized).</span>
+</div>
+<div class="flex items-center gap-2">
+<button class="flex items-center gap-1 px-3 py-1.5 rounded bg-surface-container hover:bg-surface-container-high text-on-surface font-label-md text-label-md transition-colors" type="button">
+<span class="material-symbols-outlined text-[15px]">content_copy</span>
+<span>Copy Steps</span>
+</button>
+<button class="flex items-center gap-1 px-3 py-1.5 rounded bg-surface-container hover:bg-surface-container-high text-on-surface font-label-md text-label-md transition-colors" type="button">
+<span class="material-symbols-outlined text-[15px]">bookmark_add</span>
+<span>Export Reference</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Ranked Results Section Header -->
+<div class="flex items-center justify-between px-1">
+<div class="flex items-center gap-2">
+<span class="font-headline-sm text-headline-sm text-on-surface">Ranked Similarity Matches</span>
+<span class="px-2 py-0.5 rounded-full bg-surface-container text-on-surface-variant font-label-sm text-label-sm">4 verified items</span>
+</div>
+<div class="flex items-center gap-1 text-on-surface-variant font-label-md text-label-md">
+<span>Sort:</span>
+<span class="text-on-surface font-medium cursor-pointer flex items-center gap-0.5">
+              Cosine Similarity (Highest First)
+              <span class="material-symbols-outlined text-[16px]">expand_more</span>
+</span>
+</div>
+</div>
+<!-- Result Item 1: Case Match -->
+<article class="bg-surface-container-lowest rounded-lg p-space-md shadow-sm hover:shadow-md transition-all flex flex-col gap-space-sm relative overflow-hidden">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-secondary"></div>
+<div class="flex flex-wrap items-start justify-between gap-space-xs pl-space-xs">
+<div class="flex flex-col gap-0.5">
+<div class="flex items-center gap-2">
+<span class="px-1.5 py-0.5 rounded bg-surface-container font-code-md text-code-md text-primary font-semibold">INC-2025-008192</span>
+<span class="px-2 py-0.5 rounded bg-error-container text-on-error-container font-label-sm text-label-sm font-semibold">P2 High</span>
+<span class="px-2 py-0.5 rounded bg-surface-container-low text-on-surface font-label-sm text-label-sm font-medium">RESOLVED</span>
+</div>
+<h2 class="font-headline-sm text-headline-sm text-on-surface mt-1">
+                Print Spooler RPC endpoint error 0x80070005 following GPO security rollout
+              </h2>
+</div>
+<div class="flex items-center gap-1 px-2.5 py-1 rounded-full bg-secondary-fixed text-on-secondary-fixed font-code-md text-code-md font-bold">
+<span class="material-symbols-outlined text-[15px]">radar</span>
+<span>96% Match</span>
+</div>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant pl-space-xs">
+            ...Root cause identified as <mark class="bg-secondary-fixed/50 text-on-surface px-1 py-0.5 rounded">registry permission mismatch on HKLM Spooler key</mark> following execution of GPO-SEC-882. The printer driver sandbox failed to open RPC endpoint on localhost with error code <mark class="bg-secondary-fixed/50 text-on-surface px-1 py-0.5 rounded">0x80070005 (Access is denied)</mark>. Resolved by re-granting LocalService spooler DACL rights...
+          </p>
+<div class="flex flex-wrap items-center justify-between gap-space-sm pt-space-xs pl-space-xs font-body-sm text-body-sm text-on-surface-variant bg-surface-container-low/50 p-space-sm rounded">
+<div class="flex items-center gap-3">
+<div class="flex items-center gap-1.5">
+<div class="w-5 h-5 rounded-full bg-primary text-on-primary flex items-center justify-center font-label-sm text-[10px] font-bold">SJ</div>
+<span>Sarah Jenkins</span>
+</div>
+<span>•</span>
+<span>Resolved 14 days ago</span>
+<span>•</span>
+<span class="flex items-center gap-1 text-primary">
+<span class="material-symbols-outlined text-[15px]">verified</span>
+                Verified Fix
+              </span>
+</div>
+<button class="flex items-center gap-1 text-primary font-label-md text-label-md font-semibold hover:underline" type="button">
+<span>Inspect Source Case</span>
+<span class="font-code-md text-[11px] text-on-surface-variant">[⌘+Click]</span>
+</button>
+</div>
+</article>
+<!-- Result Item 2: Knowledge / SOP Match -->
+<article class="bg-surface-container-lowest rounded-lg p-space-md shadow-sm hover:shadow-md transition-all flex flex-col gap-space-sm relative overflow-hidden">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-primary"></div>
+<div class="flex flex-wrap items-start justify-between gap-space-xs pl-space-xs">
+<div class="flex flex-col gap-0.5">
+<div class="flex items-center gap-2">
+<span class="px-1.5 py-0.5 rounded bg-surface-container font-code-md text-code-md text-secondary font-semibold">SOP-104</span>
+<span class="px-2 py-0.5 rounded bg-surface-container-low text-on-surface font-label-sm text-label-sm">Workplace &amp; End-User</span>
+<span class="px-2 py-0.5 rounded bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm">Enterprise Standard</span>
+</div>
+<h2 class="font-headline-sm text-headline-sm text-on-surface mt-1">
+                Standard Operating Procedure: Diagnosing Windows RPC &amp; Print Isolation Errors
+              </h2>
+</div>
+<div class="flex items-center gap-1 px-2.5 py-1 rounded-full bg-secondary-fixed text-on-secondary-fixed font-code-md text-code-md font-bold">
+<span class="material-symbols-outlined text-[15px]">radar</span>
+<span>92% Match</span>
+</div>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant pl-space-xs">
+            Comprehensive troubleshooting playbook for Windows 10/11 enterprise fleet encountering <mark class="bg-secondary-fixed/50 text-on-surface px-1 py-0.5 rounded">0x80070005 RPC isolation crashes</mark>. Contains verified batch remediation script <code class="font-code-md text-code-md text-on-surface">repair-spooler-dacl.ps1</code> and domain group membership checklists for print operators.
+          </p>
+<div class="flex flex-wrap items-center justify-between gap-space-sm pt-space-xs pl-space-xs font-body-sm text-body-sm text-on-surface-variant bg-surface-container-low/50 p-space-sm rounded">
+<div class="flex items-center gap-3">
+<span>Author: Knowledge Ops</span>
+<span>•</span>
+<span>Updated 3 weeks ago</span>
+<span>•</span>
+<span class="text-secondary font-medium">142 Deflections this quarter</span>
+</div>
+<button class="flex items-center gap-1 text-primary font-label-md text-label-md font-semibold hover:underline" type="button">
+<span>View Full SOP</span>
+<span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</button>
+</div>
+</article>
+<!-- Result Item 3: Known Error Match -->
+<article class="bg-surface-container-lowest rounded-lg p-space-md shadow-sm hover:shadow-md transition-all flex flex-col gap-space-sm relative overflow-hidden">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-on-tertiary-fixed-variant"></div>
+<div class="flex flex-wrap items-start justify-between gap-space-xs pl-space-xs">
+<div class="flex flex-col gap-0.5">
+<div class="flex items-center gap-2">
+<span class="px-1.5 py-0.5 rounded bg-surface-container font-code-md text-code-md text-on-tertiary-fixed-variant font-semibold">KEDB-4102</span>
+<span class="px-2 py-0.5 rounded bg-error-container text-on-error-container font-label-sm text-label-sm font-semibold">KNOWN ERROR</span>
+<span class="px-2 py-0.5 rounded bg-surface-container-low text-on-surface font-label-sm text-label-sm">KB5034441 Conflict</span>
+</div>
+<h2 class="font-headline-sm text-headline-sm text-on-surface mt-1">
+                Known Error: Print Spooler RPC Flap on Hardened Win11 23H2 Images
+              </h2>
+</div>
+<div class="flex items-center gap-1 px-2.5 py-1 rounded-full bg-surface-container text-on-surface font-code-md text-code-md font-bold">
+<span class="material-symbols-outlined text-[15px]">radar</span>
+<span>88% Match</span>
+</div>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant pl-space-xs">
+            Under evaluation by Microsoft Escalation engineering. Workaround involves overriding the RPC endpoint port allocation via Local Security Policy or deploying hotfix bundle KB5034441-B via Intune rings. Permanent patch pending release cycle Q2.
+          </p>
+<div class="flex flex-wrap items-center justify-between gap-space-sm pt-space-xs pl-space-xs font-body-sm text-body-sm text-on-surface-variant bg-surface-container-low/50 p-space-sm rounded">
+<div class="flex items-center gap-3">
+<span>Engine: Vendor KEDB Sync</span>
+<span>•</span>
+<span>Impact: Win11 23H2 Fleet</span>
+</div>
+<button class="flex items-center gap-1 text-primary font-label-md text-label-md font-semibold hover:underline" type="button">
+<span>Link to Active Case</span>
+<span class="material-symbols-outlined text-[16px]">link</span>
+</button>
+</div>
+</article>
+</div>
+<!-- Right Column Sidebar: Telemetry & Natural Language Audit Trail (Cols 4) -->
+<aside class="lg:col-span-4 flex flex-col gap-space-md">
+<!-- Vector Index Telemetry Card -->
+<div class="bg-surface-container-lowest p-space-md rounded-lg shadow-sm flex flex-col gap-space-sm">
+<div class="flex items-center justify-between">
+<span class="font-headline-sm text-headline-sm text-on-surface">Vector Engine Status</span>
+<span class="flex items-center gap-1 px-2 py-0.5 rounded-full bg-secondary-fixed text-on-secondary-fixed font-label-sm text-label-sm font-semibold">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary animate-ping"></span>
+              Healthy
+            </span>
+</div>
+<div class="grid grid-cols-2 gap-space-xs pt-1">
+<div class="bg-surface-container-low p-space-sm rounded-lg flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Indexed Vectors</span>
+<span class="font-headline-md text-headline-md text-primary font-semibold">14,820</span>
+<span class="font-code-md text-[10px] text-on-surface-variant">100% Embedded</span>
+</div>
+<div class="bg-surface-container-low p-space-sm rounded-lg flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Query Latency</span>
+<span class="font-headline-md text-headline-md text-on-surface font-semibold">0.012s</span>
+<span class="font-code-md text-[10px] text-secondary font-medium">HNSW top-k=10</span>
+</div>
+</div>
+<!-- Micro Telemetry Chart: Query Distribution -->
+<div class="bg-surface-container-low p-space-sm rounded-lg flex flex-col gap-1.5">
+<div class="flex items-center justify-between text-on-surface-variant font-label-sm text-label-sm">
+<span>Vector Similarity Spread (7 Days)</span>
+<span class="font-code-md text-primary font-bold">Avg 91.4%</span>
+</div>
+<div class="h-10 w-full flex items-end gap-1 pt-2">
+<div class="flex-1 bg-surface-container-highest rounded-t h-[30%]" title="70-75%: 4%"></div>
+<div class="flex-1 bg-surface-container-highest rounded-t h-[45%]" title="75-80%: 8%"></div>
+<div class="flex-1 bg-secondary-fixed rounded-t h-[65%]" title="80-85%: 18%"></div>
+<div class="flex-1 bg-secondary rounded-t h-[95%]" title="85-90%: 42%"></div>
+<div class="flex-1 bg-primary rounded-t h-[80%]" title="90-95%: 22%"></div>
+<div class="flex-1 bg-primary-container rounded-t h-[40%]" title="95-100%: 6%"></div>
+</div>
+<div class="flex justify-between font-code-md text-[9px] text-on-surface-variant pt-0.5">
+<span>70%</span>
+<span>85% (threshold)</span>
+<span>100%</span>
+</div>
+</div>
+<div class="flex flex-col gap-1.5 pt-space-xs text-on-surface-variant font-body-sm text-body-sm">
+<div class="flex items-center justify-between py-1">
+<span>Embedding Model</span>
+<span class="font-code-md text-code-md text-on-surface font-semibold">text-embedding-004</span>
+</div>
+<div class="flex items-center justify-between py-1">
+<span>Distance Metric</span>
+<span class="font-code-md text-code-md text-on-surface">Cosine (pgvector L2)</span>
+</div>
+<div class="flex items-center justify-between py-1">
+<span>Tenant Scope Isolation</span>
+<span class="px-2 py-0.5 rounded bg-surface-container text-primary font-label-sm text-label-sm font-semibold">Acme Enterprise</span>
+</div>
+</div>
+<div class="p-2.5 rounded bg-surface-container-low flex items-start gap-2">
+<span class="material-symbols-outlined text-[18px] text-primary shrink-0 mt-0.5">security</span>
+<span class="font-body-sm text-[12px] text-on-surface-variant leading-tight">
+              Strict multi-tenant RLS active. Embeddings partitioned by workspace tenant ID with zero cross-tenant vector leakage.
+            </span>
+</div>
+</div>
+<!-- Recent NL Queries Audit Log Card -->
+<div class="bg-surface-container-lowest p-space-md rounded-lg shadow-sm flex flex-col gap-space-sm">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-primary text-[18px]">policy</span>
+<h3 class="font-headline-sm text-headline-sm text-on-surface">NL Query Audit Log</h3>
+</div>
+<span class="font-code-md text-code-md text-on-surface-variant">SRS §2.3</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+            Recent operator queries dispatched to semantic router with recorded cosine yield and citation count.
+          </p>
+<!-- Audit Item 1 -->
+<div class="bg-surface-container-low p-space-sm rounded-lg flex flex-col gap-1">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-1.5">
+<div class="w-4 h-4 rounded-full bg-secondary text-on-secondary flex items-center justify-center font-label-sm text-[9px]">AV</div>
+<span class="font-label-sm text-label-sm text-on-surface font-semibold">Alex Vance</span>
+</div>
+<span class="font-code-md text-[11px] text-on-surface-variant">10m ago</span>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface font-medium truncate">
+              "How do we resolve error 0x80070005 on Windows print..."
+            </span>
+<div class="flex items-center justify-between pt-1">
+<span class="font-code-md text-[11px] text-primary font-semibold">Cosine: 0.962</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">3 Citations verified</span>
+</div>
+</div>
+<!-- Audit Item 2 -->
+<div class="bg-surface-container-low p-space-sm rounded-lg flex flex-col gap-1">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-1.5">
+<div class="w-4 h-4 rounded-full bg-primary text-on-primary flex items-center justify-center font-label-sm text-[9px]">MR</div>
+<span class="font-label-sm text-label-sm text-on-surface font-semibold">Marcus Rivera</span>
+</div>
+<span class="font-code-md text-[11px] text-on-surface-variant">42m ago</span>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface font-medium truncate">
+              "VPN handshake dropped on macOS Sonoma after client update"
+            </span>
+<div class="flex items-center justify-between pt-1">
+<span class="font-code-md text-[11px] text-secondary font-semibold">Cosine: 0.891</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">2 Citations verified</span>
+</div>
+</div>
+<!-- Audit Item 3 -->
+<div class="bg-surface-container-low p-space-sm rounded-lg flex flex-col gap-1">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-1.5">
+<div class="w-4 h-4 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center font-label-sm text-[9px]">CL</div>
+<span class="font-label-sm text-label-sm text-on-surface font-semibold">Clara Lin</span>
+</div>
+<span class="font-code-md text-[11px] text-on-surface-variant">2h ago</span>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface font-medium truncate">
+              "Okta SAML 403 Forbidden loop on Salesforce enterprise app"
+            </span>
+<div class="flex items-center justify-between pt-1">
+<span class="font-code-md text-[11px] text-primary font-semibold">Cosine: 0.944</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">5 Citations verified</span>
+</div>
+</div>
+<button class="w-full py-1.5 rounded bg-surface-container hover:bg-surface-container-high text-on-surface font-label-md text-label-md text-center transition-colors" type="button">
+            View Full Audit Stream (SRS §2.3)
+          </button>
+</div>
+<!-- Semantic Cluster Visualization Snippet -->
+<div class="bg-surface-container-lowest p-space-md rounded-lg shadow-sm flex flex-col gap-space-xs">
+<div class="flex items-center justify-between">
+<span class="font-label-md text-label-md text-on-surface font-semibold">Related Vector Clusters</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">PCA Projection</span>
+</div>
+<div class="relative w-full h-32 bg-surface-container-low rounded-lg overflow-hidden flex items-center justify-center">
+<!-- Simulated Scatter SVG -->
+<svg class="w-full h-full text-primary" fill="none" viewbox="0 0 200 100">
+<circle class="fill-primary/10" cx="45" cy="50" r="18"></circle>
+<circle class="fill-primary" cx="45" cy="50" r="3"></circle>
+<circle class="fill-primary" cx="55" cy="42" r="2.5"></circle>
+<circle class="fill-primary" cx="38" cy="58" r="2.5"></circle>
+<!-- Current Query Point -->
+<circle class="fill-secondary animate-pulse" cx="50" cy="48" r="5"></circle>
+<text class="text-[8px] fill-secondary font-code-md" x="58" y="52">Query Point (0x80070005)</text>
+<circle class="fill-surface-container-highest" cx="140" cy="30" r="14"></circle>
+<circle class="fill-on-surface-variant" cx="140" cy="30" r="2.5"></circle>
+<circle class="fill-on-surface-variant" cx="148" cy="34" r="2"></circle>
+<text class="text-[7px] fill-on-surface-variant font-label-sm" x="130" y="52">Kerberos / Auth</text>
+<circle class="fill-surface-container-highest" cx="120" cy="80" r="16"></circle>
+<circle class="fill-on-surface-variant" cx="120" cy="80" r="2.5"></circle>
+<circle class="fill-on-surface-variant" cx="128" cy="75" r="2"></circle>
+<text class="text-[7px] fill-on-surface-variant font-label-sm" x="105" y="94">macOS VPN Cluster</text>
+</svg>
+</div>
+<span class="font-label-sm text-[11px] text-on-surface-variant text-center">
+            Cluster density indicates high correlation with <span class="font-semibold text-on-surface">Print Services &amp; RPC DCOM</span> endpoints.
+          </span>
+</div>
+</aside>
+</div>
+</div>
+</div></main></div><nav class="md:hidden fixed bottom-0 left-0 right-0 h-14 bg-surface-container-lowest z-50 flex items-center justify-around shadow-[0_-1px_8px_rgba(0,0,0,0.04)] px-space-xs" data-active-classes="text-primary font-semibold"><a class="flex flex-col items-center justify-center w-16 h-12 text-on-surface-variant font-label-sm text-[10px] tracking-tight hover:text-primary" data-path="predictive-workload-capacity-forecast" href="#">Forecast</a><a aria-current="page" class="flex flex-col items-center justify-center w-16 h-12 tracking-tight text-primary font-semibold" data-path="semantic-search" href="#">Search</a><a class="flex flex-col items-center justify-center w-16 h-12 text-on-surface-variant font-label-sm text-[10px] tracking-tight hover:text-primary" data-path="inbound-apm-monitoring-alerts" href="#">APM</a><a class="flex flex-col items-center justify-center w-16 h-12 text-on-surface-variant font-label-sm text-[10px] tracking-tight hover:text-primary" data-path="multi-tenant-saas-security-policies" href="#">Policies</a></nav></body></html>

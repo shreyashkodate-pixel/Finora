@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_dashboard" name="shell-type"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "on-primary-fixed-variant": "#173bab", "on-primary-fixed": "#001453", "on-primary": "#ffffff", "on-primary-container": "#a8b8ff", "surface-variant": "#d3e4fe", "inverse-surface": "#213145", "on-background": "#0b1c30", "on-secondary-fixed-variant": "#2f2ebe", "tertiary-fixed-dim": "#bec6e0", "outline-variant": "#c4c5d5", "secondary": "#4648d4", "on-secondary-container": "#fffbff", "on-secondary": "#ffffff", "background": "#f8f9ff", "inverse-primary": "#b8c4ff", "surface-container-highest": "#d3e4fe", "tertiary-fixed": "#dae2fd", "tertiary-container": "#434b60", "on-tertiary-fixed-variant": "#3f465c", "surface": "#f8f9ff", "secondary-fixed-dim": "#c0c1ff", "secondary-fixed": "#e1e0ff", "primary-fixed": "#dde1ff", "surface-bright": "#f8f9ff", "on-tertiary-fixed": "#131b2e", "on-error-container": "#93000a", "on-tertiary": "#ffffff", "surface-tint": "#3755c3", "tertiary": "#2d3449", "surface-dim": "#cbdbf5", "primary-fixed-dim": "#b8c4ff", "primary": "#00288e", "on-secondary-fixed": "#07006c", "on-surface": "#0b1c30", "surface-container-high": "#dce9ff", "surface-container": "#e5eeff", "secondary-container": "#6063ee", "on-surface-variant": "#444653", "primary-container": "#1e40af", "surface-container-lowest": "#ffffff", "on-tertiary-container": "#b4bbd5", "outline": "#757684", "error-container": "#ffdad6", "surface-container-low": "#eff4ff", "error": "#ba1a1a", "inverse-on-surface": "#eaf1ff", "on-error": "#ffffff" }, "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, "spacing": { "gutter": "1rem", "gutter-desktop": "1.5rem", "space-xl": "2rem", "space-md": "1rem", "space-xs": "0.25rem", "margin-desktop": "1.5rem", "space-lg": "1.5rem", "space-sm": "0.5rem", "margin": "1rem" }, "fontFamily": { "body-md": [ "Inter" ], "sla-timer": [ "JetBrains Mono" ], "code-md": [ "JetBrains Mono" ], "headline-sm": [ "Inter" ], "headline-lg-mobile": [ "Inter" ], "body-sm": [ "Inter" ], "label-sm": [ "Inter" ], "body-lg": [ "Inter" ], "label-md": [ "Inter" ], "headline-md": [ "Inter" ], "headline-lg": [ "Inter" ] }, "fontSize": { "body-md": [ "14px", { "lineHeight": "20px", "letterSpacing": "0em", "fontWeight": "400" } ], "sla-timer": [ "12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500" } ], "code-md": [ "13px", { "lineHeight": "18px", "letterSpacing": "-0.01em", "fontWeight": "400" } ], "headline-sm": [ "18px", { "lineHeight": "24px", "letterSpacing": "-0.01em", "fontWeight": "600" } ], "headline-lg-mobile": [ "26px", { "lineHeight": "32px", "letterSpacing": "-0.015em", "fontWeight": "600" } ], "body-sm": [ "13px", { "lineHeight": "18px", "letterSpacing": "0.005em", "fontWeight": "400" } ], "label-sm": [ "11px", { "lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "600" } ], "body-lg": [ "16px", { "lineHeight": "24px", "letterSpacing": "0em", "fontWeight": "400" } ], "label-md": [ "12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500" } ], "headline-md": [ "22px", { "lineHeight": "28px", "letterSpacing": "-0.015em", "fontWeight": "600" } ], "headline-lg": [ "32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "600" } ] } } } };</script></head><body class="bg-surface font-body-md text-body-md text-on-surface antialiased"><aside class="fixed left-0 top-0 h-full w-64 bg-surface-container-lowest shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-50 flex flex-col justify-between select-none"><div class="flex flex-col"><div class="h-16 px-space-md flex items-center gap-space-sm"><img alt="Brand logo. - Primary color: #1e40af
+- Font: inter
+- Mode: light
+- Roundness: rounded-md
+" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1X7SUa7td0syGhN1cfQiVXQ9OafEdk2a4K27rn7CTEpXYs76VGlkzCdpnf-MhcKQISVUZN9vbqc-zYj-6J77t5qtTvl_-SkXleX17iUFT-vStUNm4mZHglzxi0K_TuZOIgEC0wvJEHiDXMQxwVgp4zOnXe2KTHI7HW6C_zDY4JxC-MSumx5Z3S2Rf1ElEFg2UCnW9uW32mFg1MHfpH5EBT_YSV9EsBvemQ9hEd-08El"/><div class="flex flex-col"><span class="font-headline-sm text-headline-sm text-on-surface leading-tight tracking-tight">OpsCore Admin</span><span class="font-sla-timer text-sla-timer text-on-surface-variant">v4.18.2 [prod]</span></div></div><div class="px-space-md py-space-sm"><span class="font-label-sm text-label-sm uppercase tracking-wider text-outline px-space-xs">Core Systems</span></div><nav class="flex flex-col gap-space-xs px-space-sm" data-active-classes="bg-primary-container text-on-primary font-label-md rounded-lg shadow-[0_1px_2px_0_rgba(15,23,42,0.04)]"><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded-lg font-label-md text-label-md text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-all" data-path="overview" href="#"><span class="material-symbols-outlined text-[20px]">dashboard</span><span>Overview</span></a><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded-lg font-label-md text-label-md text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-all" data-path="organizations" href="#"><span class="material-symbols-outlined text-[20px]">domain</span><span>Organizations</span></a><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded-lg font-label-md text-label-md text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-all" data-path="users" href="#"><span class="material-symbols-outlined text-[20px]">person</span><span>Users</span></a><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded-lg font-label-md text-label-md text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-all" data-path="teams" href="#"><span class="material-symbols-outlined text-[20px]">groups</span><span>Teams</span></a><div class="my-space-xs"><span class="font-label-sm text-label-sm uppercase tracking-wider text-outline px-space-xs">Governance &amp; Ops</span></div><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded-lg font-label-md text-label-md text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-all" data-path="security-policies" href="#"><span class="material-symbols-outlined text-[20px]">shield_lock</span><span>Security &amp; Policies</span></a><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded-lg font-label-md text-label-md text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-all" data-path="alert-rules" href="#"><span class="material-symbols-outlined text-[20px]">notifications_active</span><span>Alert Rules</span></a><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded-lg font-label-md text-label-md text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-all" data-path="devices" href="#"><span class="material-symbols-outlined text-[20px]">smartphone</span><span>Devices</span></a><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded-lg font-label-md text-label-md text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-all" data-path="audit-logs" href="#"><span class="material-symbols-outlined text-[20px]">receipt_long</span><span>Audit Logs</span></a></nav></div><div class="p-space-md m-space-sm rounded-lg bg-surface-container-low"><div class="flex items-center justify-between mb-space-xs"><div class="flex items-center gap-space-xs"><span class="w-2 h-2 rounded-full bg-secondary-container"></span><span class="font-label-sm text-label-sm text-on-surface font-semibold">RBAC: SUPER_ADMIN</span></div><span class="material-symbols-outlined text-[16px] text-outline">verified_user</span></div><div class="flex items-center justify-between text-outline text-[11px] font-sla-timer"><span class="truncate">Tenant: isolated-eu-01</span><span class="text-primary font-semibold">ENFORCED</span></div></div></aside><div class="pl-64"><header class="fixed top-0 left-64 right-0 h-16 bg-surface-container-lowest/90 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-40 flex items-center justify-between px-gutter-desktop"><div class="flex items-center gap-space-lg"><div class="flex items-center gap-space-sm px-space-md py-space-xs bg-surface-container-low rounded-lg cursor-pointer hover:bg-surface-container transition-colors"><span class="material-symbols-outlined text-[18px] text-primary-container">apartment</span><div class="flex flex-col text-left"><span class="font-label-md text-label-md text-on-surface font-semibold leading-tight">Acme Enterprise Corp [acme-corp]</span><span class="font-label-sm text-label-sm text-outline">Platinum SLA • Tier 4 Dedicated</span></div><span class="material-symbols-outlined text-[18px] text-outline ml-space-xs">unfold_more</span></div><div class="hidden xl:flex items-center gap-space-xs px-space-sm py-space-xs bg-surface-container rounded-full"><span class="w-2 h-2 rounded-full bg-primary-container animate-pulse"></span><span class="font-sla-timer text-sla-timer text-on-surface">ALL SYSTEMS OPERATIONAL</span><span class="font-code-md text-code-md text-outline">• RFC-8291 / NIST 800-207</span></div></div><div class="flex items-center gap-space-md"><div class="hidden md:flex items-center gap-space-sm px-space-md py-space-xs bg-surface-container-low rounded-lg text-on-surface-variant w-72 justify-between cursor-pointer hover:bg-surface-container transition-colors"><div class="flex items-center gap-space-xs"><span class="material-symbols-outlined text-[18px]">search</span><span class="font-body-sm text-body-sm text-outline">Global Admin Search...</span></div><kbd class="px-1.5 py-0.5 font-code-md text-[11px] bg-surface-container-highest text-on-surface-variant rounded">Cmd+K</kbd></div><div class="relative flex items-center"><button class="relative p-space-xs rounded-lg text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-colors" type="button"><span class="material-symbols-outlined text-[22px]">notifications</span><span class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-error ring-2 ring-surface-container-lowest"></span></button></div><div class="flex items-center gap-space-sm pl-space-sm"><div class="flex flex-col text-right hidden sm:flex"><span class="font-label-md text-label-md text-on-surface font-semibold leading-tight">Alex Vance</span><span class="font-label-sm text-label-sm text-outline">System Administrator</span></div><img alt="Profile" class="w-8 h-8 rounded-full object-cover shadow-[0_1px_2px_0_rgba(15,23,42,0.04)]" src="https://lh3.googleusercontent.com/aida/AEtjO1UvRp-sB668O8xQ5MmwJGFMuhZyy1VlMwStvG9MGUQLDiFduyFagt7Ez00pAy8LuTtQDJkwWaZt6dYXS1qeavbJl6lZnSbAS94bMp6u52E5HF8Gn6NsACko5qIaln8_HCytP26K34kbwzLanVrD5-n5BGH9zGLnKqQvV3-_xyYoiTTX_fJm4aD09QAvg3wThSfbAtg4bW-WfKVGNIrgTPuvDqJPmPUhZmmmgdBEQ2sm"/></div></div></header><main class="relative w-full pt-16 px-gutter-desktop py-space-lg bg-surface min-h-screen"><div class="flex flex-col w-full gap-space-lg">
+<!-- Top Context Header & Breadcrumb -->
+<div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-space-md">
+<div class="flex flex-col gap-1">
+<div class="flex items-center gap-space-xs text-outline font-label-sm uppercase tracking-wider">
+<span>Governance &amp; Ops</span>
+<span class="text-outline-variant">•</span>
+<span>Notification Subsystem</span>
+<span class="text-outline-variant">•</span>
+<span class="text-primary-container font-semibold">Device Registry &amp; Channels</span>
+</div>
+<h1 class="font-headline-lg text-headline-lg text-on-surface tracking-tight">Devices &amp; Notification Registry</h1>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-4xl">
+        Inspect registered mobile and browser push notification device tokens, monitor delivery health across FCM, APNs, and WebPush, and manage token revocation.
+      </p>
+</div>
+<!-- Top Right Actions -->
+<div class="flex items-center gap-space-sm flex-wrap shrink-0">
+<button class="flex items-center gap-space-xs px-space-md py-2 rounded bg-surface-container-lowest text-on-surface font-label-md text-label-md shadow-sm hover:bg-surface-container-low transition-colors" onclick="document.getElementById('pushTestbed').scrollIntoView({ behavior: 'smooth' })" type="button">
+<span class="material-symbols-outlined text-[18px] text-primary-container">send</span>
+<span>Test Push Dispatcher</span>
+</button>
+<button class="flex items-center gap-space-xs px-space-md py-2 rounded bg-surface-container-lowest text-on-surface-variant font-label-md text-label-md shadow-sm hover:bg-surface-container-low hover:text-error transition-colors" onclick="alert('Stale token revocation sweep scheduled for 12 devices exceeding 90 days.')" type="button">
+<span class="material-symbols-outlined text-[18px]">auto_delete</span>
+<span>Revoke Stale Tokens (&gt;90d)</span>
+</button>
+</div>
+</div>
+<!-- Telemetry Row (3 Stat Cards) -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-space-md">
+<!-- Stat 1 -->
+<div class="bg-surface-container-lowest p-space-md rounded-lg shadow-sm flex flex-col justify-between relative overflow-hidden">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-outline uppercase tracking-wider">Active Device Tokens</span>
+<span class="material-symbols-outlined text-[20px] text-primary-container">devices</span>
+</div>
+<div class="my-space-sm">
+<div class="flex items-baseline gap-space-xs">
+<span class="font-headline-lg text-headline-lg text-on-surface font-semibold tracking-tight">614</span>
+<span class="font-label-md text-label-md text-outline">Registered</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Across 482 provisioned identities</p>
+</div>
+<div class="w-full bg-surface-container h-1.5 rounded-full overflow-hidden flex">
+<div class="bg-primary-container h-full" style="width: 51%;"></div>
+<div class="bg-secondary-container h-full" style="width: 34%;"></div>
+<div class="bg-tertiary-container h-full" style="width: 15%;"></div>
+</div>
+</div>
+<!-- Stat 2 -->
+<div class="bg-surface-container-lowest p-space-md rounded-lg shadow-sm flex flex-col justify-between relative overflow-hidden">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-outline uppercase tracking-wider">Delivery Success Rate</span>
+<span class="material-symbols-outlined text-[20px] text-primary">published_with_changes</span>
+</div>
+<div class="my-space-sm">
+<div class="flex items-baseline gap-space-xs">
+<span class="font-headline-lg text-headline-lg text-on-surface font-semibold tracking-tight">99.8%</span>
+<span class="font-sla-timer text-sla-timer text-primary font-semibold px-1.5 py-0.5 rounded bg-surface-container-low">P99 SLA</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Avg latency: <span class="font-code-md text-code-md font-medium text-on-surface">142ms</span> via FCM / APNs / WebPush</p>
+</div>
+<div class="flex items-center gap-space-xs font-sla-timer text-[11px] text-outline">
+<span class="w-2 h-2 rounded-full bg-primary-container"></span>
+<span>Zero breached deliveries past 48h</span>
+</div>
+</div>
+<!-- Stat 3 -->
+<div class="bg-surface-container-lowest p-space-md rounded-lg shadow-sm flex flex-col justify-between relative overflow-hidden">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-outline uppercase tracking-wider">Stale Tokens Revoked</span>
+<span class="material-symbols-outlined text-[20px] text-outline">cleaning_services</span>
+</div>
+<div class="my-space-sm">
+<div class="flex items-baseline gap-space-xs">
+<span class="font-headline-lg text-headline-lg text-on-surface font-semibold tracking-tight">12</span>
+<span class="font-label-md text-label-md text-outline">This Month</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Auto-pruned upon HTTP 410 Gone / Unregistered</p>
+</div>
+<div class="flex items-center justify-between font-label-sm text-label-sm text-on-surface-variant">
+<span>Next prune audit</span>
+<span class="font-code-md text-code-md text-outline">Sun 00:00 UTC</span>
+</div>
+</div>
+</div>
+<!-- Channel Health Status Row -->
+<div class="bg-surface-container-lowest p-space-md rounded-lg shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-space-md">
+<div class="flex items-center gap-space-xs font-label-md text-label-md text-on-surface font-semibold">
+<span class="material-symbols-outlined text-[18px] text-primary-container">hub</span>
+<span>Gateway Carrier Health</span>
+</div>
+<div class="flex flex-wrap items-center gap-space-sm">
+<!-- Android FCM -->
+<div class="flex items-center gap-space-xs px-space-md py-1.5 rounded-full bg-surface-container-low shadow-sm">
+<span class="w-2 h-2 rounded-full bg-primary-container animate-pulse"></span>
+<span class="font-label-md text-label-md text-on-surface font-medium">Android FCM</span>
+<span class="font-sla-timer text-[11px] text-outline">• 312 devices</span>
+</div>
+<!-- iOS APNs -->
+<div class="flex items-center gap-space-xs px-space-md py-1.5 rounded-full bg-surface-container-low shadow-sm">
+<span class="w-2 h-2 rounded-full bg-primary-container animate-pulse"></span>
+<span class="font-label-md text-label-md text-on-surface font-medium">iOS APNs</span>
+<span class="font-sla-timer text-[11px] text-outline">• 208 devices</span>
+</div>
+<!-- Web Browser -->
+<div class="flex items-center gap-space-xs px-space-md py-1.5 rounded-full bg-surface-container-low shadow-sm">
+<span class="w-2 h-2 rounded-full bg-primary-container animate-pulse"></span>
+<span class="font-label-md text-label-md text-on-surface font-medium">Web Browser (VAPID)</span>
+<span class="font-sla-timer text-[11px] text-outline">• 94 devices</span>
+</div>
+</div>
+</div>
+<!-- Filter & Search Toolbar -->
+<div class="bg-surface-container-lowest p-space-md rounded-lg shadow-sm flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-space-md">
+<div class="relative flex-1 max-w-xl">
+<span class="material-symbols-outlined absolute left-3 top-2.5 text-[20px] text-outline">search</span>
+<input class="w-full pl-10 pr-16 py-2 bg-surface-container-low rounded text-on-surface placeholder:text-outline font-body-sm text-body-sm focus:outline-none focus:bg-surface-container" id="deviceFilterInput" onkeyup="filterDeviceTable()" placeholder="Search by user, device name, or token fingerprint... (Cmd+K)" type="text"/>
+<kbd class="absolute right-3 top-2.5 px-1.5 py-0.5 font-code-md text-[11px] bg-surface-container-highest text-on-surface-variant rounded">Cmd+K</kbd>
+</div>
+<div class="flex flex-wrap items-center gap-space-sm">
+<div class="flex items-center gap-space-xs">
+<span class="font-label-sm text-label-sm text-outline">Platform:</span>
+<select class="px-space-md py-2 bg-surface-container-low rounded text-on-surface font-label-md text-label-md focus:outline-none cursor-pointer" id="platformFilterSelect" onchange="filterDeviceTable()">
+<option value="ALL">All Platforms</option>
+<option value="Android FCM">Android (FCM)</option>
+<option value="iOS APNs">iOS (APNs)</option>
+<option value="WebPush">Web Browser (WebPush)</option>
+</select>
+</div>
+<div class="flex items-center gap-space-xs">
+<span class="font-label-sm text-label-sm text-outline">Status:</span>
+<select class="px-space-md py-2 bg-surface-container-low rounded text-on-surface font-label-md text-label-md focus:outline-none cursor-pointer" id="statusFilterSelect" onchange="filterDeviceTable()">
+<option value="ALL">All Status</option>
+<option value="Active">Active</option>
+<option value="Idle">Idle (&gt;30d)</option>
+<option value="Revoked">Revoked</option>
+</select>
+</div>
+<button class="flex items-center gap-space-xs px-space-md py-2 rounded bg-surface-container hover:bg-surface-container-high text-on-surface-variant font-label-md text-label-md transition-colors" onclick="resetFilters()" type="button">
+<span class="material-symbols-outlined text-[16px]">restart_alt</span>
+<span>Reset</span>
+</button>
+</div>
+</div>
+<!-- Dense Registered Devices Table Card -->
+<div class="bg-surface-container-lowest rounded-lg shadow-sm overflow-hidden flex flex-col">
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse" id="devicesTable">
+<thead>
+<tr class="bg-surface-container-low text-on-surface-variant font-label-sm text-label-sm uppercase tracking-wider">
+<th class="py-space-md px-space-md">User &amp; Identity</th>
+<th class="py-space-md px-space-md">Device &amp; Platform</th>
+<th class="py-space-md px-space-md">Push Channel</th>
+<th class="py-space-md px-space-md">Token Fingerprint</th>
+<th class="py-space-md px-space-md">Registered</th>
+<th class="py-space-md px-space-md">Last Heartbeat</th>
+<th class="py-space-md px-space-md">Status</th>
+<th class="py-space-md px-space-md text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-none text-on-surface font-body-sm text-body-sm" id="devicesTableBody">
+<!-- Row 1 -->
+<tr class="hover:bg-surface-container-low/70 transition-colors device-row" data-platform="Android FCM" data-status="Active">
+<td class="py-3 px-space-md">
+<div class="flex items-center gap-space-sm">
+<div class="w-8 h-8 rounded-full bg-primary-container/10 text-primary-container font-semibold flex items-center justify-center text-xs">AV</div>
+<div class="flex flex-col">
+<div class="flex items-center gap-1.5">
+<span class="font-medium text-on-surface">Alex Vance</span>
+<span class="font-label-sm text-[10px] px-1.5 py-0.5 rounded bg-primary-container/10 text-primary font-semibold">SecOps Admin</span>
+</div>
+<span class="font-sla-timer text-[11px] text-outline">alex.vance@acme.corp</span>
+</div>
+</div>
+</td>
+<td class="py-3 px-space-md">
+<div class="flex flex-col">
+<span class="font-medium text-on-surface">Google Pixel 8 Pro</span>
+<span class="font-label-sm text-outline">Android 14 (Patch 2026.02)</span>
+</div>
+</td>
+<td class="py-3 px-space-md">
+<div class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-surface-container text-on-surface font-label-md text-label-md">
+<span class="material-symbols-outlined text-[16px] text-primary">android</span>
+<span>Android FCM</span>
+</div>
+</td>
+<td class="py-3 px-space-md">
+<span class="font-code-md text-code-md text-on-surface bg-surface-container-low px-2 py-1 rounded select-all">fcm:dk92••••••••884x</span>
+</td>
+<td class="py-3 px-space-md text-outline font-sla-timer text-[12px]">Jan 12, 2026</td>
+<td class="py-3 px-space-md">
+<div class="flex items-center gap-1.5 font-sla-timer text-sla-timer text-on-surface">
+<span class="w-1.5 h-1.5 rounded-full bg-primary-container"></span>
+<span>4m ago (Online)</span>
+</div>
+</td>
+<td class="py-3 px-space-md">
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-surface-container-low text-primary font-label-sm text-label-sm font-semibold">
+<span class="w-1.5 h-1.5 rounded-full bg-primary-container"></span>
+<span>Active</span>
+</span>
+</td>
+<td class="py-3 px-space-md text-right">
+<div class="flex items-center justify-end gap-1">
+<button class="px-2.5 py-1 rounded bg-surface-container hover:bg-surface-container-high text-error font-label-md text-label-md transition-colors" onclick="confirmRevoke('fcm:dk92••••••••884x', 'Google Pixel 8 Pro')" type="button">Revoke</button>
+<button class="p-1 rounded text-outline hover:text-on-surface hover:bg-surface-container" type="button"><span class="material-symbols-outlined text-[18px]">more_vert</span></button>
+</div>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-surface-container-low/70 transition-colors device-row bg-surface-container-lowest" data-platform="iOS APNs" data-status="Active">
+<td class="py-3 px-space-md">
+<div class="flex items-center gap-space-sm">
+<div class="w-8 h-8 rounded-full bg-secondary-container/10 text-secondary font-semibold flex items-center justify-center text-xs">SJ</div>
+<div class="flex flex-col">
+<div class="flex items-center gap-1.5">
+<span class="font-medium text-on-surface">Sarah Jenkins</span>
+<span class="font-label-sm text-[10px] px-1.5 py-0.5 rounded bg-surface-container text-on-surface-variant font-medium">Lead NetOps</span>
+</div>
+<span class="font-sla-timer text-[11px] text-outline">sarah.j@acme.corp</span>
+</div>
+</div>
+</td>
+<td class="py-3 px-space-md">
+<div class="flex flex-col">
+<span class="font-medium text-on-surface">iPhone 15 Pro</span>
+<span class="font-label-sm text-outline">iOS 17.5 Enterprise MDM</span>
+</div>
+</td>
+<td class="py-3 px-space-md">
+<div class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-surface-container text-on-surface font-label-md text-label-md">
+<span class="material-symbols-outlined text-[16px] text-on-surface">phone_iphone</span>
+<span>iOS APNs</span>
+</div>
+</td>
+<td class="py-3 px-space-md">
+<span class="font-code-md text-code-md text-on-surface bg-surface-container-low px-2 py-1 rounded select-all">apns:7c1a••••••••3b9f</span>
+</td>
+<td class="py-3 px-space-md text-outline font-sla-timer text-[12px]">Feb 04, 2026</td>
+<td class="py-3 px-space-md">
+<div class="flex items-center gap-1.5 font-sla-timer text-sla-timer text-on-surface">
+<span class="w-1.5 h-1.5 rounded-full bg-primary-container"></span>
+<span>18m ago (Online)</span>
+</div>
+</td>
+<td class="py-3 px-space-md">
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-surface-container-low text-primary font-label-sm text-label-sm font-semibold">
+<span class="w-1.5 h-1.5 rounded-full bg-primary-container"></span>
+<span>Active</span>
+</span>
+</td>
+<td class="py-3 px-space-md text-right">
+<div class="flex items-center justify-end gap-1">
+<button class="px-2.5 py-1 rounded bg-surface-container hover:bg-surface-container-high text-error font-label-md text-label-md transition-colors" onclick="confirmRevoke('apns:7c1a••••••••3b9f', 'iPhone 15 Pro')" type="button">Revoke</button>
+<button class="p-1 rounded text-outline hover:text-on-surface hover:bg-surface-container" type="button"><span class="material-symbols-outlined text-[18px]">more_vert</span></button>
+</div>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-surface-container-low/70 transition-colors device-row" data-platform="WebPush" data-status="Active">
+<td class="py-3 px-space-md">
+<div class="flex items-center gap-space-sm">
+<div class="w-8 h-8 rounded-full bg-tertiary/10 text-tertiary font-semibold flex items-center justify-center text-xs">MV</div>
+<div class="flex flex-col">
+<div class="flex items-center gap-1.5">
+<span class="font-medium text-on-surface">Marcus Vance</span>
+<span class="font-label-sm text-[10px] px-1.5 py-0.5 rounded bg-surface-container text-on-surface-variant font-medium">Enterprise Arch</span>
+</div>
+<span class="font-sla-timer text-[11px] text-outline">marcus.v@acme.corp</span>
+</div>
+</div>
+</td>
+<td class="py-3 px-space-md">
+<div class="flex flex-col">
+<span class="font-medium text-on-surface">Chrome 128 / macOS Sonoma</span>
+<span class="font-label-sm text-outline">Apple Silicon M3 Max</span>
+</div>
+</td>
+<td class="py-3 px-space-md">
+<div class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-surface-container text-on-surface font-label-md text-label-md">
+<span class="material-symbols-outlined text-[16px] text-secondary">language</span>
+<span>WebPush (VAPID 2.0)</span>
+</div>
+</td>
+<td class="py-3 px-space-md">
+<span class="font-code-md text-code-md text-on-surface bg-surface-container-low px-2 py-1 rounded select-all">web:f88b••••••••012c</span>
+</td>
+<td class="py-3 px-space-md text-outline font-sla-timer text-[12px]">Mar 01, 2026</td>
+<td class="py-3 px-space-md">
+<div class="flex items-center gap-1.5 font-sla-timer text-sla-timer text-on-surface-variant">
+<span class="w-1.5 h-1.5 rounded-full bg-outline"></span>
+<span>1h ago</span>
+</div>
+</td>
+<td class="py-3 px-space-md">
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-surface-container-low text-primary font-label-sm text-label-sm font-semibold">
+<span class="w-1.5 h-1.5 rounded-full bg-primary-container"></span>
+<span>Active</span>
+</span>
+</td>
+<td class="py-3 px-space-md text-right">
+<div class="flex items-center justify-end gap-1">
+<button class="px-2.5 py-1 rounded bg-surface-container hover:bg-surface-container-high text-error font-label-md text-label-md transition-colors" onclick="confirmRevoke('web:f88b••••••••012c', 'Chrome 128 / macOS')" type="button">Revoke</button>
+<button class="p-1 rounded text-outline hover:text-on-surface hover:bg-surface-container" type="button"><span class="material-symbols-outlined text-[18px]">more_vert</span></button>
+</div>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="hover:bg-surface-container-low/70 transition-colors device-row bg-surface-container-lowest" data-platform="iOS APNs" data-status="Idle">
+<td class="py-3 px-space-md">
+<div class="flex items-center gap-space-sm">
+<div class="w-8 h-8 rounded-full bg-secondary-fixed text-on-secondary-fixed font-semibold flex items-center justify-center text-xs">CL</div>
+<div class="flex flex-col">
+<div class="flex items-center gap-1.5">
+<span class="font-medium text-on-surface">Clara Lin</span>
+<span class="font-label-sm text-[10px] px-1.5 py-0.5 rounded bg-surface-container text-on-surface-variant font-medium">Cloud Arch</span>
+</div>
+<span class="font-sla-timer text-[11px] text-outline">clara.l@acme.corp</span>
+</div>
+</div>
+</td>
+<td class="py-3 px-space-md">
+<div class="flex flex-col">
+<span class="font-medium text-on-surface">iPad Pro 12.9</span>
+<span class="font-label-sm text-outline">iPadOS 17.2</span>
+</div>
+</td>
+<td class="py-3 px-space-md">
+<div class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-surface-container text-on-surface font-label-md text-label-md">
+<span class="material-symbols-outlined text-[16px] text-on-surface">tablet_mac</span>
+<span>iOS APNs</span>
+</div>
+</td>
+<td class="py-3 px-space-md">
+<span class="font-code-md text-code-md text-on-surface bg-surface-container-low px-2 py-1 rounded select-all">apns:42da••••••••e501</span>
+</td>
+<td class="py-3 px-space-md text-outline font-sla-timer text-[12px]">Nov 15, 2025</td>
+<td class="py-3 px-space-md">
+<div class="flex items-center gap-1.5 font-sla-timer text-sla-timer text-on-surface-variant">
+<span class="w-1.5 h-1.5 rounded-full bg-outline-variant"></span>
+<span>42 days ago</span>
+</div>
+</td>
+<td class="py-3 px-space-md">
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-surface-container-high text-tertiary-container font-label-sm text-label-sm font-semibold">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary-container"></span>
+<span>Idle (&gt;30d)</span>
+</span>
+</td>
+<td class="py-3 px-space-md text-right">
+<div class="flex items-center justify-end gap-1">
+<button class="px-2.5 py-1 rounded bg-surface-container hover:bg-surface-container-high text-error font-label-md text-label-md transition-colors" onclick="confirmRevoke('apns:42da••••••••e501', 'iPad Pro 12.9')" type="button">Revoke</button>
+<button class="p-1 rounded text-outline hover:text-on-surface hover:bg-surface-container" type="button"><span class="material-symbols-outlined text-[18px]">more_vert</span></button>
+</div>
+</td>
+</tr>
+<!-- Row 5 -->
+<tr class="hover:bg-surface-container-low/70 transition-colors opacity-70 device-row" data-platform="Android FCM" data-status="Revoked">
+<td class="py-3 px-space-md">
+<div class="flex items-center gap-space-sm">
+<div class="w-8 h-8 rounded-full bg-surface-variant text-on-surface-variant font-semibold flex items-center justify-center text-xs">RC</div>
+<div class="flex flex-col">
+<div class="flex items-center gap-1.5">
+<span class="font-medium text-on-surface line-through">Retired Contractor</span>
+<span class="font-label-sm text-[10px] px-1.5 py-0.5 rounded bg-error-container text-on-error-container font-medium">Deprovisioned</span>
+</div>
+<span class="font-sla-timer text-[11px] text-outline">contractor.tmp@acme.corp</span>
+</div>
+</div>
+</td>
+<td class="py-3 px-space-md">
+<div class="flex flex-col">
+<span class="font-medium text-on-surface">Samsung Galaxy S23</span>
+<span class="font-label-sm text-outline">Android 13</span>
+</div>
+</td>
+<td class="py-3 px-space-md">
+<div class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-surface-container text-on-surface-variant font-label-md text-label-md">
+<span class="material-symbols-outlined text-[16px] text-outline">android</span>
+<span>Android FCM</span>
+</div>
+</td>
+<td class="py-3 px-space-md">
+<span class="font-code-md text-code-md text-outline bg-surface-container-low px-2 py-1 rounded line-through">fcm:119c••••••••99aa</span>
+</td>
+<td class="py-3 px-space-md text-outline font-sla-timer text-[12px]">Oct 10, 2025</td>
+<td class="py-3 px-space-md">
+<span class="font-sla-timer text-sla-timer text-outline">92 days ago</span>
+</td>
+<td class="py-3 px-space-md">
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-surface-container text-outline font-label-sm text-label-sm">
+<span class="w-1.5 h-1.5 rounded-full bg-outline"></span>
+<span>Revoked</span>
+</span>
+</td>
+<td class="py-3 px-space-md text-right">
+<span class="px-2.5 py-1 font-label-sm text-label-sm text-outline cursor-not-allowed">Purged</span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Table Pagination -->
+<div class="px-space-md py-3 bg-surface-container-lowest flex flex-col sm:flex-row items-center justify-between gap-space-sm text-on-surface-variant font-body-sm text-body-sm shadow-[inset_0_1px_0_0_rgba(0,0,0,0.03)]">
+<div class="flex items-center gap-space-md">
+<span>Showing <strong class="text-on-surface font-medium">1–5</strong> of <strong class="text-on-surface font-medium">614</strong> devices</span>
+<div class="flex items-center gap-1.5">
+<span class="font-label-sm text-outline">Rows per page:</span>
+<select class="px-2 py-0.5 bg-surface-container-low rounded text-on-surface font-label-sm text-label-sm focus:outline-none">
+<option>10</option>
+<option>25</option>
+<option>50</option>
+</select>
+</div>
+</div>
+<div class="flex items-center gap-1 font-sla-timer text-sla-timer">
+<span>Page 1 of 123</span>
+<div class="flex items-center gap-0.5 ml-2">
+<button class="p-1 rounded bg-surface-container-low text-outline opacity-50 cursor-not-allowed" disabled="" type="button">
+<span class="material-symbols-outlined text-[16px]">chevron_left</span>
+</button>
+<button class="p-1 rounded bg-surface-container-low hover:bg-surface-container text-on-surface transition-colors" type="button">
+<span class="material-symbols-outlined text-[16px]">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Bottom Administrative Push Testbed Panel -->
+<div class="bg-surface-container-lowest p-space-lg rounded-lg shadow-sm flex flex-col gap-space-md" id="pushTestbed">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-space-sm">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-[22px] text-primary-container">cell_tower</span>
+<div>
+<h2 class="font-headline-sm text-headline-sm text-on-surface font-semibold">Synthetic Push Delivery Testbed</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Inject an end-to-end diagnostic push packet to verify routing certificates, gateway TTL, and handset receipt.</p>
+</div>
+</div>
+<div class="flex items-center gap-1.5 px-space-sm py-1 bg-surface-container-low rounded font-sla-timer text-[11px] text-on-surface">
+<span class="w-2 h-2 rounded-full bg-primary-container"></span>
+<span>Isolated Sandbox Enforced</span>
+</div>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-space-md mt-space-xs">
+<!-- Target Configuration Form (8 Cols) -->
+<div class="lg:col-span-8 flex flex-col gap-space-md">
+<!-- Target Device Dropdown -->
+<div class="flex flex-col gap-1.5">
+<label class="font-label-md text-label-md text-on-surface font-medium flex items-center justify-between">
+<span>Target Recipient / Registered Device</span>
+<span class="font-sla-timer text-outline text-[11px]">Destination Node ID</span>
+</label>
+<div class="relative">
+<select class="w-full pl-space-md pr-10 py-2.5 bg-surface-container-low rounded text-on-surface font-body-sm text-body-sm focus:outline-none focus:bg-surface-container cursor-pointer" id="targetDeviceSelect">
+<option value="fcm:dk92">Alex Vance — Google Pixel 8 Pro (fcm:dk92••••884x)</option>
+<option value="apns:7c1a">Sarah Jenkins — iPhone 15 Pro (apns:7c1a••••3b9f)</option>
+<option value="web:f88b">Marcus Vance — Chrome 128 / macOS (web:f88b••••012c)</option>
+<option value="apns:42da">Clara Lin — iPad Pro 12.9 (apns:42da••••e501)</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-2.5 text-[20px] text-outline pointer-events-none">expand_more</span>
+</div>
+</div>
+<!-- Alert Priority Radio Matrix -->
+<div class="flex flex-col gap-1.5">
+<span class="font-label-md text-label-md text-on-surface font-medium">Notification Urgency / Push Priority</span>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-space-sm">
+<label class="flex items-start gap-space-sm p-space-sm bg-surface-container-low rounded cursor-pointer hover:bg-surface-container transition-colors">
+<input checked="" class="mt-1 accent-primary-container" name="priority" type="radio" value="P1"/>
+<div class="flex flex-col">
+<div class="flex items-center gap-1.5">
+<span class="font-label-md text-label-md text-on-surface font-semibold">P1 Critical</span>
+<span class="font-label-sm text-[10px] px-1 py-0.5 rounded bg-error-container text-on-error-container font-semibold">Instant Push + DND Override</span>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Bypasses battery optimization and triggers auditable sound profile.</span>
+</div>
+</label>
+<label class="flex items-start gap-space-sm p-space-sm bg-surface-container-low rounded cursor-pointer hover:bg-surface-container transition-colors">
+<input class="mt-1 accent-primary-container" name="priority" type="radio" value="P2"/>
+<div class="flex flex-col">
+<div class="flex items-center gap-1.5">
+<span class="font-label-md text-label-md text-on-surface font-semibold">P2 / P3 Standard</span>
+<span class="font-label-sm text-[10px] px-1 py-0.5 rounded bg-surface-container text-on-surface-variant font-medium">Standard Throttle</span>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Delivers via normal OS batch scheduler with background sync rules.</span>
+</div>
+</label>
+</div>
+</div>
+<!-- Push Payload Preview / Editor -->
+<div class="flex flex-col gap-1.5">
+<label class="font-label-md text-label-md text-on-surface font-medium">Diagnostic Payload Header &amp; Body</label>
+<div class="p-space-sm bg-surface-container-low rounded flex flex-col gap-space-xs">
+<div class="flex items-center gap-space-xs">
+<span class="font-label-sm text-outline text-[11px] w-12">TITLE:</span>
+<input class="flex-1 bg-surface-container-lowest px-2 py-1 rounded text-on-surface font-code-md text-code-md focus:outline-none" id="pushTitleInput" type="text" value="[TEST APM] Ingestion probe verified"/>
+</div>
+<div class="flex items-center gap-space-xs">
+<span class="font-label-sm text-outline text-[11px] w-12">BODY:</span>
+<input class="flex-1 bg-surface-container-lowest px-2 py-1 rounded text-on-surface font-code-md text-code-md focus:outline-none" id="pushBodyInput" type="text" value="Cluster US-East-1 latency normalized."/>
+</div>
+</div>
+</div>
+<!-- Dispatch Action Button -->
+<div class="flex items-center gap-space-md pt-space-xs">
+<button class="flex items-center gap-space-xs px-space-lg py-2.5 rounded bg-primary-container text-on-primary font-label-md text-label-md font-medium shadow hover:bg-primary transition-all" id="dispatchBtn" onclick="dispatchTestPush()" type="button">
+<span class="material-symbols-outlined text-[18px]">bolt</span>
+<span>Dispatch Synthetic Test Notification</span>
+</button>
+<span class="font-sla-timer text-sla-timer text-outline hidden" id="dispatchStatus">Transmitting via APNs/FCM pipe...</span>
+</div>
+</div>
+<!-- Realtime Telemetry Simulation Box (4 Cols) -->
+<div class="lg:col-span-4 bg-surface-container-low p-space-md rounded-lg flex flex-col justify-between">
+<div class="flex flex-col gap-space-xs">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-outline uppercase tracking-wider">Gateway Telemetry</span>
+<span class="font-code-md text-[11px] text-primary font-medium">RFC-8030</span>
+</div>
+<div class="p-space-sm bg-surface-container-lowest rounded font-code-md text-[12px] flex flex-col gap-1 text-on-surface-variant">
+<div class="flex justify-between"><span>HTTP Status:</span><span class="text-primary font-semibold" id="telHttp">200 OK</span></div>
+<div class="flex justify-between"><span>Carrier Handshake:</span><span class="text-on-surface" id="telLatency">118ms</span></div>
+<div class="flex justify-between"><span>Cryptographic TTL:</span><span class="text-on-surface">3600s (Strict)</span></div>
+<div class="flex justify-between"><span>Receipt Ack:</span><span class="text-primary font-semibold" id="telAck">ACK_DELIVERED</span></div>
+</div>
+</div>
+<div class="mt-space-md p-space-xs bg-surface-container rounded text-[11px] font-sla-timer text-outline">
+          Log ID: <span class="font-code-md text-on-surface" id="telLogId">fcm_sync_889104b</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Privacy and Compliance Notice Banner -->
+<div class="p-space-md rounded-lg bg-surface-container-low flex items-start gap-space-sm">
+<span class="material-symbols-outlined text-[20px] text-primary-container shrink-0 mt-0.5">verified_user</span>
+<div class="flex flex-col gap-0.5">
+<span class="font-label-md text-label-md text-on-surface font-semibold">Security &amp; Privacy Rule</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+        Raw push tokens are stored encrypted and never displayed in cleartext. Cryptographic SHA-256 fingerprints are displayed for diagnostics in accordance with SRS §2.5 and PRD §6.2. Inactive endpoints are safely purged after a 90-day grace window.
+      </p>
+</div>
+</div>
+</div>
+<script>
+  function filterDeviceTable() {
+    const query = (document.getElementById('deviceFilterInput').value || '').toLowerCase();
+    const platform = document.getElementById('platformFilterSelect').value;
+    const status = document.getElementById('statusFilterSelect').value;
+    const rows = document.querySelectorAll('.device-row');
+
+    rows.forEach(row => {
+      const rowText = row.innerText.toLowerCase();
+      const rowPlatform = row.getAttribute('data-platform');
+      const rowStatus = row.getAttribute('data-status');
+
+      const matchesQuery = !query || rowText.includes(query);
+      const matchesPlatform = (platform === 'ALL') || (rowPlatform === platform);
+      const matchesStatus = (status === 'ALL') || (rowStatus === status);
+
+      if (matchesQuery && matchesPlatform && matchesStatus) {
+        row.style.display = '';
+      } else {
+        row.style.display = 'none';
+      }
+    });
+  }
+
+  function resetFilters() {
+    document.getElementById('deviceFilterInput').value = '';
+    document.getElementById('platformFilterSelect').value = 'ALL';
+    document.getElementById('statusFilterSelect').value = 'ALL';
+    filterDeviceTable();
+  }
+
+  function confirmRevoke(tokenMask, deviceName) {
+    if (confirm(`Are you sure you want to revoke push token registration for ${deviceName} (${tokenMask})? The recipient app will no longer receive background or critical dispatch events.`)) {
+      alert(`Token ${tokenMask} has been revoked and marked purged in database.`);
+    }
+  }
+
+  function dispatchTestPush() {
+    const btn = document.getElementById('dispatchBtn');
+    const status = document.getElementById('dispatchStatus');
+    const telLatency = document.getElementById('telLatency');
+    const telLogId = document.getElementById('telLogId');
+
+    btn.disabled = true;
+    btn.classList.add('opacity-70');
+    status.classList.remove('hidden');
+    status.innerText = 'Transmitting via carrier gateway...';
+
+    setTimeout(() => {
+      const randomMs = Math.floor(Math.random() * 60) + 95;
+      const randomId = 'fcm_ack_' + Math.random().toString(36).substring(2, 9);
+      telLatency.innerText = randomMs + 'ms';
+      telLogId.innerText = randomId;
+      status.innerText = `Delivered in ${randomMs}ms!`;
+      btn.disabled = false;
+      btn.classList.remove('opacity-70');
+    }, 450);
+  }
+</script></main></div></body></html>

@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_dashboard" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet"/><style>@layer base { html, body { margin: 0; padding: 0; } body { overscroll-behavior: none; } main > :first-child { margin-top: 0 !important; } main > :last-child { margin-bottom: 0 !important; } } ::-webkit-scrollbar { display: none; }</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { colors: { "on-secondary-container": "#fffbff", "on-error": "#ffffff", "surface-container": "#e5eeff", "on-secondary-fixed-variant": "#2f2ebe", "on-secondary": "#ffffff", "surface-container-lowest": "#ffffff", "on-primary-fixed-variant": "#173bab", "tertiary-container": "#434b60", "on-secondary-fixed": "#07006c", "primary-container": "#1e40af", "error": "#ba1a1a", "surface-container-low": "#eff4ff", "background": "#f8f9ff", "inverse-surface": "#213145", "surface-container-highest": "#d3e4fe", "surface-variant": "#d3e4fe", "secondary": "#4648d4", "surface-tint": "#3755c3", "on-primary": "#ffffff", "primary": "#00288e", "surface-dim": "cbdbf5", "error-container": "#ffdad6", "on-tertiary": "#ffffff", "primary-fixed": "#dde1ff", "secondary-fixed-dim": "#c0c1ff", "outline-variant": "#c4c5d5", "on-tertiary-fixed-variant": "#3f465c", "on-background": "#0b1c30", "on-surface": "#0b1c30", "tertiary": "#2d3449", "on-surface-variant": "#444653", "tertiary-fixed": "#dae2fd", "surface-bright": "#f8f9ff", "surface-container-high": "#dce9ff", "on-primary-container": "#a8b8ff", "on-primary-fixed": "#001453", "surface": "#f8f9ff", "inverse-primary": "#b8c4ff", "tertiary-fixed-dim": "#bec6e0", "on-tertiary-container": "#b4bbd5", "on-error-container": "#93000a", "primary-fixed-dim": "#b8c4ff", "secondary-fixed": "#e1e0ff", "inverse-on-surface": "#eaf1ff", "on-tertiary-fixed": "#131b2e", "secondary-container": "#6063ee", "outline": "#757684" }, borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, spacing: { "gutter": "1rem", "space-md": "1rem", "space-lg": "1.5rem", "gutter-desktop": "1.5rem", "space-sm": "0.5rem", "space-xs": "0.25rem", "margin-desktop": "1.5rem", "space-xl": "2rem", "margin": "1rem" }, fontFamily: { "headline-md": ["Inter"], "label-md": ["Inter"], "code-md": ["JetBrains Mono"], "headline-lg-mobile": ["Inter"], "body-sm": ["Inter"], "body-md": ["Inter"], "headline-sm": ["Inter"], "label-sm": ["Inter"], "sla-timer": ["JetBrains Mono"], "headline-lg": ["Inter"], "body-lg": ["Inter"] }, fontSize: { "headline-md": ["22px", { "lineHeight": "28px", "letterSpacing": "-0.015em", "fontWeight": "600" }], "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500" }], "code-md": ["13px", { "lineHeight": "18px", "letterSpacing": "-0.01em", "fontWeight": "400" }], "headline-lg-mobile": ["26px", { "lineHeight": "32px", "letterSpacing": "-0.015em", "fontWeight": "600" }], "body-sm": ["13px", { "lineHeight": "18px", "letterSpacing": "0.005em", "fontWeight": "400" }], "body-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0em", "fontWeight": "400" }], "headline-sm": ["18px", { "lineHeight": "24px", "letterSpacing": "-0.01em", "fontWeight": "600" }], "label-sm": ["11px", { "lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "600" }], "sla-timer": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500" }], "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "600" }], "body-lg": ["16px", { "lineHeight": "24px", "letterSpacing": "0em", "fontWeight": "400" }] } } } };</script></head><body class="bg-surface font-body-md text-on-surface antialiased"><aside class="fixed left-0 top-0 h-full w-[72px] bg-surface-container-lowest z-50 flex flex-col items-center py-space-md shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="flex flex-col items-center justify-center w-full pb-space-sm mb-space-sm"><div class="w-10 h-10 rounded-lg bg-surface-container-low flex items-center justify-center"><span class="material-symbols-outlined text-primary text-[22px]">dns</span></div><span class="font-label-sm text-label-sm text-on-surface-variant mt-1 tracking-tight">DESK</span></div><nav class="flex-1 w-full flex flex-col items-center gap-space-xs" data-active-classes="bg-primary-container text-on-primary font-semibold shadow-sm"><a class="flex flex-col items-center justify-center w-14 h-14 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="home" href="#"><span class="material-symbols-outlined text-[20px]">home</span><span class="font-label-sm text-label-sm mt-0.5">Home</span></a><a class="flex flex-col items-center justify-center w-14 h-14 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="my-tickets" href="#"><span class="material-symbols-outlined text-[20px]">inbox</span><span class="font-label-sm text-label-sm mt-0.5">Tickets</span></a><a aria-current="page" class="flex flex-col items-center justify-center w-14 h-14 rounded-lg transition-all bg-primary-container text-on-primary font-semibold shadow-sm" data-path="knowledge-base" href="#"><span class="material-symbols-outlined text-[20px]">menu_book</span><span class="font-label-sm text-label-sm mt-0.5">KB</span></a><div class="w-8 h-[1px] bg-surface-container-highest my-space-xs"></div><a class="flex flex-col items-center justify-center w-14 h-14 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="queue" href="#"><span class="material-symbols-outlined text-[20px]">swap_calls</span><span class="font-label-sm text-label-sm mt-0.5">Queue</span></a><a class="flex flex-col items-center justify-center w-14 h-14 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="workspace" href="#"><span class="material-symbols-outlined text-[20px]">tune</span><span class="font-label-sm text-label-sm mt-0.5">Triage</span></a><a class="flex flex-col items-center justify-center w-14 h-14 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="itil-management" href="#"><span class="material-symbols-outlined text-[20px]">account_tree</span><span class="font-label-sm text-label-sm mt-0.5">ITIL</span></a></nav><div class="flex flex-col items-center gap-space-xs mt-auto"><a class="flex flex-col items-center justify-center w-14 h-14 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="admin-console" href="#"><span class="material-symbols-outlined text-[20px]">admin_panel_settings</span><span class="font-label-sm text-label-sm mt-0.5">Admin</span></a></div></aside><div class="pl-[72px]"><header class="fixed top-0 left-[72px] right-0 h-16 bg-surface/90 backdrop-blur-xl z-40 shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="h-16 w-full px-gutter-desktop flex items-center justify-between gap-space-md"><div class="flex items-center gap-space-md"><img alt="Brand logo. - Primary color: #1e40af - Font: inter - Mode: light - Roundness: rounded-md" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1X7SUa7td0syGhN1cfQiVXQ9OafEdk2a4K27rn7CTEpXYs76VGlkzCdpnf-MhcKQISVUZN9vbqc-zYj-6J77t5qtTvl_-SkXleX17iUFT-vStUNm4mZHglzxi0K_TuZOIgEC0wvJEHiDXMQxwVgp4zOnXe2KTHI7HW6C_zDY4JxC-MSumx5Z3S2Rf1ElEFg2UCnW9uW32mFg1MHfpH5EBT_YSV9EsBvemQ9hEd-08El"/><div class="hidden md:flex flex-col"><span class="font-headline-sm text-headline-sm text-on-surface leading-tight">ServiceOps</span><div class="flex items-center gap-1.5"><span class="font-label-sm text-label-sm text-on-surface-variant">Acme Enterprise Corp</span><span class="w-1 h-1 rounded-full bg-secondary"></span><span class="font-label-sm text-label-sm text-secondary font-medium">US-EAST Production</span></div></div></div><div class="flex-1 max-w-lg hidden lg:block mx-space-md"><div class="flex items-center w-full px-space-md py-1.5 rounded-lg bg-surface-container-low text-on-surface-variant"><span class="material-symbols-outlined text-[18px] mr-2 text-outline">search</span><span class="font-body-sm text-body-sm text-outline flex-1">Search tickets, assets, documentation (Cmd + K)...</span><kbd class="font-code-md text-code-md bg-surface-container-lowest px-1.5 py-0.5 rounded text-outline text-[11px]">⌘K</kbd></div></div><div class="flex items-center gap-space-md"><div class="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface-container-low"><span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span><span class="font-label-sm text-label-sm text-on-surface-variant font-medium">SLA Operational</span></div><button class="w-9 h-9 rounded-lg flex items-center justify-center text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" type="button"><span class="material-symbols-outlined text-[20px]">notifications</span></button><div class="flex items-center gap-space-sm pl-space-sm"><div class="text-right hidden sm:block"><div class="font-label-md text-label-md text-on-surface leading-tight font-semibold">Alex Vance</div><div class="font-label-sm text-label-sm text-on-surface-variant">L2 Lead Operator</div></div><img alt="Profile" class="w-8 h-8 rounded-full object-cover ring-2 ring-surface-container-high" src="https://lh3.googleusercontent.com/aida/AEtjO1UvRp-sB668O8xQ5MmwJGFMuhZyy1VlMwStvG9MGUQLDiFduyFagt7Ez00pAy8LuTtQDJkwWaZt6dYXS1qeavbJl6lZnSbAS94bMp6u52E5HF8Gn6NsACko5qIaln8_HCytP26K34kbwzLanVrD5-n5BGH9zGLnKqQvV3-_xyYoiTTX_fJm4aD09QAvg3wThSfbAtg4bW-WfKVGNIrgTPuvDqJPmPUhZmmmgdBEQ2sm"/></div></div></div></header><main class="w-full pt-16 bg-surface"><div class="flex flex-col w-full">
+<!-- Top Command & Action Bar -->
+<section class="w-full px-gutter-desktop py-space-md bg-surface-container-lowest shadow-sm">
+<div class="flex flex-col xl:flex-row xl:items-center xl:justify-between gap-space-md">
+<div class="flex flex-col gap-0.5">
+<div class="flex items-center gap-space-sm">
+<div class="w-7 h-7 rounded-lg bg-surface-container-high flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[18px]">auto_stories</span>
+</div>
+<h1 class="font-headline-md text-headline-md text-on-surface">Knowledge Base & AI Documentation Studio</h1>
+<span class="px-2 py-0.5 rounded-full bg-secondary-fixed text-on-secondary-fixed font-label-sm text-label-sm uppercase font-semibold">ITIL v4 Compliant</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+          Search vetted Standard Operating Procedures, browse KEDB solutions, and draft new documentation with AI assistance.
+        </p>
+</div>
+<!-- Action Controls -->
+<div class="flex items-center flex-wrap gap-space-sm">
+<div class="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-surface-container-low text-on-surface-variant">
+<span class="material-symbols-outlined text-[16px] text-outline">verified</span>
+<span class="font-label-sm text-label-sm">KEDB Integrity: <strong class="text-on-surface font-semibold">99.4%</strong></span>
+</div>
+<button class="inline-flex items-center gap-2 px-3.5 py-2 rounded-lg bg-secondary-container text-on-secondary-container hover:opacity-95 transition-all shadow-sm font-label-md text-label-md" id="trigger-ai-draft-btn">
+<span class="material-symbols-outlined text-[18px]">auto_awesome</span>
+<span>Draft Article from Resolved Case (Gemini AI)</span>
+</button>
+<button class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-on-primary hover:bg-primary-container transition-all shadow-sm font-label-md text-label-md">
+<span class="material-symbols-outlined text-[18px]">add</span>
+<span>New Knowledge Article</span>
+</button>
+</div>
+</div>
+</section>
+<!-- 3-Column Triage Workspace Grid -->
+<main class="w-full px-gutter-desktop py-space-md">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-space-md items-start">
+<!-- COLUMN 1: Category Sidebar & Navigation (20% -> 3 cols in 12-col grid) -->
+<aside class="lg:col-span-3 flex flex-col gap-space-md">
+<!-- Search & Filter Card -->
+<div class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm flex flex-col gap-space-sm">
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-2.5 text-[18px] text-outline">search</span>
+<input class="w-full pl-9 pr-3 py-2 rounded-lg bg-surface-container-low text-on-surface placeholder:text-outline font-body-sm text-body-sm focus:outline-none focus:ring-1 focus:ring-primary" id="kb-filter-input" placeholder="Search articles & SOPs..." type="text"/>
+</div>
+<div class="flex items-center justify-between pt-1">
+<span class="font-label-sm text-label-sm text-outline uppercase">Knowledge Domains</span>
+<span class="font-code-md text-code-md text-on-surface-variant text-[11px]">142 Verified</span>
+</div>
+<!-- Category Nav List -->
+<nav class="flex flex-col gap-1 mt-1">
+<!-- All Categories -->
+<button class="flex items-center justify-between w-full px-3 py-2 rounded-lg bg-primary-container text-on-primary font-label-md text-label-md transition-colors text-left shadow-sm">
+<div class="flex items-center gap-2 min-w-0">
+<span class="material-symbols-outlined text-[18px]">folder_open</span>
+<span class="truncate">All Categories</span>
+</div>
+<span class="px-2 py-0.5 rounded-full bg-on-primary-container text-on-primary-fixed text-[11px] font-code-md font-semibold">142</span>
+</button>
+<!-- Network & VPN (Active branch) -->
+<button class="flex items-center justify-between w-full px-3 py-2 rounded-lg bg-surface-container-high text-on-surface font-label-md text-label-md hover:bg-surface-container-highest transition-colors text-left">
+<div class="flex items-center gap-2 min-w-0">
+<span class="material-symbols-outlined text-[18px] text-secondary">lan</span>
+<span class="truncate font-semibold">Network & VPN</span>
+</div>
+<span class="px-2 py-0.5 rounded-full bg-surface-container-lowest text-on-surface-variant text-[11px] font-code-md">28</span>
+</button>
+<!-- Identity, SSO & Okta -->
+<button class="flex items-center justify-between w-full px-3 py-2 rounded-lg text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface font-label-md text-label-md transition-colors text-left">
+<div class="flex items-center gap-2 min-w-0">
+<span class="material-symbols-outlined text-[18px] text-outline">fingerprint</span>
+<span class="truncate">Identity, SSO & Okta</span>
+</div>
+<span class="px-2 py-0.5 rounded-full bg-surface-container-low text-on-surface-variant text-[11px] font-code-md">34</span>
+</button>
+<!-- Hardware & Provisioning -->
+<button class="flex items-center justify-between w-full px-3 py-2 rounded-lg text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface font-label-md text-label-md transition-colors text-left">
+<div class="flex items-center gap-2 min-w-0">
+<span class="material-symbols-outlined text-[18px] text-outline">devices</span>
+<span class="truncate">Hardware & Provisioning</span>
+</div>
+<span class="px-2 py-0.5 rounded-full bg-surface-container-low text-on-surface-variant text-[11px] font-code-md">19</span>
+</button>
+<!-- Cloud & DevOps -->
+<button class="flex items-center justify-between w-full px-3 py-2 rounded-lg text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface font-label-md text-label-md transition-colors text-left">
+<div class="flex items-center gap-2 min-w-0">
+<span class="material-symbols-outlined text-[18px] text-outline">cloud</span>
+<span class="truncate">Cloud & DevOps (AWS/K8s)</span>
+</div>
+<span class="px-2 py-0.5 rounded-full bg-surface-container-low text-on-surface-variant text-[11px] font-code-md">25</span>
+</button>
+<div class="w-full h-[1px] bg-surface-container-highest my-1"></div>
+<!-- KEDB Special Badge Row -->
+<button class="flex items-center justify-between w-full px-3 py-2 rounded-lg bg-surface-container-low hover:bg-surface-container text-on-surface font-label-md text-label-md transition-all text-left">
+<div class="flex items-center gap-2 min-w-0">
+<span class="material-symbols-outlined text-[18px] text-primary">gavel</span>
+<span class="truncate font-semibold">Known Error Database</span>
+</div>
+<span class="px-2 py-0.5 rounded-full bg-primary-fixed text-on-primary-fixed font-code-md text-[11px] font-semibold">18 KEDB</span>
+</button>
+<!-- Drafts Pending Review -->
+<button class="flex items-center justify-between w-full px-3 py-2 rounded-lg bg-surface-container-low hover:bg-surface-container text-secondary font-label-md text-label-md transition-all text-left">
+<div class="flex items-center gap-2 min-w-0">
+<span class="material-symbols-outlined text-[18px]">mark_chat_unread</span>
+<span class="truncate font-semibold">Drafts Pending Review</span>
+</div>
+<span class="px-2 py-0.5 rounded-full bg-secondary-fixed text-on-secondary-fixed font-code-md text-[11px] font-bold animate-pulse">4 AI</span>
+</button>
+</nav>
+</div>
+<!-- Deflection KPI & Quick Telemetry Bento -->
+<div class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm flex flex-col gap-space-sm">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-outline uppercase tracking-wider">Quarterly Deflections</span>
+<span class="font-label-sm text-label-sm text-secondary font-semibold">+18.4% MoM</span>
+</div>
+<div class="flex items-baseline gap-2">
+<span class="font-headline-lg text-headline-lg text-on-surface tracking-tight">1,842</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">tickets avoided</span>
+</div>
+<!-- Inline Deflection Bar Chart SVG -->
+<div class="w-full pt-2">
+<svg class="w-full h-14" fill="none" preserveaspectratio="none" viewbox="0 0 240 56">
+<rect class="text-surface-container-highest" fill="currentColor" height="24" rx="3" width="16" x="0" y="32"></rect>
+<rect class="text-surface-container-highest" fill="currentColor" height="32" rx="3" width="16" x="24" y="24"></rect>
+<rect class="text-surface-container-highest" fill="currentColor" height="28" rx="3" width="16" x="48" y="28"></rect>
+<rect class="text-surface-container-highest" fill="currentColor" height="38" rx="3" width="16" x="72" y="18"></rect>
+<rect class="text-surface-container-highest" fill="currentColor" height="36" rx="3" width="16" x="96" y="20"></rect>
+<rect class="text-surface-container-high" fill="currentColor" height="44" rx="3" width="16" x="120" y="12"></rect>
+<rect class="text-surface-container-high" fill="currentColor" height="40" rx="3" width="16" x="144" y="16"></rect>
+<rect class="text-secondary-container" fill="currentColor" height="48" rx="3" width="16" x="168" y="8"></rect>
+<rect class="text-primary" fill="currentColor" height="52" rx="3" width="16" x="192" y="4"></rect>
+<rect class="text-primary-container" fill="currentColor" height="54" rx="3" width="16" x="216" y="2"></rect>
+</svg>
+<div class="flex justify-between text-[10px] font-code-md text-outline pt-1">
+<span>WK 30</span>
+<span>WK 34</span>
+<span>WK 38 (CURRENT)</span>
+</div>
+</div>
+<!-- Featured SOP Contributor Mini-card -->
+<div class="mt-2 p-2.5 rounded-lg bg-surface-container-low flex items-center gap-3">
+<img alt="Lead Operator" class="w-9 h-9 rounded-full object-cover ring-2 ring-surface-container-high" src="https://lh3.googleusercontent.com/aida/AEtjO1UvRp-sB668O8xQ5MmwJGFMuhZyy1VlMwStvG9MGUQLDiFduyFagt7Ez00pAy8LuTtQDJkwWaZt6dYXS1qeavbJl6lZnSbAS94bMp6u52E5HF8Gn6NsACko5qIaln8_HCytP26K34kbwzLanVrD5-n5BGH9zGLnKqQvV3-_xyYoiTTX_fJm4aD09QAvg3wThSfbAtg4bW-WfKVGNIrgTPuvDqJPmPUhZmmmgdBEQ2sm"/>
+<div class="flex flex-col min-w-0">
+<span class="font-label-md text-label-md text-on-surface font-semibold truncate">Sarah Jenkins</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Top Contributor • 24 Verified SOPs</span>
+</div>
+</div>
+</div>
+</aside>
+<!-- COLUMN 2: Article Reader / Selected Article (45% -> 5 cols in 12-col grid) -->
+<section class="lg:col-span-5 flex flex-col gap-space-md">
+<div class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm flex flex-col gap-space-md">
+<!-- Breadcrumbs -->
+<nav class="flex items-center gap-1.5 font-label-sm text-label-sm text-outline flex-wrap">
+<a class="hover:text-primary transition-colors" href="#">Knowledge Base</a>
+<span class="material-symbols-outlined text-[14px]">chevron_right</span>
+<a class="hover:text-primary transition-colors" href="#">Network & VPN</a>
+<span class="material-symbols-outlined text-[14px]">chevron_right</span>
+<span class="text-on-surface font-semibold">SOP-104</span>
+</nav>
+<!-- Article Header -->
+<div class="flex flex-col gap-2 pb-space-sm bg-surface-container-lowest">
+<div class="flex flex-wrap items-center gap-2">
+<span class="px-2 py-0.5 rounded font-code-md text-code-md bg-surface-container-high text-on-surface font-semibold">SOP-104</span>
+<span class="px-2.5 py-0.5 rounded-full bg-surface-container-low text-primary font-label-sm text-label-sm font-semibold flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+                PUBLISHED (Vetted Enterprise SOP)
+              </span>
+<span class="px-2 py-0.5 rounded-md bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm">Network & VPN</span>
+</div>
+<h2 class="font-headline-md text-headline-md text-on-surface leading-snug">
+              Diagnosing and Resolving Ephemeral Port Exhaustion on Corporate VPN Gateways
+            </h2>
+<!-- Metadata Row -->
+<div class="flex flex-wrap items-center gap-y-1 gap-x-4 pt-1 font-body-sm text-body-sm text-on-surface-variant">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-outline">account_circle</span>
+<span>Sarah Jenkins <span class="text-outline text-xs">(L2 Network Ops)</span></span>
+</div>
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-outline">calendar_today</span>
+<span>Sep 18, 2026</span>
+</div>
+<div class="flex items-center gap-1.5 text-secondary font-medium">
+<span class="material-symbols-outlined text-[16px]">trending_down</span>
+<span>142 deflections this quarter</span>
+</div>
+</div>
+</div>
+<div class="w-full h-[1px] bg-surface-container-highest"></div>
+<!-- Article Body (Markdown Styled Reader) -->
+<div class="flex flex-col gap-space-lg text-on-surface">
+<!-- Section 1 -->
+<div class="flex flex-col gap-2">
+<div class="flex items-center gap-2">
+<span class="w-5 h-5 rounded-full bg-surface-container-high text-primary flex items-center justify-center font-code-md text-[11px] font-bold">1</span>
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Overview & Diagnostic Symptoms</h3>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant leading-relaxed">
+                During high-concurrency peak load windows (typically 08:30–10:00 EST), perimeter edge firewalls may reject incoming AnyConnect tunnel requests due to outbound TCP/UDP socket pool exhaustion. Affected endpoints report silent handshakes and repeated timeout loops.
+              </p>
+<!-- Warning Callout -->
+<div class="p-3 rounded-lg bg-surface-container-low flex items-start gap-2.5">
+<span class="material-symbols-outlined text-primary text-[20px] mt-0.5">info</span>
+<div class="flex flex-col text-on-surface">
+<span class="font-label-md text-label-md font-semibold">Associated System Fault Codes</span>
+<p class="font-code-md text-code-md text-on-surface-variant mt-0.5">
+                    Client Error: <span class="bg-surface-container-highest px-1 py-0.5 rounded text-error font-semibold">0x80070005</span> | Kernel: <span class="bg-surface-container-highest px-1 py-0.5 rounded text-on-surface">WSAENOBUFS (10055)</span> - Insufficient buffer space.
+                  </p>
+</div>
+</div>
+</div>
+<!-- Section 2: Step-by-Step Remediation -->
+<div class="flex flex-col gap-3">
+<div class="flex items-center gap-2">
+<span class="w-5 h-5 rounded-full bg-surface-container-high text-primary flex items-center justify-center font-code-md text-[11px] font-bold">2</span>
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Step-by-Step Remediation</h3>
+</div>
+<!-- Step 1 -->
+<div class="flex flex-col gap-1.5 pl-3">
+<span class="font-label-md text-label-md font-semibold text-on-surface">
+                  Step 1: Inspect socket state allocation via Netstat
+                </span>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+                  Confirm whether sockets in TIME_WAIT state exceed the threshold cap (> 28,000 instances). Run in privileged shell:
+                </p>
+<div class="relative group bg-inverse-surface rounded-lg p-3 text-inverse-on-surface overflow-hidden shadow-inner">
+<div class="flex items-center justify-between pb-1 text-[11px] font-code-md text-outline">
+<span>BASH (Edge Gateway Node)</span>
+<button class="hover:text-surface-bright flex items-center gap-1 transition-colors text-outline" onclick="copySnippet('cmd1')">
+<span class="material-symbols-outlined text-[14px]">content_copy</span>
+<span id="cmd1-label">Copy</span>
+</button>
+</div>
+<pre class="font-code-md text-code-md text-inverse-on-surface overflow-x-auto whitespace-pre-wrap select-all" id="cmd1"><code>netstat -an | grep -E "(ESTABLISHED|TIME_WAIT)" | wc -l</code></pre>
+</div>
+</div>
+<!-- Step 2 -->
+<div class="flex flex-col gap-1.5 pl-3">
+<span class="font-label-md text-label-md font-semibold text-on-surface">
+                  Step 2: Flush stale BGP route tables and execute controlled DNS refresh
+                </span>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+                  Purge stale peer caches without resetting physical tunnel links:
+                </p>
+<div class="relative group bg-inverse-surface rounded-lg p-3 text-inverse-on-surface overflow-hidden shadow-inner">
+<div class="flex items-center justify-between pb-1 text-[11px] font-code-md text-outline">
+<span>SUDO ROOT CONSOLE</span>
+<button class="hover:text-surface-bright flex items-center gap-1 transition-colors text-outline" onclick="copySnippet('cmd2')">
+<span class="material-symbols-outlined text-[14px]">content_copy</span>
+<span id="cmd2-label">Copy</span>
+</button>
+</div>
+<pre class="font-code-md text-code-md text-inverse-on-surface overflow-x-auto whitespace-pre-wrap select-all" id="cmd2"><code>sudo resolvectl flush-caches && sudo ip route flush cache</code></pre>
+</div>
+</div>
+</div>
+<!-- Section 3: Rollback & Escalation -->
+<div class="flex flex-col gap-2">
+<div class="flex items-center gap-2">
+<span class="w-5 h-5 rounded-full bg-surface-container-high text-primary flex items-center justify-center font-code-md text-[11px] font-bold">3</span>
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Rollback & Escalation Procedures</h3>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant leading-relaxed">
+                If the socket table fails to normalize within 90 seconds of cache flushing, initiate traffic redirection to secondary gateway cluster <code class="font-code-md bg-surface-container-high px-1 py-0.5 rounded text-on-surface">us-east-vpn-gw-02.internal</code> and page the On-Call NetEng SME via PagerDuty priority channel.
+              </p>
+</div>
+</div>
+<div class="w-full h-[1px] bg-surface-container-highest mt-2"></div>
+<!-- Article Feedback & Export Footer -->
+<div class="flex flex-col sm:flex-row items-center justify-between gap-space-sm pt-1">
+<div class="flex items-center gap-2">
+<span class="font-body-sm text-body-sm text-on-surface-variant">Was this article helpful?</span>
+<button class="inline-flex items-center gap-1 px-3 py-1 rounded-lg bg-surface-container-high hover:bg-surface-container-highest text-on-surface font-label-sm text-label-sm transition-colors">
+<span class="material-symbols-outlined text-[16px] text-secondary">thumb_up</span>
+<span>Yes (98% helpful)</span>
+</button>
+<button class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-surface-container-low hover:bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm transition-colors">
+<span class="material-symbols-outlined text-[16px]">thumb_down</span>
+<span>No</span>
+</button>
+</div>
+<button class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface-container-low hover:bg-surface-container-high text-on-surface font-label-sm text-label-sm transition-colors">
+<span class="material-symbols-outlined text-[16px] text-outline">picture_as_pdf</span>
+<span>Export PDF Dossier</span>
+</button>
+</div>
+</div>
+</section>
+<!-- COLUMN 3: AI Knowledge Auto-Drafter Workflow Panel (35% -> 4 cols in 12-col grid) -->
+<section class="lg:col-span-4 flex flex-col gap-space-md">
+<!-- Main AI Auto-Drafter Card -->
+<div class="bg-surface-container-lowest rounded-xl p-space-md shadow-md flex flex-col gap-space-md relative overflow-hidden">
+<!-- Top subtle indigo accent indicator bar -->
+<div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-secondary to-secondary-container"></div>
+<!-- Panel Header & Governance Status -->
+<div class="flex flex-col gap-1.5 pt-1">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-1.5 text-secondary">
+<span class="material-symbols-outlined text-[20px]">auto_awesome</span>
+<span class="font-label-sm text-label-sm uppercase tracking-wider font-semibold">Gemini 2.5 Flash Drafter</span>
+</div>
+<span class="px-2 py-0.5 rounded-full bg-error-container text-on-error-container font-label-sm text-label-sm font-bold tracking-tight uppercase flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-error animate-ping"></span>
+                Human Review Required
+              </span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface">AI Knowledge Auto-Drafter</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+              Synthesized from post-incident telemetry and resolution steps logged in resolved tickets.
+            </p>
+</div>
+<!-- Source Case Context Bento -->
+<div class="p-3 rounded-lg bg-surface-container-low flex flex-col gap-2">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-outline uppercase font-semibold">Source Incident Telemetry</span>
+<span class="font-code-md text-code-md text-primary font-semibold text-[11px]">TTR: 14m 20s</span>
+</div>
+<div class="flex flex-wrap gap-1.5">
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-surface-container-high text-on-surface font-code-md text-code-md text-[11px]">
+<span class="material-symbols-outlined text-[12px] text-error">warning</span>
+                INC-2026-000841
+              </span>
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-surface-container-high text-on-surface font-code-md text-code-md text-[11px]">
+<span class="material-symbols-outlined text-[12px] text-secondary">alt_route</span>
+                PRB-2026-000019
+              </span>
+</div>
+<div class="text-on-surface-variant font-body-sm text-body-sm bg-surface-container-lowest p-2 rounded">
+<strong class="text-on-surface font-medium">Logged Resolution:</strong> 
+              Operator performed DNS flush and socket allocation restart, clearing 1,482 stale peer tunnels in 4.2s.
+            </div>
+</div>
+<!-- Generated Draft Preview (Editable Container with AI styling) -->
+<div class="rounded-lg bg-surface p-3.5 flex flex-col gap-3 shadow-inner">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-secondary font-semibold uppercase flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">edit_note</span>
+                Draft Proposal #482
+              </span>
+<div class="flex items-center gap-1 px-2 py-0.5 rounded-full bg-surface-container-highest text-on-surface font-code-md text-[11px]">
+<span class="material-symbols-outlined text-[13px] text-secondary">psychology</span>
+<span>94% AI Confidence</span>
+</div>
+</div>
+<!-- Title Field -->
+<div class="flex flex-col gap-1">
+<label class="font-label-sm text-label-sm text-outline">Proposed SOP Title</label>
+<input class="w-full px-2.5 py-1.5 rounded bg-surface-container-lowest text-on-surface font-label-md text-label-md focus:outline-none focus:ring-1 focus:ring-secondary" type="text" value="Standard Operating Procedure: Remediation of Cisco Concentrator Route Stalls"/>
+</div>
+<!-- Extracted Sections Checklist -->
+<div class="flex flex-col gap-1.5">
+<label class="font-label-sm text-label-sm text-outline">Structured Sections Extracted</label>
+<div class="grid grid-cols-1 gap-1.5 font-body-sm text-body-sm">
+<div class="flex items-center justify-between p-2 rounded bg-surface-container-lowest">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px] text-secondary">check_circle</span>
+<span class="font-medium text-on-surface">1. Prerequisites & Cluster State</span>
+</div>
+<span class="font-code-md text-[11px] text-outline">8 lines</span>
+</div>
+<div class="flex items-center justify-between p-2 rounded bg-surface-container-lowest">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px] text-secondary">check_circle</span>
+<span class="font-medium text-on-surface">2. Diagnostic Commands (CLI)</span>
+</div>
+<span class="font-code-md text-[11px] text-outline">2 scripts</span>
+</div>
+<div class="flex items-center justify-between p-2 rounded bg-surface-container-lowest">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px] text-secondary">check_circle</span>
+<span class="font-medium text-on-surface">3. Safe Auto-Fix Parameters</span>
+</div>
+<span class="font-code-md text-[11px] text-outline">Validated</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Governance Step Workflow Indicator -->
+<div class="flex flex-col gap-2 pt-1">
+<span class="font-label-sm text-label-sm text-outline uppercase font-semibold">ITIL Lifecycle Stage</span>
+<div class="flex items-center justify-between text-[11px] font-label-sm text-on-surface-variant relative">
+<div class="flex flex-col items-center gap-1 z-10">
+<span class="w-6 h-6 rounded-full bg-surface-container-high text-primary flex items-center justify-center font-bold">✓</span>
+<span class="text-[10px] text-center text-outline">1. Resolved</span>
+</div>
+<div class="flex flex-col items-center gap-1 z-10">
+<span class="w-6 h-6 rounded-full bg-surface-container-high text-primary flex items-center justify-center font-bold">✓</span>
+<span class="text-[10px] text-center text-outline">2. Drafted</span>
+</div>
+<div class="flex flex-col items-center gap-1 z-10">
+<span class="w-6 h-6 rounded-full bg-secondary text-on-secondary flex items-center justify-center font-bold ring-4 ring-secondary-fixed-dim">3</span>
+<span class="text-[10px] text-center font-bold text-secondary">3. Review</span>
+</div>
+<div class="flex flex-col items-center gap-1 z-10">
+<span class="w-6 h-6 rounded-full bg-surface-container-low text-outline flex items-center justify-center font-bold">4</span>
+<span class="text-[10px] text-center text-outline">4. CAB Lead</span>
+</div>
+<div class="flex flex-col items-center gap-1 z-10">
+<span class="w-6 h-6 rounded-full bg-surface-container-low text-outline flex items-center justify-center font-bold">5</span>
+<span class="text-[10px] text-center text-outline">5. KEDB</span>
+</div>
+</div>
+</div>
+<!-- Action Buttons Group -->
+<div class="flex flex-col gap-2 pt-2">
+<button class="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg bg-emerald-700 text-white hover:bg-emerald-800 transition-all font-label-md text-label-md font-semibold shadow-sm" id="approve-kedb-btn">
+<span class="material-symbols-outlined text-[18px]">verified_user</span>
+<span>Approve & Publish to KEDB</span>
+</button>
+<div class="grid grid-cols-2 gap-2">
+<button class="flex items-center justify-center gap-1 py-2 px-3 rounded-lg bg-surface-container-high hover:bg-surface-container-highest text-on-surface font-label-sm text-label-sm transition-colors">
+<span class="material-symbols-outlined text-[16px]">edit</span>
+<span>Edit Draft Content</span>
+</button>
+<button class="flex items-center justify-center gap-1 py-2 px-3 rounded-lg bg-surface-container-low hover:bg-error-container hover:text-on-error-container text-on-surface-variant font-label-sm text-label-sm transition-colors">
+<span class="material-symbols-outlined text-[16px]">delete</span>
+<span>Discard Draft</span>
+</button>
+</div>
+</div>
+<!-- Compliance Notice -->
+<div class="p-2.5 rounded-lg bg-surface-container-low flex items-start gap-2">
+<span class="material-symbols-outlined text-outline text-[16px] mt-0.5">policy</span>
+<p class="font-label-sm text-label-sm text-on-surface-variant leading-tight">
+              AI-generated drafts are advisory and cannot be published automatically without human review and lead sign-off.
+            </p>
+</div>
+</div>
+<!-- Secondary Side Card: Knowledge Freshness Monitor -->
+<div class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm flex flex-col gap-2">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-outline uppercase font-semibold">Governance Telemetry</span>
+<span class="font-code-md text-code-md text-secondary text-[11px]">Auto-Audit Daily</span>
+</div>
+<div class="flex items-center justify-between text-body-sm font-body-sm py-1">
+<span class="text-on-surface-variant">Stale Articles (>180 Days):</span>
+<span class="font-code-md font-semibold text-on-surface">3 articles flagged</span>
+</div>
+<div class="w-full bg-surface-container-high h-1.5 rounded-full overflow-hidden">
+<div class="bg-secondary h-full rounded-full w-[92%]"></div>
+</div>
+<span class="text-[11px] font-label-sm text-outline">92% of repository verified within active quarter</span>
+</div>
+</section>
+</div>
+</main>
+</div>
+<script>
+  function copySnippet(elementId) {
+    const codeElement = document.getElementById(elementId);
+    if (!codeElement) return;
+    const text = codeElement.innerText;
+    navigator.clipboard.writeText(text).then(() => {
+      const label = document.getElementById(elementId + '-label');
+      if (label) {
+        const originalText = label.innerText;
+        label.innerText = 'Copied!';
+        setTimeout(() => {
+          label.innerText = originalText;
+        }, 2000);
+      }
+    });
+  }
+
+  // Interactive micro-interaction for Draft Button
+  const draftBtn = document.getElementById('trigger-ai-draft-btn');
+  if (draftBtn) {
+    draftBtn.addEventListener('click', () => {
+      draftBtn.classList.add('scale-95');
+      setTimeout(() => {
+        draftBtn.classList.remove('scale-95');
+      }, 150);
+    });
+  }
+
+  // Approval notification simulation
+  const approveBtn = document.getElementById('approve-kedb-btn');
+  if (approveBtn) {
+    approveBtn.addEventListener('click', function() {
+      const originalHTML = this.innerHTML;
+      this.innerHTML = `<span class="material-symbols-outlined text-[18px]">check</span><span>Submitted for CAB Lead Sign-Off!</span>`;
+      this.classList.remove('bg-emerald-700');
+      this.classList.add('bg-primary');
+      setTimeout(() => {
+        this.innerHTML = originalHTML;
+        this.classList.remove('bg-primary');
+        this.classList.add('bg-emerald-700');
+      }, 3000);
+    });
+  }
+</script></main></div></body></html>

@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_blank" name="shell-type"/><style>@layer base { html, body { margin: 0; padding: 0; } body { overscroll-behavior: none; } main > :first-child { margin-top: 0 !important; } main > :last-child { margin-bottom: 0 !important; } } ::-webkit-scrollbar { display: none; }</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { colors: { "on-secondary-container": "#fffbff", "on-error": "#ffffff", "surface-container": "#e5eeff", "on-secondary-fixed-variant": "#2f2ebe", "on-secondary": "#ffffff", "surface-container-lowest": "#ffffff", "on-primary-fixed-variant": "#173bab", "tertiary-container": "#434b60", "on-secondary-fixed": "#07006c", "primary-container": "#1e40af", "error": "#ba1a1a", "surface-container-low": "#eff4ff", "background": "#f8f9ff", "inverse-surface": "#213145", "surface-container-highest": "#d3e4fe", "surface-variant": "#d3e4fe", "secondary": "#4648d4", "surface-tint": "#3755c3", "on-primary": "#ffffff", "primary": "#00288e", "surface-dim": "cbdbf5", "error-container": "#ffdad6", "on-tertiary": "#ffffff", "primary-fixed": "#dde1ff", "secondary-fixed-dim": "#c0c1ff", "outline-variant": "#c4c5d5", "on-tertiary-fixed-variant": "#3f465c", "on-background": "#0b1c30", "on-surface": "#0b1c30", "tertiary": "#2d3449", "on-surface-variant": "#444653", "tertiary-fixed": "#dae2fd", "surface-bright": "#f8f9ff", "surface-container-high": "#dce9ff", "on-primary-container": "#a8b8ff", "on-primary-fixed": "#001453", "surface": "#f8f9ff", "inverse-primary": "#b8c4ff", "tertiary-fixed-dim": "#bec6e0", "on-tertiary-container": "#b4bbd5", "on-error-container": "#93000a", "primary-fixed-dim": "#b8c4ff", "secondary-fixed": "#e1e0ff", "inverse-on-surface": "#eaf1ff", "on-tertiary-fixed": "#131b2e", "secondary-container": "#6063ee", "outline": "#757684" }, borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, spacing: { "gutter": "1rem", "space-md": "1rem", "space-lg": "1.5rem", "gutter-desktop": "1.5rem", "space-sm": "0.5rem", "space-xs": "0.25rem", "margin-desktop": "1.5rem", "space-xl": "2rem", "margin": "1rem" }, fontFamily: { "headline-md": ["Inter"], "label-md": ["Inter"], "code-md": ["JetBrains Mono"], "headline-lg-mobile": ["Inter"], "body-sm": ["Inter"], "body-md": ["Inter"], "headline-sm": ["Inter"], "label-sm": ["Inter"], "sla-timer": ["JetBrains Mono"], "headline-lg": ["Inter"], "body-lg": ["Inter"] }, fontSize: { "headline-md": ["22px", { "lineHeight": "28px", "letterSpacing": "-0.015em", "fontWeight": "600" }], "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500" }], "code-md": ["13px", { "lineHeight": "18px", "letterSpacing": "-0.01em", "fontWeight": "400" }], "headline-lg-mobile": ["26px", { "lineHeight": "32px", "letterSpacing": "-0.015em", "fontWeight": "600" }], "body-sm": ["13px", { "lineHeight": "18px", "letterSpacing": "0.005em", "fontWeight": "400" }], "body-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0em", "fontWeight": "400" }], "headline-sm": ["18px", { "lineHeight": "24px", "letterSpacing": "-0.01em", "fontWeight": "600" }], "label-sm": ["11px", { "lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "600" }], "sla-timer": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500" }], "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "600" }], "body-lg": ["16px", { "lineHeight": "24px", "letterSpacing": "0em", "fontWeight": "400" }] } } } };</script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet"/></head><body class="bg-surface font-body-md text-on-surface antialiased"><main class="min-h-screen w-full flex items-center justify-center p-space-lg bg-surface"><div class="flex flex-col w-full">
+<div class="w-full flex flex-col items-center justify-center py-6 px-space-md">
+<!-- State Feedback Alert (Dynamically Controlled via Micro-Interactions) -->
+<div class="max-w-md w-full mb-space-md hidden transition-all duration-200" id="dynamic-status-banner">
+<div class="rounded-lg p-space-md flex items-start space-x-3 shadow-sm" id="status-card">
+<span class="material-symbols-outlined text-[20px] shrink-0 mt-0.5" id="status-icon">info</span>
+<div class="flex-1 min-w-0">
+<p class="font-headline-sm text-headline-sm" id="status-title"></p>
+<p class="font-body-sm text-body-sm mt-0.5" id="status-desc"></p>
+</div>
+</div>
+</div>
+<!-- Main Authentication Container -->
+<div class="max-w-md w-full bg-surface-container-lowest rounded-lg shadow-sm p-8 transition-all">
+<!-- Brand & Header -->
+<div class="flex flex-col items-center text-center">
+<div class="w-14 h-14 rounded-lg bg-surface-container-low flex items-center justify-center p-2 mb-space-md shadow-sm">
+<img alt="AI IT Helpdesk Enterprise Mark" class="w-full h-full object-contain rounded" src="https://lh3.googleusercontent.com/aida/AEtjO1X7SUa7td0syGhN1cfQiVXQ9OafEdk2a4K27rn7CTEpXYs76VGlkzCdpnf-MhcKQISVUZN9vbqc-zYj-6J77t5qtTvl_-SkXleX17iUFT-vStUNm4mZHglzxi0K_TuZOIgEC0wvJEHiDXMQxwVgp4zOnXe2KTHI7HW6C_zDY4JxC-MSumx5Z3S2Rf1ElEFg2UCnW9uW32mFg1MHfpH5EBT_YSV9EsBvemQ9hEd-08El"/>
+</div>
+<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full font-label-sm text-label-sm bg-surface-container-high text-primary font-medium tracking-wide">
+<span class="material-symbols-outlined text-[14px]">shield</span>
+          Single Sign-On & Dual-Path Auth v4.0
+        </span>
+<h1 class="font-headline-md text-headline-md text-on-surface mt-3">AI IT Helpdesk</h1>
+<p class="font-body-md text-body-md text-on-surface-variant mt-1">Precision Enterprise Service Management</p>
+<!-- Segmented Tab Control -->
+<div class="w-full grid grid-cols-2 p-1 bg-surface-container-low rounded-lg mt-6 text-center">
+<button class="py-1.5 px-3 rounded font-label-md text-label-md transition-all font-semibold bg-surface-container-lowest text-primary shadow-sm" id="tab-signin" onclick="switchAuthTab('signin')">
+            Sign In
+          </button>
+<button class="py-1.5 px-3 rounded font-label-md text-label-md transition-all font-medium text-on-surface-variant hover:text-on-surface" id="tab-register" onclick="switchAuthTab('register')">
+            Register New Account
+          </button>
+</div>
+</div>
+<!-- Google OAuth PKCE Button Block -->
+<div class="mt-6 flex flex-col items-center">
+<button class="w-full py-2.5 px-4 bg-surface-container-lowest hover:bg-surface-container-low transition-colors duration-150 rounded-lg flex items-center justify-center space-x-3 shadow-sm group" type="button">
+<svg aria-hidden="true" class="w-5 h-5 shrink-0" viewbox="0 0 24 24">
+<path d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.8-2.4 3.66v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.15z" fill="#4285F4"></path>
+<path d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.94H1.24v3.15C3.26 21.36 7.34 24 12 24z" fill="#34A853"></path>
+<path d="M5.28 14.26c-.25-.72-.38-1.49-.38-2.26s.13-1.54.38-2.26V6.59H1.24C.45 8.16 0 9.92 0 12s.45 3.84 1.24 5.41l4.04-3.15z" fill="#FBBC05"></path>
+<path d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.34 0 3.26 2.64 1.24 6.59l4.04 3.15c.95-2.84 3.6-4.99 6.72-4.99z" fill="#EA4335"></path>
+</svg>
+<span class="font-label-md text-label-md text-on-surface font-semibold group-hover:text-primary">
+            Continue with Google Workspace (OAuth 2.0 PKCE)
+          </span>
+</button>
+<span class="font-label-sm text-label-sm text-on-surface-variant/80 mt-2 text-center tracking-tight">
+          Enforces corporate domain whitelist (@acme.corp, @acme-contractors.com)
+        </span>
+</div>
+<!-- Visual Rule / Text Divider -->
+<div class="relative my-6 flex items-center justify-center">
+<div class="w-full h-px bg-surface-container-high"></div>
+<span class="absolute px-3 bg-surface-container-lowest font-label-sm text-label-sm text-on-surface-variant font-medium uppercase tracking-wider">
+          Or sign in with enterprise credentials
+        </span>
+</div>
+<!-- Email / Password Form -->
+<form class="space-y-4" id="auth-form" onsubmit="event.preventDefault(); triggerAuth();">
+<div>
+<label class="block font-label-md text-label-md text-on-surface font-semibold mb-1" for="email">Work Email</label>
+<div class="relative rounded-lg shadow-sm">
+<span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-on-surface-variant">
+<span class="material-symbols-outlined text-[18px]">mail</span>
+</span>
+<input class="block w-full pl-9 pr-3 py-2 text-body-md font-body-md bg-surface-container-low text-on-surface rounded-lg placeholder-on-surface-variant/60 focus:bg-surface-container-lowest focus:outline-none transition-colors" id="email" name="email" placeholder="name@acme.corp" required="" type="email" value="alec.turner@acme.corp"/>
+</div>
+</div>
+<div>
+<div class="flex items-center justify-between mb-1">
+<label class="block font-label-md text-label-md text-on-surface font-semibold" for="password">Password</label>
+<a class="font-label-sm text-label-sm text-primary hover:text-primary-container font-medium" href="javascript:void(0)">Forgot password?</a>
+</div>
+<div class="relative rounded-lg shadow-sm">
+<span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-on-surface-variant">
+<span class="material-symbols-outlined text-[18px]">lock</span>
+</span>
+<input class="block w-full pl-9 pr-10 py-2 text-body-md font-body-md bg-surface-container-low text-on-surface rounded-lg placeholder-on-surface-variant/60 focus:bg-surface-container-lowest focus:outline-none transition-colors font-code-md" id="password" name="password" placeholder="••••••••••••" required="" type="password" value="EnterpriseSecurePass2025!"/>
+<button aria-label="Toggle password visibility" class="absolute inset-y-0 right-0 pr-3 flex items-center text-on-surface-variant hover:text-on-surface" onclick="togglePasswordVisibility()" type="button">
+<span class="material-symbols-outlined text-[18px]" id="pwd-icon">visibility</span>
+</button>
+</div>
+</div>
+<div class="flex items-start pt-1">
+<div class="flex items-center h-5">
+<input checked="" class="w-4 h-4 rounded text-primary bg-surface-container-low accent-primary cursor-pointer" id="remember" name="remember" type="checkbox"/>
+</div>
+<div class="ml-2.5 text-left">
+<label class="font-body-sm text-body-sm text-on-surface-variant select-none cursor-pointer" for="remember">
+              Remember this trusted workstation for 30 days via rotating refresh tokens
+            </label>
+</div>
+</div>
+<!-- Submit Button -->
+<button class="w-full mt-2 py-2.5 px-4 bg-primary-container hover:bg-primary text-on-primary rounded-lg font-label-md text-label-md font-semibold flex items-center justify-center space-x-2 shadow-sm transition-all transform active:scale-[0.99]" id="submit-btn" type="submit">
+<span>Sign In to Workspace</span>
+<span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</button>
+</form>
+<!-- Hardware Security Key Secondary Access -->
+<div class="mt-4 pt-3 flex items-center justify-center">
+<button class="inline-flex items-center space-x-1.5 font-label-sm text-label-sm text-on-surface-variant hover:text-primary transition-colors" type="button">
+<span class="material-symbols-outlined text-[16px]">key</span>
+<span>Use WebAuthn / FIDO2 Security Hardware Key</span>
+</button>
+</div>
+</div>
+<!-- Security & Status Baseline Metadata -->
+<div class="max-w-md w-full mt-4 text-center">
+<div class="bg-surface-container-low rounded-lg p-2.5 shadow-sm">
+<p class="font-label-sm text-label-sm text-on-surface-variant font-code-md">
+          Argon2id Key Derivation • 10 req/min sliding-window rate limit enforced • Anti-Collision Protection Active
+        </p>
+</div>
+</div>
+<!-- Operational State Demonstration Switcher -->
+<div class="max-w-md w-full mt-6 bg-surface-container-lowest rounded-lg p-3 shadow-sm">
+<div class="flex items-center justify-between mb-2">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider font-semibold">
+          Simulation State Toggles
+        </span>
+<span class="font-label-sm text-label-sm text-secondary font-medium">Demo Mode</span>
+</div>
+<div class="grid grid-cols-2 gap-2">
+<button class="px-2.5 py-1.5 rounded text-left font-label-sm text-label-sm font-medium bg-primary text-on-primary transition-all flex items-center justify-between" id="btn-state-normal" onclick="setSimState('normal')">
+<span>Normal State</span>
+<span class="material-symbols-outlined text-[14px]">check</span>
+</button>
+<button class="px-2.5 py-1.5 rounded text-left font-label-sm text-label-sm font-medium bg-surface-container-low text-on-surface-variant hover:text-on-surface transition-all flex items-center justify-between" id="btn-state-error" onclick="setSimState('error')">
+<span>Auth Error (401)</span>
+<span class="material-symbols-outlined text-[14px]">close</span>
+</button>
+<button class="px-2.5 py-1.5 rounded text-left font-label-sm text-label-sm font-medium bg-surface-container-low text-on-surface-variant hover:text-on-surface transition-all flex items-center justify-between" id="btn-state-ratelimit" onclick="setSimState('ratelimit')">
+<span>Rate Limited (429)</span>
+<span class="material-symbols-outlined text-[14px]">hourglass_top</span>
+</button>
+<button class="px-2.5 py-1.5 rounded text-left font-label-sm text-label-sm font-medium bg-surface-container-low text-on-surface-variant hover:text-on-surface transition-all flex items-center justify-between" id="btn-state-collision" onclick="setSimState('collision')">
+<span>Collision Warning</span>
+<span class="material-symbols-outlined text-[14px]">warning</span>
+</button>
+</div>
+</div>
+<!-- Compliances and Footer Links -->
+<div class="max-w-md w-full mt-6 flex flex-col items-center space-y-2 text-center">
+<div class="flex items-center justify-center space-x-4">
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:text-primary transition-colors" href="javascript:void(0)">Privacy Policy</a>
+<span class="font-label-sm text-label-sm text-outline-variant">•</span>
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:text-primary transition-colors" href="javascript:void(0)">SOC 2 Type II Security Report</a>
+<span class="font-label-sm text-label-sm text-outline-variant">•</span>
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:text-primary transition-colors inline-flex items-center gap-1" href="javascript:void(0)">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+          IT Operations Status
+        </a>
+</div>
+<p class="font-label-sm text-label-sm text-on-surface-variant/70">
+        All Systems Operational • Helpdesk Node US-East-1 (DC-04)
+      </p>
+</div>
+</div>
+</div>
+<script>
+  function togglePasswordVisibility() {
+    const pwdInput = document.getElementById('password');
+    const pwdIcon = document.getElementById('pwd-icon');
+    if (pwdInput.type === 'password') {
+      pwdInput.type = 'text';
+      pwdIcon.textContent = 'visibility_off';
+    } else {
+      pwdInput.type = 'password';
+      pwdIcon.textContent = 'visibility';
+    }
+  }
+
+  function switchAuthTab(tab) {
+    const tabSignIn = document.getElementById('tab-signin');
+    const tabRegister = document.getElementById('tab-register');
+    const submitBtn = document.getElementById('submit-btn');
+
+    if (tab === 'signin') {
+      tabSignIn.className = 'py-1.5 px-3 rounded font-label-md text-label-md transition-all font-semibold bg-surface-container-lowest text-primary shadow-sm';
+      tabRegister.className = 'py-1.5 px-3 rounded font-label-md text-label-md transition-all font-medium text-on-surface-variant hover:text-on-surface';
+      submitBtn.querySelector('span').textContent = 'Sign In to Workspace';
+    } else {
+      tabRegister.className = 'py-1.5 px-3 rounded font-label-md text-label-md transition-all font-semibold bg-surface-container-lowest text-primary shadow-sm';
+      tabSignIn.className = 'py-1.5 px-3 rounded font-label-md text-label-md transition-all font-medium text-on-surface-variant hover:text-on-surface';
+      submitBtn.querySelector('span').textContent = 'Request Provisioned Account';
+    }
+  }
+
+  function setSimState(state) {
+    const banner = document.getElementById('dynamic-status-banner');
+    const card = document.getElementById('status-card');
+    const icon = document.getElementById('status-icon');
+    const title = document.getElementById('status-title');
+    const desc = document.getElementById('status-desc');
+
+    const btnNormal = document.getElementById('btn-state-normal');
+    const btnError = document.getElementById('btn-state-error');
+    const btnRate = document.getElementById('btn-state-ratelimit');
+    const btnCollision = document.getElementById('btn-state-collision');
+
+    const buttons = [btnNormal, btnError, btnRate, btnCollision];
+    buttons.forEach(b => {
+      b.className = 'px-2.5 py-1.5 rounded text-left font-label-sm text-label-sm font-medium bg-surface-container-low text-on-surface-variant hover:text-on-surface transition-all flex items-center justify-between';
+    });
+
+    if (state === 'normal') {
+      btnNormal.className = 'px-2.5 py-1.5 rounded text-left font-label-sm text-label-sm font-medium bg-primary text-on-primary transition-all flex items-center justify-between';
+      banner.classList.add('hidden');
+    } else if (state === 'error') {
+      btnError.className = 'px-2.5 py-1.5 rounded text-left font-label-sm text-label-sm font-medium bg-error text-on-error transition-all flex items-center justify-between';
+      banner.classList.remove('hidden');
+      card.className = 'rounded-lg p-space-md flex items-start space-x-3 shadow-sm bg-error-container text-on-error-container';
+      icon.textContent = 'error';
+      icon.className = 'material-symbols-outlined text-[20px] shrink-0 mt-0.5 text-error';
+      title.textContent = 'Authentication Failed';
+      title.className = 'font-headline-sm text-headline-sm text-on-error-container font-semibold';
+      desc.textContent = 'The credentials provided do not match our enterprise directory records. 4 attempts remaining before temporary lock.';
+      desc.className = 'font-body-sm text-body-sm mt-0.5 text-on-error-container';
+    } else if (state === 'ratelimit') {
+      btnRate.className = 'px-2.5 py-1.5 rounded text-left font-label-sm text-label-sm font-medium bg-tertiary text-on-tertiary transition-all flex items-center justify-between';
+      banner.classList.remove('hidden');
+      card.className = 'rounded-lg p-space-md flex items-start space-x-3 shadow-sm bg-surface-container-highest text-on-surface';
+      icon.textContent = 'timer';
+      icon.className = 'material-symbols-outlined text-[20px] shrink-0 mt-0.5 text-primary';
+      title.textContent = '429 Rate Limit Exceeded';
+      title.className = 'font-headline-sm text-headline-sm text-on-surface font-semibold';
+      desc.textContent = 'Sliding-window threshold reached (10 req/min). Automated backoff engaged. Please retry in 42 seconds.';
+      desc.className = 'font-body-sm text-body-sm mt-0.5 text-on-surface-variant font-code-md';
+    } else if (state === 'collision') {
+      btnCollision.className = 'px-2.5 py-1.5 rounded text-left font-label-sm text-label-sm font-medium bg-secondary text-on-secondary transition-all flex items-center justify-between';
+      banner.classList.remove('hidden');
+      card.className = 'rounded-lg p-space-md flex items-start space-x-3 shadow-sm bg-surface-container-high text-on-surface';
+      icon.textContent = 'warning';
+      icon.className = 'material-symbols-outlined text-[20px] shrink-0 mt-0.5 text-secondary';
+      title.textContent = 'Account Collision Warning';
+      title.className = 'font-headline-sm text-headline-sm text-on-surface font-semibold';
+      desc.textContent = 'An enterprise Google Workspace identity exists with this exact email. Please use the Google OAuth PKCE pathway above to unify accounts.';
+      desc.className = 'font-body-sm text-body-sm mt-0.5 text-on-surface-variant';
+    }
+  }
+
+  function triggerAuth() {
+    const submitBtn = document.getElementById('submit-btn');
+    const originalText = submitBtn.innerHTML;
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<span class="material-symbols-outlined animate-spin text-[18px]">progress_activity</span><span>Authenticating via Argon2id...</span>';
+    setTimeout(() => {
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = originalText;
+    }, 1200);
+  }
+</script></main></body></html>

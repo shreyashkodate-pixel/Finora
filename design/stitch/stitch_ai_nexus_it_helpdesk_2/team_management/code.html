@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_dashboard" name="shell-type"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "on-primary-fixed-variant": "#173bab", "on-primary-fixed": "#001453", "on-primary": "#ffffff", "on-primary-container": "#a8b8ff", "surface-variant": "#d3e4fe", "inverse-surface": "#213145", "on-background": "#0b1c30", "on-secondary-fixed-variant": "#2f2ebe", "tertiary-fixed-dim": "#bec6e0", "outline-variant": "#c4c5d5", "secondary": "#4648d4", "on-secondary-container": "#fffbff", "on-secondary": "#ffffff", "background": "#f8f9ff", "inverse-primary": "#b8c4ff", "surface-container-highest": "#d3e4fe", "tertiary-fixed": "#dae2fd", "tertiary-container": "#434b60", "on-tertiary-fixed-variant": "#3f465c", "surface": "#f8f9ff", "secondary-fixed-dim": "#c0c1ff", "secondary-fixed": "#e1e0ff", "primary-fixed": "#dde1ff", "surface-bright": "#f8f9ff", "on-tertiary-fixed": "#131b2e", "on-error-container": "#93000a", "on-tertiary": "#ffffff", "surface-tint": "#3755c3", "tertiary": "#2d3449", "surface-dim": "#cbdbf5", "primary-fixed-dim": "#b8c4ff", "primary": "#00288e", "on-secondary-fixed": "#07006c", "on-surface": "#0b1c30", "surface-container-high": "#dce9ff", "surface-container": "#e5eeff", "secondary-container": "#6063ee", "on-surface-variant": "#444653", "primary-container": "#1e40af", "surface-container-lowest": "#ffffff", "on-tertiary-container": "#b4bbd5", "outline": "#757684", "error-container": "#ffdad6", "surface-container-low": "#eff4ff", "error": "#ba1a1a", "inverse-on-surface": "#eaf1ff", "on-error": "#ffffff" }, "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, "spacing": { "gutter": "1rem", "gutter-desktop": "1.5rem", "space-xl": "2rem", "space-md": "1rem", "space-xs": "0.25rem", "margin-desktop": "1.5rem", "space-lg": "1.5rem", "space-sm": "0.5rem", "margin": "1rem" }, "fontFamily": { "body-md": [ "Inter" ], "sla-timer": [ "JetBrains Mono" ], "code-md": [ "JetBrains Mono" ], "headline-sm": [ "Inter" ], "headline-lg-mobile": [ "Inter" ], "body-sm": [ "Inter" ], "label-sm": [ "Inter" ], "body-lg": [ "Inter" ], "label-md": [ "Inter" ], "headline-md": [ "Inter" ], "headline-lg": [ "Inter" ] }, "fontSize": { "body-md": [ "14px", { "lineHeight": "20px", "letterSpacing": "0em", "fontWeight": "400" } ], "sla-timer": [ "12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500" } ], "code-md": [ "13px", { "lineHeight": "18px", "letterSpacing": "-0.01em", "fontWeight": "400" } ], "headline-sm": [ "18px", { "lineHeight": "24px", "letterSpacing": "-0.01em", "fontWeight": "600" } ], "headline-lg-mobile": [ "26px", { "lineHeight": "32px", "letterSpacing": "-0.015em", "fontWeight": "600" } ], "body-sm": [ "13px", { "lineHeight": "18px", "letterSpacing": "0.005em", "fontWeight": "400" } ], "label-sm": [ "11px", { "lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "600" } ], "body-lg": [ "16px", { "lineHeight": "24px", "letterSpacing": "0em", "fontWeight": "400" } ], "label-md": [ "12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500" } ], "headline-md": [ "22px", { "lineHeight": "28px", "letterSpacing": "-0.015em", "fontWeight": "600" } ], "headline-lg": [ "32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "600" } ] } } } };</script></head><body class="bg-surface font-body-md text-body-md text-on-surface antialiased"><aside class="fixed left-0 top-0 h-full w-64 bg-surface-container-lowest shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-50 flex flex-col justify-between select-none"><div class="flex flex-col"><div class="h-16 px-space-md flex items-center gap-space-sm"><img alt="Brand logo. - Primary color: #1e40af
+- Font: inter
+- Mode: light
+- Roundness: rounded-md
+" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1X7SUa7td0syGhN1cfQiVXQ9OafEdk2a4K27rn7CTEpXYs76VGlkzCdpnf-MhcKQISVUZN9vbqc-zYj-6J77t5qtTvl_-SkXleX17iUFT-vStUNm4mZHglzxi0K_TuZOIgEC0wvJEHiDXMQxwVgp4zOnXe2KTHI7HW6C_zDY4JxC-MSumx5Z3S2Rf1ElEFg2UCnW9uW32mFg1MHfpH5EBT_YSV9EsBvemQ9hEd-08El"/><div class="flex flex-col"><span class="font-headline-sm text-headline-sm text-on-surface leading-tight tracking-tight">OpsCore Admin</span><span class="font-sla-timer text-sla-timer text-on-surface-variant">v4.18.2 [prod]</span></div></div><div class="px-space-md py-space-sm"><span class="font-label-sm text-label-sm uppercase tracking-wider text-outline px-space-xs">Core Systems</span></div><nav class="flex flex-col gap-space-xs px-space-sm" data-active-classes="bg-primary-container text-on-primary font-label-md rounded-lg shadow-[0_1px_2px_0_rgba(15,23,42,0.04)]"><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded-lg font-label-md text-label-md text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-all" data-path="overview" href="#"><span class="material-symbols-outlined text-[20px]">dashboard</span><span>Overview</span></a><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded-lg font-label-md text-label-md text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-all" data-path="organizations" href="#"><span class="material-symbols-outlined text-[20px]">domain</span><span>Organizations</span></a><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded-lg font-label-md text-label-md text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-all" data-path="users" href="#"><span class="material-symbols-outlined text-[20px]">person</span><span>Users</span></a><a aria-current="page" class="flex items-center gap-space-sm px-space-md py-space-sm transition-all bg-primary-container text-on-primary font-label-md rounded-lg shadow-[0_1px_2px_0_rgba(15,23,42,0.04)]" data-path="teams" href="#"><span class="material-symbols-outlined text-[20px]">groups</span><span>Teams</span></a><div class="my-space-xs"><span class="font-label-sm text-label-sm uppercase tracking-wider text-outline px-space-xs">Governance &amp; Ops</span></div><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded-lg font-label-md text-label-md text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-all" data-path="security-policies" href="#"><span class="material-symbols-outlined text-[20px]">shield_lock</span><span>Security &amp; Policies</span></a><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded-lg font-label-md text-label-md text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-all" data-path="alert-rules" href="#"><span class="material-symbols-outlined text-[20px]">notifications_active</span><span>Alert Rules</span></a><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded-lg font-label-md text-label-md text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-all" data-path="devices" href="#"><span class="material-symbols-outlined text-[20px]">smartphone</span><span>Devices</span></a><a class="flex items-center gap-space-sm px-space-md py-space-sm rounded-lg font-label-md text-label-md text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-all" data-path="audit-logs" href="#"><span class="material-symbols-outlined text-[20px]">receipt_long</span><span>Audit Logs</span></a></nav></div><div class="p-space-md m-space-sm rounded-lg bg-surface-container-low"><div class="flex items-center justify-between mb-space-xs"><div class="flex items-center gap-space-xs"><span class="w-2 h-2 rounded-full bg-secondary-container"></span><span class="font-label-sm text-label-sm text-on-surface font-semibold">RBAC: SUPER_ADMIN</span></div><span class="material-symbols-outlined text-[16px] text-outline">verified_user</span></div><div class="flex items-center justify-between text-outline text-[11px] font-sla-timer"><span class="truncate">Tenant: isolated-eu-01</span><span class="text-primary font-semibold">ENFORCED</span></div></div></aside><div class="pl-64"><header class="fixed top-0 left-64 right-0 h-16 bg-surface-container-lowest/90 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-40 flex items-center justify-between px-gutter-desktop"><div class="flex items-center gap-space-lg"><div class="flex items-center gap-space-sm px-space-md py-space-xs bg-surface-container-low rounded-lg cursor-pointer hover:bg-surface-container transition-colors"><span class="material-symbols-outlined text-[18px] text-primary-container">apartment</span><div class="flex flex-col text-left"><span class="font-label-md text-label-md text-on-surface font-semibold leading-tight">Acme Enterprise Corp [acme-corp]</span><span class="font-label-sm text-label-sm text-outline">Platinum SLA • Tier 4 Dedicated</span></div><span class="material-symbols-outlined text-[18px] text-outline ml-space-xs">unfold_more</span></div><div class="hidden xl:flex items-center gap-space-xs px-space-sm py-space-xs bg-surface-container rounded-full"><span class="w-2 h-2 rounded-full bg-primary-container animate-pulse"></span><span class="font-sla-timer text-sla-timer text-on-surface">ALL SYSTEMS OPERATIONAL</span><span class="font-code-md text-code-md text-outline">• RFC-8291 / NIST 800-207</span></div></div><div class="flex items-center gap-space-md"><div class="hidden md:flex items-center gap-space-sm px-space-md py-space-xs bg-surface-container-low rounded-lg text-on-surface-variant w-72 justify-between cursor-pointer hover:bg-surface-container transition-colors"><div class="flex items-center gap-space-xs"><span class="material-symbols-outlined text-[18px]">search</span><span class="font-body-sm text-body-sm text-outline">Global Admin Search...</span></div><kbd class="px-1.5 py-0.5 font-code-md text-[11px] bg-surface-container-highest text-on-surface-variant rounded">Cmd+K</kbd></div><div class="relative flex items-center"><button class="relative p-space-xs rounded-lg text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-colors" type="button"><span class="material-symbols-outlined text-[22px]">notifications</span><span class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-error ring-2 ring-surface-container-lowest"></span></button></div><div class="flex items-center gap-space-sm pl-space-sm"><div class="flex flex-col text-right hidden sm:flex"><span class="font-label-md text-label-md text-on-surface font-semibold leading-tight">Alex Vance</span><span class="font-label-sm text-label-sm text-outline">System Administrator</span></div><img alt="Profile" class="w-8 h-8 rounded-full object-cover shadow-[0_1px_2px_0_rgba(15,23,42,0.04)]" src="https://lh3.googleusercontent.com/aida/AEtjO1UvRp-sB668O8xQ5MmwJGFMuhZyy1VlMwStvG9MGUQLDiFduyFagt7Ez00pAy8LuTtQDJkwWaZt6dYXS1qeavbJl6lZnSbAS94bMp6u52E5HF8Gn6NsACko5qIaln8_HCytP26K34kbwzLanVrD5-n5BGH9zGLnKqQvV3-_xyYoiTTX_fJm4aD09QAvg3wThSfbAtg4bW-WfKVGNIrgTPuvDqJPmPUhZmmmgdBEQ2sm"/></div></div></header><main class="relative w-full pt-16 px-gutter-desktop py-space-lg bg-surface min-h-screen"><div class="flex flex-col w-full gap-space-lg pb-space-xl">
+<!-- Top Command & Header Zone -->
+<div class="flex flex-col lg:flex-row lg:items-end justify-between gap-space-md">
+<div class="flex flex-col gap-space-xs max-w-3xl">
+<div class="flex items-center gap-space-xs text-secondary font-label-sm uppercase tracking-wider">
+<span class="material-symbols-outlined text-[16px]">device_hub</span>
+<span>Org Hierarchy • IAM / ITIL Architecture</span>
+</div>
+<h1 class="font-headline-lg text-headline-lg text-on-surface tracking-tight">Team Management &amp; Routing Hierarchy</h1>
+<p class="font-body-md text-body-md text-on-surface-variant">
+        Organize operational groups, designate team leads, and configure queue routing boundaries in accordance with SRS §2.1 and PRD §3.
+      </p>
+</div>
+<!-- Quick Stats Metric Micro-Bar -->
+<div class="flex items-center gap-space-sm self-start lg:self-auto bg-surface-container-low p-1.5 rounded-xl shadow-sm">
+<div class="flex items-center gap-2 px-space-sm py-1 bg-surface-container-lowest rounded-lg">
+<span class="w-2 h-2 rounded-full bg-secondary-container"></span>
+<span class="font-label-sm text-label-sm text-on-surface font-semibold">5 Active Teams</span>
+</div>
+<div class="flex items-center gap-2 px-space-sm py-1">
+<span class="font-code-md text-code-md text-on-surface-variant">37 Operators Online</span>
+</div>
+<div class="flex items-center gap-2 px-space-sm py-1 bg-primary/10 rounded-lg text-primary">
+<span class="font-sla-timer text-sla-timer font-semibold">54 Active Incidents</span>
+</div>
+</div>
+</div>
+<!-- Operational Scope Alert Banner -->
+<div class="flex items-start md:items-center justify-between gap-space-md p-space-md rounded-xl bg-surface-container-high shadow-sm">
+<div class="flex items-start md:items-center gap-space-sm">
+<div class="p-2 rounded-lg bg-surface-container-lowest text-primary flex items-center justify-center">
+<span class="material-symbols-outlined text-[20px]">info</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface">
+<strong class="font-semibold text-on-surface">Operational Scope Notice:</strong> Team Administration manages structural membership and assignment routing. For real-time workload balancing, queue throughput, and capacity forecasting, refer to the <a class="text-primary font-semibold hover:underline inline-flex items-center gap-0.5" href="#">Manager Operational Health dashboard <span class="material-symbols-outlined text-[14px]">arrow_forward</span></a>.
+      </p>
+</div>
+<button class="text-on-surface-variant hover:text-on-surface p-1 rounded-lg hover:bg-surface-container-highest transition-colors" type="button">
+<span class="material-symbols-outlined text-[18px]">close</span>
+</button>
+</div>
+<!-- Filter & Action Toolstrip -->
+<div class="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-space-md bg-surface-container-lowest p-space-md rounded-xl shadow-sm">
+<div class="flex flex-wrap items-center gap-space-sm flex-1">
+<!-- Search Teams -->
+<div class="relative min-w-[260px] flex-1 max-w-md">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[18px]">search</span>
+<input class="w-full pl-9 pr-3 py-2 bg-surface-container-low font-body-sm text-body-sm text-on-surface placeholder:text-outline rounded-lg focus:outline-none focus:bg-surface-container-lowest transition-all" id="team-search-input" placeholder="Search team name or lead..." type="text"/>
+</div>
+<!-- Department Filter -->
+<div class="relative min-w-[180px]">
+<select class="w-full appearance-none pl-3 pr-8 py-2 bg-surface-container-low font-label-md text-label-md text-on-surface rounded-lg cursor-pointer focus:outline-none focus:bg-surface-container-lowest transition-all" id="dept-filter-select">
+<option value="all">All Departments</option>
+<option value="operations">Operations</option>
+<option value="infrastructure">Infrastructure</option>
+<option value="support">End-User Support</option>
+<option value="security">Security</option>
+</select>
+<span class="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 text-outline text-[18px] pointer-events-none">expand_more</span>
+</div>
+<!-- Quick Status Badges -->
+<div class="hidden xl:flex items-center gap-1.5 pl-space-xs text-outline font-label-sm text-label-sm">
+<span class="px-2 py-1 rounded bg-surface-container-low text-on-surface-variant">SLA Enforced: Tier 1-4</span>
+<span class="px-2 py-1 rounded bg-surface-container-low text-on-surface-variant">Routing Engine: ML Triage v3</span>
+</div>
+</div>
+<!-- Create Team CTA -->
+<button class="flex items-center justify-center gap-space-xs px-space-md py-2.5 bg-primary-container hover:bg-primary text-on-primary font-label-md text-label-md rounded-lg shadow-sm transition-all active:scale-[0.99]" onclick="openCreateTeamModal()" type="button">
+<span class="material-symbols-outlined text-[18px]">group_add</span>
+<span>+ Create New Team</span>
+</button>
+</div>
+<!-- Teams Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-space-md" id="teams-grid">
+<!-- Card 1: L2 Network Operations -->
+<div class="team-card flex flex-col justify-between bg-surface-container-lowest rounded-xl p-space-md shadow-sm hover:shadow-md transition-all group" data-dept="operations" data-team="l2-network">
+<div class="flex flex-col gap-space-sm">
+<div class="flex items-start justify-between gap-space-sm">
+<div class="flex items-center gap-space-sm">
+<div class="w-10 h-10 rounded-lg bg-surface-variant flex items-center justify-center text-primary font-headline-sm">
+<span class="material-symbols-outlined text-[22px]">hub</span>
+</div>
+<div class="flex flex-col">
+<h2 class="font-headline-sm text-headline-sm text-on-surface group-hover:text-primary transition-colors">L2 Network Operations</h2>
+<span class="font-label-sm text-label-sm text-outline">Dept: Operations • UID: #TM-NET-02</span>
+</div>
+</div>
+<span class="px-2 py-0.5 rounded-full bg-error-container text-on-error-container font-sla-timer text-sla-timer font-semibold flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-error"></span> 14 Active
+          </span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed min-h-[54px]">
+          Triage, diagnosis, and remediation of regional VPN concentrators, routing, and SD-WAN gateways.
+        </p>
+<!-- Team Lead & Operator Metrics -->
+<div class="flex items-center justify-between py-space-xs bg-surface-container-low px-space-sm rounded-lg">
+<div class="flex items-center gap-space-xs">
+<img alt="Sarah Jenkins" class="w-7 h-7 rounded-full object-cover" data-alt="Professional corporate headshot portrait of Sarah Jenkins, a focused mid-30s woman lead network specialist with glasses wearing clean dark corporate attire against a neutral soft studio background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDXeJr103VYSsYnWAfSm5cthZo4bnA1jMrDPGBgEMSQUzJPtz6rR7Oc7ifjym12dScemDVn-WYp6l1nVL8YJoI0DpexoHTcKWlB8yU_qBDcb6bFF-CQxmFApPK7yCD2_n1taUw1Ru_flDBEhkN6cVDqkPr3SNCnXipr_OBGq5Ou4chHthovXAlhVwMitCcKP47mAHP0fa0T8Y9MAODac4hHIdSxLqrCiGpyxYMUsic"/>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface font-semibold leading-none">Sarah Jenkins</span>
+<span class="font-label-sm text-label-sm text-outline">Lead Network Specialist</span>
+</div>
+</div>
+<div class="flex items-center gap-1 text-on-surface-variant font-code-md text-code-md">
+<span class="material-symbols-outlined text-[16px] text-outline">badge</span>
+<span>8 Operators</span>
+</div>
+</div>
+<!-- Inbound Routing Tokens -->
+<div class="flex flex-col gap-1">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-outline font-semibold">Assigned Inbound Routing:</span>
+<div class="flex flex-wrap gap-1.5">
+<span class="px-2 py-0.5 rounded bg-surface-container font-code-md text-[11px] text-on-surface">Network &amp; VPN</span>
+<span class="px-2 py-0.5 rounded bg-surface-container font-code-md text-[11px] text-on-surface">VPN Gateway</span>
+<span class="px-2 py-0.5 rounded bg-surface-container font-code-md text-[11px] text-on-surface">Firewall Rules</span>
+</div>
+</div>
+</div>
+<!-- Action Card Bar -->
+<div class="flex items-center justify-between pt-space-md mt-space-sm">
+<button class="flex items-center gap-1 font-label-md text-label-md text-primary font-semibold hover:underline" onclick="openConfigDrawer('L2 Network Operations', 'Sarah Jenkins', 8, 'operations')" type="button">
+<span class="material-symbols-outlined text-[16px]">tune</span>
+<span>Routing Rules</span>
+</button>
+<div class="flex items-center gap-1">
+<button class="px-2.5 py-1.5 rounded-lg bg-surface-container-low hover:bg-surface-container text-on-surface font-label-md text-label-md transition-colors" onclick="openConfigDrawer('L2 Network Operations', 'Sarah Jenkins', 8, 'operations')" type="button">
+            Manage Members
+          </button>
+<button class="p-1.5 rounded-lg text-outline hover:text-on-surface hover:bg-surface-container transition-colors" title="Edit Team Settings" type="button">
+<span class="material-symbols-outlined text-[18px]">edit</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Card 2: Cloud Infrastructure & DB -->
+<div class="team-card flex flex-col justify-between bg-surface-container-lowest rounded-xl p-space-md shadow-sm hover:shadow-md transition-all group" data-dept="infrastructure" data-team="cloud-infra">
+<div class="flex flex-col gap-space-sm">
+<div class="flex items-start justify-between gap-space-sm">
+<div class="flex items-center gap-space-sm">
+<div class="w-10 h-10 rounded-lg bg-surface-container-high flex items-center justify-center text-primary-container font-headline-sm">
+<span class="material-symbols-outlined text-[22px]">cloud_sync</span>
+</div>
+<div class="flex flex-col">
+<h2 class="font-headline-sm text-headline-sm text-on-surface group-hover:text-primary transition-colors">Cloud Infrastructure &amp; DB</h2>
+<span class="font-label-sm text-label-sm text-outline">Dept: Infrastructure • UID: #TM-CLD-05</span>
+</div>
+</div>
+<span class="px-2 py-0.5 rounded-full bg-surface-container-highest text-on-surface font-sla-timer text-sla-timer font-semibold flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span> 9 Active
+          </span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed min-h-[54px]">
+          AWS CloudWatch, Datadog Postgres RDS pools, Kubernetes node provisioning.
+        </p>
+<!-- Team Lead & Operator Metrics -->
+<div class="flex items-center justify-between py-space-xs bg-surface-container-low px-space-sm rounded-lg">
+<div class="flex items-center gap-space-xs">
+<img alt="Clara Lin" class="w-7 h-7 rounded-full object-cover" data-alt="Professional photograph portrait of Clara Lin, staff cloud architect, a sleek Asian woman wearing technical apparel with clean confident posture in modern bright enterprise IT office." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBCJynwBWj23f8ZQskNgmbQURg-PwSbiVU-_PvDr42UpMepWrN6kzIgPWSA1rus_Jupd0pVL8lOFBP54W9FHJWAlbARhkH_qqhg6BtpHObNS9-YXsR3B12xT49RaQEm3THHj8j-X_KGn9qWvLPUbnptn9hatf-vg895HBQvNOuNwMZS4TVRoOT0Ywx-dZLvDd2WpCulPnzZ_zpEVqMnNuC0MOFyDuwCMABI9HsAPz0"/>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface font-semibold leading-none">Clara Lin</span>
+<span class="font-label-sm text-label-sm text-outline">Staff Cloud Architect</span>
+</div>
+</div>
+<div class="flex items-center gap-1 text-on-surface-variant font-code-md text-code-md">
+<span class="material-symbols-outlined text-[16px] text-outline">badge</span>
+<span>6 Operators</span>
+</div>
+</div>
+<!-- Inbound Routing Tokens -->
+<div class="flex flex-col gap-1">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-outline font-semibold">Assigned Inbound Routing:</span>
+<div class="flex flex-wrap gap-1.5">
+<span class="px-2 py-0.5 rounded bg-surface-container font-code-md text-[11px] text-on-surface">Cloud &amp; DevOps</span>
+<span class="px-2 py-0.5 rounded bg-surface-container font-code-md text-[11px] text-on-surface">Database</span>
+<span class="px-2 py-0.5 rounded bg-surface-container font-code-md text-[11px] text-on-surface">Kubernetes</span>
+</div>
+</div>
+</div>
+<!-- Action Card Bar -->
+<div class="flex items-center justify-between pt-space-md mt-space-sm">
+<button class="flex items-center gap-1 font-label-md text-label-md text-primary font-semibold hover:underline" onclick="openConfigDrawer('Cloud Infrastructure &amp; DB', 'Clara Lin', 6, 'infrastructure')" type="button">
+<span class="material-symbols-outlined text-[16px]">tune</span>
+<span>Routing Rules</span>
+</button>
+<div class="flex items-center gap-1">
+<button class="px-2.5 py-1.5 rounded-lg bg-surface-container-low hover:bg-surface-container text-on-surface font-label-md text-label-md transition-colors" onclick="openConfigDrawer('Cloud Infrastructure &amp; DB', 'Clara Lin', 6, 'infrastructure')" type="button">
+            Manage Members
+          </button>
+<button class="p-1.5 rounded-lg text-outline hover:text-on-surface hover:bg-surface-container transition-colors" title="Edit Team Settings" type="button">
+<span class="material-symbols-outlined text-[18px]">edit</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Card 3: Workplace & End-User Support (L1) -->
+<div class="team-card flex flex-col justify-between bg-surface-container-lowest rounded-xl p-space-md shadow-sm hover:shadow-md transition-all group" data-dept="support" data-team="workplace-l1">
+<div class="flex flex-col gap-space-sm">
+<div class="flex items-start justify-between gap-space-sm">
+<div class="flex items-center gap-space-sm">
+<div class="w-10 h-10 rounded-lg bg-surface-variant flex items-center justify-center text-secondary font-headline-sm">
+<span class="material-symbols-outlined text-[22px]">headset_mic</span>
+</div>
+<div class="flex flex-col">
+<h2 class="font-headline-sm text-headline-sm text-on-surface group-hover:text-primary transition-colors">Workplace &amp; End-User (L1)</h2>
+<span class="font-label-sm text-label-sm text-outline">Dept: End-User Support • UID: #TM-SUP-01</span>
+</div>
+</div>
+<span class="px-2 py-0.5 rounded-full bg-error-container text-on-error-container font-sla-timer text-sla-timer font-semibold flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-error"></span> 26 Active
+          </span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed min-h-[54px]">
+          Initial case intake triage, hardware peripherals, Windows/macOS troubleshooting, and software licensing.
+        </p>
+<!-- Team Lead & Operator Metrics -->
+<div class="flex items-center justify-between py-space-xs bg-surface-container-low px-space-sm rounded-lg">
+<div class="flex items-center gap-space-xs">
+<img alt="Michael Chang" class="w-7 h-7 rounded-full object-cover" data-alt="Sharp high-resolution corporate headshot of Michael Chang, an energetic professional L1 support lead with friendly modern expression, dark polo shirt, bright clean IT office background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDusj9crsFZf5qmmsol9cfG1DN7XbvMBJ4BqD20wplsjNnmb013Gtg71O0t8txvEknVmSo3NHJiDSVcpZ34QKkAwV4djQ01_m0NMyh7T9umylyak9NMl1mOVW_Khpb8V3WX-KbJTt40w6nX4dC8SqWXc8nNMOuJ1qjwpb_zXJPNHQqayEmaqBwzp6MMJJMgaHfp50VjBiLF_Ke-ubAZ7R5OTDdQKEdlyJGCLUNNxEA"/>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface font-semibold leading-none">Michael Chang</span>
+<span class="font-label-sm text-label-sm text-outline">L1 Support Lead</span>
+</div>
+</div>
+<div class="flex items-center gap-1 text-on-surface-variant font-code-md text-code-md">
+<span class="material-symbols-outlined text-[16px] text-outline">badge</span>
+<span>14 Operators</span>
+</div>
+</div>
+<!-- Inbound Routing Tokens -->
+<div class="flex flex-col gap-1">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-outline font-semibold">Assigned Inbound Routing:</span>
+<div class="flex flex-wrap gap-1.5">
+<span class="px-2 py-0.5 rounded bg-surface-container font-code-md text-[11px] text-on-surface">Hardware</span>
+<span class="px-2 py-0.5 rounded bg-surface-container font-code-md text-[11px] text-on-surface">Software &amp; Accounts</span>
+<span class="px-2 py-0.5 rounded bg-surface-container font-code-md text-[11px] text-on-surface">Client Printers</span>
+</div>
+</div>
+</div>
+<!-- Action Card Bar -->
+<div class="flex items-center justify-between pt-space-md mt-space-sm">
+<button class="flex items-center gap-1 font-label-md text-label-md text-primary font-semibold hover:underline" onclick="openConfigDrawer('Workplace &amp; End-User Support (L1)', 'Michael Chang', 14, 'support')" type="button">
+<span class="material-symbols-outlined text-[16px]">tune</span>
+<span>Routing Rules</span>
+</button>
+<div class="flex items-center gap-1">
+<button class="px-2.5 py-1.5 rounded-lg bg-surface-container-low hover:bg-surface-container text-on-surface font-label-md text-label-md transition-colors" onclick="openConfigDrawer('Workplace &amp; End-User Support (L1)', 'Michael Chang', 14, 'support')" type="button">
+            Manage Members
+          </button>
+<button class="p-1.5 rounded-lg text-outline hover:text-on-surface hover:bg-surface-container transition-colors" title="Edit Team Settings" type="button">
+<span class="material-symbols-outlined text-[18px]">edit</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Card 4: SecOps & Compliance -->
+<div class="team-card flex flex-col justify-between bg-surface-container-lowest rounded-xl p-space-md shadow-sm hover:shadow-md transition-all group" data-dept="security" data-team="secops-compliance">
+<div class="flex flex-col gap-space-sm">
+<div class="flex items-start justify-between gap-space-sm">
+<div class="flex items-center gap-space-sm">
+<div class="w-10 h-10 rounded-lg bg-surface-container-high flex items-center justify-center text-primary font-headline-sm">
+<span class="material-symbols-outlined text-[22px]">verified_user</span>
+</div>
+<div class="flex flex-col">
+<h2 class="font-headline-sm text-headline-sm text-on-surface group-hover:text-primary transition-colors">SecOps &amp; Compliance</h2>
+<span class="font-label-sm text-label-sm text-outline">Dept: Security • UID: #TM-SEC-09</span>
+</div>
+</div>
+<span class="px-2 py-0.5 rounded-full bg-surface-container text-on-surface font-sla-timer text-sla-timer font-semibold flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary-container"></span> 3 Active
+          </span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed min-h-[54px]">
+          Identity governance, Okta SSO SAML loops, WebAuthn MFA provisioning, and audit oversight.
+        </p>
+<!-- Team Lead & Operator Metrics -->
+<div class="flex items-center justify-between py-space-xs bg-surface-container-low px-space-sm rounded-lg">
+<div class="flex items-center gap-space-xs">
+<img alt="Alex Vance" class="w-7 h-7 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida/AEtjO1UvRp-sB668O8xQ5MmwJGFMuhZyy1VlMwStvG9MGUQLDiFduyFagt7Ez00pAy8LuTtQDJkwWaZt6dYXS1qeavbJl6lZnSbAS94bMp6u52E5HF8Gn6NsACko5qIaln8_HCytP26K34kbwzLanVrD5-n5BGH9zGLnKqQvV3-_xyYoiTTX_fJm4aD09QAvg3wThSfbAtg4bW-WfKVGNIrgTPuvDqJPmPUhZmmmgdBEQ2sm"/>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface font-semibold leading-none">Alex Vance</span>
+<span class="font-label-sm text-label-sm text-outline">Lead SecOps Admin</span>
+</div>
+</div>
+<div class="flex items-center gap-1 text-on-surface-variant font-code-md text-code-md">
+<span class="material-symbols-outlined text-[16px] text-outline">badge</span>
+<span>4 Specialists</span>
+</div>
+</div>
+<!-- Inbound Routing Tokens -->
+<div class="flex flex-col gap-1">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-outline font-semibold">Assigned Inbound Routing:</span>
+<div class="flex flex-wrap gap-1.5">
+<span class="px-2 py-0.5 rounded bg-surface-container font-code-md text-[11px] text-on-surface">Security</span>
+<span class="px-2 py-0.5 rounded bg-surface-container font-code-md text-[11px] text-on-surface">SSO &amp; Identity</span>
+<span class="px-2 py-0.5 rounded bg-surface-container font-code-md text-[11px] text-on-surface">Access Requests</span>
+</div>
+</div>
+</div>
+<!-- Action Card Bar -->
+<div class="flex items-center justify-between pt-space-md mt-space-sm">
+<button class="flex items-center gap-1 font-label-md text-label-md text-primary font-semibold hover:underline" onclick="openConfigDrawer('SecOps &amp; Compliance', 'Alex Vance', 4, 'security')" type="button">
+<span class="material-symbols-outlined text-[16px]">tune</span>
+<span>Routing Rules</span>
+</button>
+<div class="flex items-center gap-1">
+<button class="px-2.5 py-1.5 rounded-lg bg-surface-container-low hover:bg-surface-container text-on-surface font-label-md text-label-md transition-colors" onclick="openConfigDrawer('SecOps &amp; Compliance', 'Alex Vance', 4, 'security')" type="button">
+            Manage Members
+          </button>
+<button class="p-1.5 rounded-lg text-outline hover:text-on-surface hover:bg-surface-container transition-colors" title="Edit Team Settings" type="button">
+<span class="material-symbols-outlined text-[18px]">edit</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Card 5: IT Operations Leadership (CAB) -->
+<div class="team-card flex flex-col justify-between bg-surface-container-lowest rounded-xl p-space-md shadow-sm hover:shadow-md transition-all group" data-dept="operations" data-team="it-leadership-cab">
+<div class="flex flex-col gap-space-sm">
+<div class="flex items-start justify-between gap-space-sm">
+<div class="flex items-center gap-space-sm">
+<div class="w-10 h-10 rounded-lg bg-surface-variant flex items-center justify-center text-primary-container font-headline-sm">
+<span class="material-symbols-outlined text-[22px]">policy</span>
+</div>
+<div class="flex flex-col">
+<h2 class="font-headline-sm text-headline-sm text-on-surface group-hover:text-primary transition-colors">IT Operations Leadership (CAB)</h2>
+<span class="font-label-sm text-label-sm text-outline">Dept: Operations • UID: #TM-CAB-00</span>
+</div>
+</div>
+<span class="px-2 py-0.5 rounded-full bg-secondary-fixed text-on-secondary-fixed-variant font-sla-timer text-sla-timer font-semibold flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span> 2 War Rooms
+          </span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed min-h-[54px]">
+          Change Advisory Board oversight, Major Incident Commander coordination, and capacity approvals.
+        </p>
+<!-- Team Lead & Operator Metrics -->
+<div class="flex items-center justify-between py-space-xs bg-surface-container-low px-space-sm rounded-lg">
+<div class="flex items-center gap-space-xs">
+<img alt="David Zhao" class="w-7 h-7 rounded-full object-cover" data-alt="Editorial executive headshot portrait of David Zhao, Director of IT Operations, an experienced professional leader in tailored dark navy blazer smiling in a bright modern tech boardroom." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCc_WEIHQKctcZktCIqC0TcSVdc_YopqxCvdoJK24Eau6EoK6r1gCHu5k3KG_HiBmudklqONXCp0lOCpBLUS3qZf0wrc9GLKkE14iNamOZIDk0YYWLgCpGNvYni7kNTuG7S-9utsIjIGNKYSpeZ4qH9fyF3G7izq29gw9mZcvX46fyOmfcQ4YSi3mqQZMCbSfeZ_omYTsMM9juJ_3kEcv6CMVlR4YzcgexBdR9o4VU"/>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface font-semibold leading-none">David Zhao</span>
+<span class="font-label-sm text-label-sm text-outline">Director of IT Operations</span>
+</div>
+</div>
+<div class="flex items-center gap-1 text-on-surface-variant font-code-md text-code-md">
+<span class="material-symbols-outlined text-[16px] text-outline">badge</span>
+<span>5 Managers / Leads</span>
+</div>
+</div>
+<!-- Inbound Routing Tokens -->
+<div class="flex flex-col gap-1">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-outline font-semibold">Assigned Inbound Routing:</span>
+<div class="flex flex-wrap gap-1.5">
+<span class="px-2 py-0.5 rounded bg-surface-container font-code-md text-[11px] text-on-surface">Emergency Changes</span>
+<span class="px-2 py-0.5 rounded bg-surface-container font-code-md text-[11px] text-on-surface">Major Outages</span>
+</div>
+</div>
+</div>
+<!-- Action Card Bar -->
+<div class="flex items-center justify-between pt-space-md mt-space-sm">
+<button class="flex items-center gap-1 font-label-md text-label-md text-primary font-semibold hover:underline" onclick="openConfigDrawer('IT Operations Leadership (CAB)', 'David Zhao', 5, 'operations')" type="button">
+<span class="material-symbols-outlined text-[16px]">tune</span>
+<span>Routing Rules</span>
+</button>
+<div class="flex items-center gap-1">
+<button class="px-2.5 py-1.5 rounded-lg bg-surface-container-low hover:bg-surface-container text-on-surface font-label-md text-label-md transition-colors" onclick="openConfigDrawer('IT Operations Leadership (CAB)', 'David Zhao', 5, 'operations')" type="button">
+            Manage Members
+          </button>
+<button class="p-1.5 rounded-lg text-outline hover:text-on-surface hover:bg-surface-container transition-colors" title="Edit Team Settings" type="button">
+<span class="material-symbols-outlined text-[18px]">edit</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Quick Add New Team Visual Placeholder Card -->
+<div class="flex flex-col items-center justify-center gap-space-sm bg-surface-container-low/50 hover:bg-surface-container-low border-2 border-dashed border-outline-variant rounded-xl p-space-lg text-center cursor-pointer transition-all group min-h-[280px]" onclick="openCreateTeamModal()">
+<div class="w-12 h-12 rounded-full bg-surface-container-lowest shadow-sm flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-[26px]">add</span>
+</div>
+<div class="flex flex-col items-center">
+<span class="font-headline-sm text-headline-sm text-on-surface">Add Operational Unit</span>
+<span class="font-body-sm text-body-sm text-outline max-w-xs mt-1">
+          Provision routing queues, tier assignments, and auto-escalation SLAs.
+        </span>
+</div>
+<span class="mt-2 font-label-md text-label-md text-primary font-semibold flex items-center gap-1">
+        Configure Team <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</span>
+</div>
+</div>
+<!-- Slide-out Drawer: Team Membership & Routing Configuration -->
+<div class="fixed inset-0 bg-inverse-surface/40 backdrop-blur-sm z-50 transition-opacity opacity-0 pointer-events-none duration-300" id="drawer-backdrop"></div>
+<aside class="fixed top-0 right-0 h-full w-full max-w-xl bg-surface-container-lowest shadow-2xl z-50 flex flex-col justify-between transform translate-x-full transition-transform duration-300 ease-out" id="config-drawer">
+<!-- Drawer Header -->
+<div class="p-space-lg bg-surface-container-low flex items-start justify-between">
+<div class="flex flex-col gap-1">
+<div class="flex items-center gap-2">
+<span class="px-2 py-0.5 rounded bg-primary text-on-primary font-label-sm text-label-sm font-semibold uppercase">Config Mode</span>
+<span class="font-sla-timer text-sla-timer text-outline">v4.18.2 [live]</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-surface mt-1" id="drawer-title">
+          Team Membership &amp; Routing: L2 Network Operations
+        </h3>
+<span class="font-body-sm text-body-sm text-on-surface-variant" id="drawer-subtitle">
+          Lead: Sarah Jenkins • Active Capacity: 8 Members
+        </span>
+</div>
+<button class="p-2 rounded-lg text-outline hover:text-on-surface hover:bg-surface-container transition-colors" onclick="closeConfigDrawer()" type="button">
+<span class="material-symbols-outlined text-[20px]">close</span>
+</button>
+</div>
+<!-- Drawer Body -->
+<div class="flex-1 overflow-y-auto p-space-lg flex flex-col gap-space-lg">
+<!-- Section 1: Assigned Alert & Pattern Routing Rules -->
+<div class="flex flex-col gap-space-sm">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-[18px] text-primary">alt_route</span>
+<h4 class="font-headline-sm text-headline-sm text-on-surface">Queue Routing Patterns</h4>
+</div>
+<span class="font-label-sm text-label-sm text-outline">3 Rules Active</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+          Incoming alerts matching these telemetry patterns automatically route to this unit without manual triage:
+        </p>
+<div class="flex flex-col gap-2">
+<div class="flex items-center justify-between p-2.5 rounded-lg bg-surface-container-low">
+<div class="flex items-center gap-2 font-code-md text-code-md text-on-surface">
+<span class="material-symbols-outlined text-[16px] text-secondary">terminal</span>
+<code>gw.*.packet_loss &gt; 10%</code>
+</div>
+<span class="px-2 py-0.5 rounded bg-error-container text-on-error-container font-label-sm text-label-sm font-bold">P1 Priority</span>
+</div>
+<div class="flex items-center justify-between p-2.5 rounded-lg bg-surface-container-low">
+<div class="flex items-center gap-2 font-code-md text-code-md text-on-surface">
+<span class="material-symbols-outlined text-[16px] text-secondary">terminal</span>
+<code>vpn.concentrator.tunnels.drop &gt; 25</code>
+</div>
+<span class="px-2 py-0.5 rounded bg-surface-container-high text-on-surface font-label-sm text-label-sm font-medium">P2 Priority</span>
+</div>
+<div class="flex items-center justify-between p-2.5 rounded-lg bg-surface-container-low">
+<div class="flex items-center gap-2 font-code-md text-code-md text-on-surface">
+<span class="material-symbols-outlined text-[16px] text-secondary">terminal</span>
+<code>infra.router.bgp.peer_state == down</code>
+</div>
+<span class="px-2 py-0.5 rounded bg-error-container text-on-error-container font-label-sm text-label-sm font-bold">P1 Priority</span>
+</div>
+</div>
+<div class="flex items-center gap-2 pt-1">
+<input class="flex-1 px-3 py-1.5 bg-surface-container-low font-code-md text-code-md text-on-surface rounded-lg focus:outline-none" placeholder="Add rule pattern (e.g. fw.threat.level &gt;= high)" type="text"/>
+<button class="px-3 py-1.5 rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface font-label-md text-label-md" type="button">
+            + Add Pattern
+          </button>
+</div>
+</div>
+<div class="w-full h-[1px] bg-surface-container-high"></div>
+<!-- Section 2: Team Members -->
+<div class="flex flex-col gap-space-sm">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-[18px] text-primary">groups</span>
+<h4 class="font-headline-sm text-headline-sm text-on-surface">Assigned Members</h4>
+</div>
+<span class="font-label-sm text-label-sm text-outline font-code-md">8 Specialists</span>
+</div>
+<!-- Add Member Searchable Row -->
+<div class="flex items-center gap-2">
+<div class="relative flex-1">
+<span class="material-symbols-outlined absolute left-2.5 top-1/2 -translate-y-1/2 text-outline text-[18px]">person_search</span>
+<input class="w-full pl-9 pr-3 py-2 bg-surface-container-low font-body-sm text-body-sm text-on-surface rounded-lg focus:outline-none focus:bg-surface-container" placeholder="Search user to add (e.g. Jordan Lee)..." type="text"/>
+</div>
+<button class="px-4 py-2 bg-primary text-on-primary font-label-md text-label-md rounded-lg hover:bg-primary/90 transition-colors" type="button">
+            Assign
+          </button>
+</div>
+<!-- Member List with Remove Action -->
+<div class="flex flex-col gap-2 mt-2">
+<!-- Item 1 (Lead) -->
+<div class="flex items-center justify-between p-2.5 rounded-lg bg-surface-container-low/70">
+<div class="flex items-center gap-space-sm">
+<div class="relative">
+<img alt="Sarah Jenkins" class="w-8 h-8 rounded-full object-cover" data-alt="Sarah Jenkins professional avatar headshot" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC5HpxxgtUZfzevvmfTInAQJnMTHMEwRZ3zeDtBHRT3DnSOVE3GxvTCS07cSUz6OXSi2ik7q8uihXy0pyrMSouke2J8ZBu6-FtD6g4ngaNwylq8ko1pr3p6vDw9TpQH37d_X-Zea_ABjqB6NVBluAIiTYtqgNEF5okF5fwKiuGY1IlkdMLmytnR6NRQW8zaJxe1QLBmD02ioMVV1mhebD7AVtFF91iFdZDSv9_SSQc"/>
+<span class="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-primary-container ring-2 ring-surface-container-lowest"></span>
+</div>
+<div class="flex flex-col">
+<div class="flex items-center gap-1.5">
+<span class="font-label-md text-label-md font-semibold text-on-surface">Sarah Jenkins</span>
+<span class="px-1.5 py-0.2 rounded bg-surface-container-highest font-label-sm text-[10px] text-on-surface-variant uppercase">Team Lead</span>
+</div>
+<span class="font-body-sm text-[12px] text-outline">s.jenkins@acmecorp.internal</span>
+</div>
+</div>
+<span class="font-code-md text-sla-timer text-on-surface-variant">Shift: US-East [08:00 - 17:00]</span>
+</div>
+<!-- Item 2 -->
+<div class="flex items-center justify-between p-2.5 rounded-lg bg-surface-container-low/70">
+<div class="flex items-center gap-space-sm">
+<div class="w-8 h-8 rounded-full bg-surface-variant text-primary flex items-center justify-center font-label-md font-bold">
+                TK
+              </div>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md font-semibold text-on-surface">Tariq Khan</span>
+<span class="font-body-sm text-[12px] text-outline">t.khan@acmecorp.internal • Senior NetSec Eng</span>
+</div>
+</div>
+<button class="text-error hover:bg-error-container p-1.5 rounded transition-colors" title="Remove Member" type="button">
+<span class="material-symbols-outlined text-[18px]">person_remove</span>
+</button>
+</div>
+<!-- Item 3 -->
+<div class="flex items-center justify-between p-2.5 rounded-lg bg-surface-container-low/70">
+<div class="flex items-center gap-space-sm">
+<div class="w-8 h-8 rounded-full bg-surface-variant text-primary flex items-center justify-center font-label-md font-bold">
+                EM
+              </div>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md font-semibold text-on-surface">Elena Morozova</span>
+<span class="font-body-sm text-[12px] text-outline">e.morozova@acmecorp.internal • L2 NetOps</span>
+</div>
+</div>
+<button class="text-error hover:bg-error-container p-1.5 rounded transition-colors" title="Remove Member" type="button">
+<span class="material-symbols-outlined text-[18px]">person_remove</span>
+</button>
+</div>
+<!-- Item 4 -->
+<div class="flex items-center justify-between p-2.5 rounded-lg bg-surface-container-low/70">
+<div class="flex items-center gap-space-sm">
+<div class="w-8 h-8 rounded-full bg-surface-variant text-primary flex items-center justify-center font-label-md font-bold">
+                DL
+              </div>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md font-semibold text-on-surface">Devon Lewis</span>
+<span class="font-body-sm text-[12px] text-outline">d.lewis@acmecorp.internal • Network Tech</span>
+</div>
+</div>
+<button class="text-error hover:bg-error-container p-1.5 rounded transition-colors" title="Remove Member" type="button">
+<span class="material-symbols-outlined text-[18px]">person_remove</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Drawer Footer -->
+<div class="p-space-md bg-surface-container-low flex items-center justify-end gap-space-sm">
+<button class="px-space-md py-2 rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface font-label-md text-label-md transition-colors" onclick="closeConfigDrawer()" type="button">
+        Cancel
+      </button>
+<button class="px-space-md py-2 rounded-lg bg-primary-container hover:bg-primary text-on-primary font-label-md text-label-md shadow-sm transition-colors" onclick="closeConfigDrawer()" type="button">
+        Save &amp; Propagate Routing
+      </button>
+</div>
+</aside>
+<!-- Create Team Modal (Overlay) -->
+<div class="fixed inset-0 bg-inverse-surface/40 backdrop-blur-sm z-50 transition-opacity opacity-0 pointer-events-none duration-200 flex items-center justify-center p-space-md" id="create-modal-backdrop">
+<div class="bg-surface-container-lowest w-full max-w-lg rounded-2xl shadow-xl flex flex-col overflow-hidden transform scale-95 transition-transform duration-200" id="create-modal">
+<div class="p-space-lg bg-surface-container-low flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[24px]">group_add</span>
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Create New IT Operational Team</h3>
+</div>
+<button class="text-outline hover:text-on-surface" onclick="closeCreateTeamModal()" type="button">
+<span class="material-symbols-outlined text-[20px]">close</span>
+</button>
+</div>
+<div class="p-space-lg flex flex-col gap-space-md">
+<div class="flex flex-col gap-1">
+<label class="font-label-md text-label-md text-on-surface font-semibold">Team Name</label>
+<input class="px-3 py-2 bg-surface-container-low rounded-lg font-body-sm text-body-sm focus:outline-none focus:bg-surface-container" placeholder="e.g. Tier 3 Database Reliablity" type="text"/>
+</div>
+<div class="grid grid-cols-2 gap-space-sm">
+<div class="flex flex-col gap-1">
+<label class="font-label-md text-label-md text-on-surface font-semibold">Department</label>
+<select class="px-3 py-2 bg-surface-container-low rounded-lg font-body-sm text-body-sm focus:outline-none">
+<option>Operations</option>
+<option>Infrastructure</option>
+<option>End-User Support</option>
+<option>Security</option>
+</select>
+</div>
+<div class="flex flex-col gap-1">
+<label class="font-label-md text-label-md text-on-surface font-semibold">Assign Lead</label>
+<select class="px-3 py-2 bg-surface-container-low rounded-lg font-body-sm text-body-sm focus:outline-none">
+<option>Sarah Jenkins</option>
+<option>Clara Lin</option>
+<option>Michael Chang</option>
+<option>Alex Vance</option>
+<option>David Zhao</option>
+</select>
+</div>
+</div>
+<div class="flex flex-col gap-1">
+<label class="font-label-md text-label-md text-on-surface font-semibold">Operational Description</label>
+<textarea class="px-3 py-2 bg-surface-container-low rounded-lg font-body-sm text-body-sm focus:outline-none focus:bg-surface-container" placeholder="Define the primary ticket queue scope, tier responsibilities, and remediation scope..." rows="3"></textarea>
+</div>
+</div>
+<div class="p-space-md bg-surface-container-low flex items-center justify-end gap-space-sm">
+<button class="px-4 py-2 rounded-lg bg-surface-container font-label-md text-label-md text-on-surface" onclick="closeCreateTeamModal()" type="button">Cancel</button>
+<button class="px-4 py-2 rounded-lg bg-primary text-on-primary font-label-md text-label-md" onclick="closeCreateTeamModal()" type="button">Create Operational Unit</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Inline Interaction Behavior -->
+<script>
+  function openConfigDrawer(teamName, leadName, memberCount, dept) {
+    const backdrop = document.getElementById('drawer-backdrop');
+    const drawer = document.getElementById('config-drawer');
+    const title = document.getElementById('drawer-title');
+    const subtitle = document.getElementById('drawer-subtitle');
+
+    title.textContent = 'Team Membership & Routing: ' + teamName;
+    subtitle.textContent = 'Lead: ' + leadName + ' • Active Capacity: ' + memberCount + ' Members';
+
+    backdrop.classList.remove('pointer-events-none', 'opacity-0');
+    backdrop.classList.add('opacity-100');
+    drawer.classList.remove('translate-x-full');
+  }
+
+  function closeConfigDrawer() {
+    const backdrop = document.getElementById('drawer-backdrop');
+    const drawer = document.getElementById('config-drawer');
+
+    backdrop.classList.remove('opacity-100');
+    backdrop.classList.add('opacity-0', 'pointer-events-none');
+    drawer.classList.add('translate-x-full');
+  }
+
+  function openCreateTeamModal() {
+    const backdrop = document.getElementById('create-modal-backdrop');
+    const modal = document.getElementById('create-modal');
+
+    backdrop.classList.remove('pointer-events-none', 'opacity-0');
+    backdrop.classList.add('opacity-100');
+    modal.classList.remove('scale-95');
+    modal.classList.add('scale-100');
+  }
+
+  function closeCreateTeamModal() {
+    const backdrop = document.getElementById('create-modal-backdrop');
+    const modal = document.getElementById('create-modal');
+
+    backdrop.classList.remove('opacity-100');
+    backdrop.classList.add('opacity-0', 'pointer-events-none');
+    modal.classList.remove('scale-100');
+    modal.classList.add('scale-95');
+  }
+
+  // Live filter & search listener
+  const searchInput = document.getElementById('team-search-input');
+  const deptSelect = document.getElementById('dept-filter-select');
+  const teamCards = document.querySelectorAll('.team-card');
+
+  function filterTeams() {
+    const query = (searchInput.value || '').toLowerCase().trim();
+    const dept = (deptSelect.value || 'all').toLowerCase();
+
+    teamCards.forEach(card => {
+      const cardText = card.innerText.toLowerCase();
+      const cardDept = card.getAttribute('data-dept') || '';
+
+      const matchesSearch = query === '' || cardText.includes(query);
+      const matchesDept = dept === 'all' || cardDept === dept;
+
+      if (matchesSearch && matchesDept) {
+        card.style.display = 'flex';
+      } else {
+        card.style.display = 'none';
+      }
+    });
+  }
+
+  searchInput.addEventListener('input', filterTeams);
+  deptSelect.addEventListener('change', filterTeams);
+</script></main></div></body></html>
